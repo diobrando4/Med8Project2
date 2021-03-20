@@ -247,7 +247,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 224408283}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: 1, z: -15}
+  m_LocalPosition: {x: 2, y: 1, z: 2.86}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1077651386}
@@ -691,10 +691,14 @@ MonoBehaviour:
   - {fileID: 1238918599}
   - {fileID: 1775899716}
   - {fileID: 276692864}
-  player: {fileID: 0}
-  rb: {fileID: 0}
-  agent: {fileID: 0}
+  pp: []
+  player: {fileID: 224408287}
+  rb: {fileID: 975614321}
+  agent: {fileID: 975614322}
   movementSpeed: 5
+  detectionRange: 58
+  maxAngle: 40
+  maxRadius: 4
 --- !u!1 &1077651382
 GameObject:
   m_ObjectHideFlags: 0
