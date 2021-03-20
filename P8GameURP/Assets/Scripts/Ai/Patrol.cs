@@ -244,7 +244,7 @@ public class Patrol : MonoBehaviour
     }
     int agentStateIndex(int index)
     {
-        if (index < 9)
+        if (index < 1)// =0.2 secs
         {
             return 0;
         }
