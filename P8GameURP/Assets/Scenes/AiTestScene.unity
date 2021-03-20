@@ -691,7 +691,7 @@ MonoBehaviour:
   - {fileID: 1238918599}
   - {fileID: 1775899716}
   - {fileID: 276692864}
-  player: {fileID: 0}
+  player: {fileID: 224408287}
   rb: {fileID: 0}
   agent: {fileID: 0}
   movementSpeed: 5
