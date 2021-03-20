@@ -16,8 +16,8 @@ public class Patrol : MonoBehaviour
 
     [Header("AI stuff...")]
     public Transform player;
-    public Rigidbody rb;
-    public NavMeshAgent agent;
+    private Rigidbody rb;
+    private NavMeshAgent agent;
     public float movementSpeed;
     public float detectionRange;
 
