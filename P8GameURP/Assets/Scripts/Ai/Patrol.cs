@@ -197,7 +197,7 @@ public class Patrol : MonoBehaviour
 
             case 0:
                 // Debug.LogWarning("Patrol");
-             //   Patrolling();
+                Patrolling();
                 break;
             case 1:
                 Debug.LogWarning("Alert");
@@ -248,7 +248,7 @@ public class Patrol : MonoBehaviour
     }
     int agentStateIndex(int index)
     {
-        if (index < 1)// =0.2 secs
+        if (index < 2)// =0.4 secs
         {
             return 0;
         }
