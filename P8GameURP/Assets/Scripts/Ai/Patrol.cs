@@ -103,6 +103,8 @@ public class Patrol : MonoBehaviour
         // then it returns as false
         return false;
     }
+
+    bool lookingAtPlayer = false;
     int IncreaseCurrentState(int counter, float timeInSec, int value, bool playerInRange)
     {
 
@@ -119,7 +121,7 @@ public class Patrol : MonoBehaviour
     {
         if (counter % Mathf.Round(timeInSec / Time.fixedDeltaTime) == 0 && playerInRange == false)
         {
-            value -= 5;
+            value -= 1;
             Debug.Log("decreasing currentState by: " + currentState);
         }
         //currentState = IntRange(currentState, 0, 100); // Does this need to be here?
@@ -146,8 +148,8 @@ public class Patrol : MonoBehaviour
     {
         // Added these lines to automatically add components in the inspector when the script is activated
         player = GameObject.Find("Player").transform;
-        rb = this.GetComponent<Rigidbody>();
-        agent = this.GetComponent<NavMeshAgent>();
+        rb = GetComponent<Rigidbody>();
+        agent = GetComponent<NavMeshAgent>();
 
         // Checks if the NavMesh has been added to the agent/enemy
         if (agent == null)
@@ -181,19 +183,21 @@ public class Patrol : MonoBehaviour
 
         currentState = IntRange(currentState, 0, 100);
         Debug.LogWarning(currentState);
+        
         FixedCounter++;
 
-        if (playerInRange)
+        if(playerInRange)
         {
             transform.LookAt(player, Vector3.left);
         }
+
 
         switch (agentStateIndex(currentState))
         {
 
             case 0:
                 // Debug.LogWarning("Patrol");
-                Patrolling();
+             //   Patrolling();
                 break;
             case 1:
                 Debug.LogWarning("Alert");
