@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 2138677392}
-  m_IndirectSpecularColor: {r: 0.28502724, g: 0.37139392, b: 0.4960137, a: 1}
+  m_IndirectSpecularColor: {r: 0.28502703, g: 0.3713938, b: 0.49601156, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4413,6 +4413,7 @@ MonoBehaviour:
   patrolPoints:
   - {fileID: 1342807454}
   - {fileID: 390450809}
+  pp: []
   player: {fileID: 196379060}
   movementSpeed: 5
   detectionRange: 5
@@ -7826,7 +7827,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 06227f848c0032b4da01d3c90ff2c59f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.017
+      value: 0.166
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 06227f848c0032b4da01d3c90ff2c59f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -37278,6 +37279,36 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &934370520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 934370518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ac91f2c430a9b049938f1cbedb7fba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 628842806}
+--- !u!114 &934370521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 934370518}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d400a2ecfc4fd4f42a825753cffb3a93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 628842808}
+  speed: 5
+  jumpSpeed: 0.5
+  downDis: 0.2
+  BodyCollider: {fileID: 1562165974}
 --- !u!4 &935142297 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 842640914494621488, guid: 06227f848c0032b4da01d3c90ff2c59f, type: 3}
@@ -44942,6 +44973,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 7f1bff5c353ff4943904974765b5eedc, type: 3}
       propertyPath: m_Name
       value: Human_Model
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 7f1bff5c353ff4943904974765b5eedc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7f1bff5c353ff4943904974765b5eedc, type: 3}

@@ -45,10 +45,13 @@ public class basicmovement : MonoBehaviour
         jump = Input.GetAxis("Jump");
        
         rb.MovePosition(rb.position + (transform.forward * vertical) * Time.fixedDeltaTime);
-        rb.MovePosition(rb.position + (transform.right * horizontal) * Time.fixedDeltaTime);
-
+       // rb.MovePosition(rb.position + (transform.right * horizontal) * Time.fixedDeltaTime);
+        rb.MovePosition(transform.position + (transform.forward * vertical) * Time.deltaTime);
+        /*Debug.Log("velocity x = "+rb.velocity.x);
+        Debug.Log("velocity y = "+rb.velocity.y);
+        Debug.Log("velocity z = "+rb.velocity.z);*/
         // jump if player is on a collider
-       
+
         if (jump > 0 && onSurface())
         {
             rb.AddForce(Vector3.up * jumpSpeed, ForceMode.Impulse);
