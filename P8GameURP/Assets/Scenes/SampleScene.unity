@@ -36241,6 +36241,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 628842806}
+  runnerbody: {fileID: 1562165974}
+  walkbody: {fileID: 2065339391}
 --- !u!114 &934370521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59992,7 +59994,7 @@ GameObject:
   - component: {fileID: 1562165973}
   - component: {fileID: 1562165974}
   m_Layer: 0
-  m_Name: Body
+  m_Name: BodyRunning
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -79536,7 +79538,7 @@ GameObject:
   - component: {fileID: 2065339390}
   - component: {fileID: 2065339391}
   m_Layer: 0
-  m_Name: Body2_for_running
+  m_Name: BodyWalking
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

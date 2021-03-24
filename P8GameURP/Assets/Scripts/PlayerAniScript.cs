@@ -43,6 +43,7 @@ public class PlayerAniScript : MonoBehaviour
     private int CrouchCounter = 0;
     private int FixedCounter = 0;
     private int JumpCounter = 0;
+    private int CrouchStartCounter = 0;
     // Start is called before the first frame update
     void Awake()
     {
@@ -56,6 +57,8 @@ public class PlayerAniScript : MonoBehaviour
 
     void FixedUpdate()
     {
+        ani.SetFloat("Vertical", Input.GetAxis("Vertical"));
+        ani.SetFloat("Horizontal", Input.GetAxis("Vertical"));
         FixedCounter++;
         onGround = bm.onSurface();
         criticalAniDone = currentstate == idleCrouch || currentstate == defaultIdle || currentstate == walk || currentstate == walkCrouch || currentstate == run;
@@ -154,7 +157,7 @@ public class PlayerAniScript : MonoBehaviour
     {
 
         // non-crouch ani
-        if (walking && !running && !jumping && !crouch && !crouching && !crouching)
+        if (walking && !running && !jumping && !crouch && !crouching)
         {
             IsWalking = true;
             timedelay = 0.1f;
@@ -186,7 +189,7 @@ public class PlayerAniScript : MonoBehaviour
 
             //Crounch animation
         }
-        else if (crouching)
+        else if (crouching && !crouch)
         {
 
             CrouchCounter++;
