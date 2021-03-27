@@ -13,8 +13,9 @@ public class basicFPSCameraScript : MonoBehaviour
 	private float xAxisClamp = 0.0f;
 	private Vector3 myPos;
 	private Vector3 PlayerPos;
+	private Vector3 playermodelPos;
 	private Vector3 differencePos;
-
+	public Rigidbody playermodelRb;
 	void Awake()
 	{
 		Debug.LogWarning("Unlock cursor press q ");
@@ -25,6 +26,7 @@ public class basicFPSCameraScript : MonoBehaviour
 		//rb.GetComponent<Rigidbody>().rotation = Quaternion.identity;
 		myPos = GetComponent<Transform>().position;
 		PlayerPos = rb.GetComponent<Transform>().position;
+		playermodelPos = playermodelRb.GetComponent<Transform>().position;
 		differencePos = PlayerPos - myPos;
 	}
 	void unlockMouse()
@@ -57,6 +59,7 @@ public class basicFPSCameraScript : MonoBehaviour
 
 		Vector3 targetRotationCamra = transform.rotation.eulerAngles;
 		Vector3 targetRotationBody = rb.rotation.eulerAngles;
+		//Vector3 targetRotationPrefab = playermodelRb.rotation.eulerAngles;
 
 		targetRotationCamra.x -= rotAmountY;//invert the input = -=
 		targetRotationBody.y += rotAmountX; //rotates the body
@@ -81,6 +84,8 @@ public class basicFPSCameraScript : MonoBehaviour
 		//deltaRotation = Quaternion.Euler(targetRotationBody * Time.deltaTime);
 		//playerRB.rotation = Quaternion.Euler(targetRotationBody);
 		rb.MoveRotation(Quaternion.Euler(targetRotationBody));
+		targetRotationBody.y = targetRotationBody.y + 53.59f;
+		playermodelRb.MoveRotation(Quaternion.Euler(targetRotationBody));
 
 
 	}

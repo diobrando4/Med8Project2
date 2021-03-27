@@ -7,6 +7,7 @@ public class PlayerAniScript : MonoBehaviour
     Animator ani;
     basicmovement bm;
     [SerializeField] private GameObject player;
+    [SerializeField] private GameObject playerlead;
 
     // needs to be shared to player movement script
     public CapsuleCollider runnerbody;
@@ -57,6 +58,7 @@ public class PlayerAniScript : MonoBehaviour
 
     void FixedUpdate()
     {
+        transform.position = playerlead.transform.position;
         ani.SetFloat("Vertical", Input.GetAxis("Vertical"));
         ani.SetFloat("Horizontal", Input.GetAxis("Vertical"));
         FixedCounter++;

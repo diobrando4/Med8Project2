@@ -44,8 +44,8 @@ public class basicmovement : MonoBehaviour
         horizontal = Input.GetAxis("Horizontal") * runSpeed();
         jump = Input.GetAxis("Jump");
        
-        rb.MovePosition(rb.position + (transform.forward * vertical) * Time.fixedDeltaTime);
-        rb.MovePosition(rb.position + (transform.right * horizontal) * Time.fixedDeltaTime);
+        rb.MovePosition(rb.position + (transform.right * vertical) * Time.fixedDeltaTime);
+        rb.MovePosition(rb.position + (transform.forward * horizontal) * Time.fixedDeltaTime *-1);
         //rb.MovePosition(transform.position + (transform.forward * vertical) * Time.deltaTime);
         /*Debug.Log("velocity x = "+rb.velocity.x);
         Debug.Log("velocity y = "+rb.velocity.y);
