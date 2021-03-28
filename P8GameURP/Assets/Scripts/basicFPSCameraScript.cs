@@ -16,6 +16,8 @@ public class basicFPSCameraScript : MonoBehaviour
 	private Vector3 playermodelPos;
 	private Vector3 differencePos;
 	public Rigidbody playermodelRb;
+	public CapsuleCollider cap;
+
 	void Awake()
 	{
 		Debug.LogWarning("Unlock cursor press q ");
@@ -28,7 +30,7 @@ public class basicFPSCameraScript : MonoBehaviour
 		PlayerPos = rb.GetComponent<Transform>().position;
 		playermodelPos = playermodelRb.GetComponent<Transform>().position;
 		differencePos = PlayerPos - myPos;
-	}
+	}	
 	void unlockMouse()
 	{
 		if (Input.GetKeyDown("q"))
@@ -67,25 +69,26 @@ public class basicFPSCameraScript : MonoBehaviour
 
 		//locks the camra rotation's  x coordinat between -90 and 90 degrees 
 		// look at the 3D camera degress
-		if (xAxisClamp > 90)
+		if (xAxisClamp > 25)
 		{
-			xAxisClamp = 90;
-			targetRotationCamra.x = 90;
+			xAxisClamp = 25;
+			targetRotationCamra.x = 25;
 
 		}
-		else if (xAxisClamp < -90)
+		else if (xAxisClamp < 20)
 		{
 
-			xAxisClamp = -90;
-			targetRotationCamra.x = 270;
+			xAxisClamp = 20;
+			targetRotationCamra.x = 20;
 		}
-
+		//Debug.Log(xAxisClamp);
 		transform.rotation = Quaternion.Euler(targetRotationCamra);
 		//deltaRotation = Quaternion.Euler(targetRotationBody * Time.deltaTime);
 		//playerRB.rotation = Quaternion.Euler(targetRotationBody);
+		
 		rb.MoveRotation(Quaternion.Euler(targetRotationBody));
-		targetRotationBody.y = targetRotationBody.y + 53.59f;
-		playermodelRb.MoveRotation(Quaternion.Euler(targetRotationBody));
+		//targetRotationBody.y = targetRotationBody.y;
+		playermodelRb.MoveRotation(Quaternion.Euler(targetRotationCamra));
 
 
 	}

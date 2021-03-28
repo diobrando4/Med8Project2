@@ -26,7 +26,7 @@ public class PlayerAniScript : MonoBehaviour
     string walkCrouch = "Crouch_Walk";
     string currentstate;
 
-    private bool crouch = false;
+    public bool crouch = false;
     private bool onGround = false;
     private bool running = false;
     private bool jumping = false;
@@ -133,12 +133,12 @@ public class PlayerAniScript : MonoBehaviour
         if (FixedCounter % Mathf.Round(timedelay / Time.fixedDeltaTime) == 0 && Input.anyKey && criticalAniDone)
         {
 
-            currentstate = animationState();
+            animationState();
             FixedCounter = 0;
 
         }
         //Following if else if, is to prevent jump/cruch animaion locks.
-        if (!Input.anyKey && crouch && criticalAniDone)
+        if (!Input.anyKey && crouch && criticalAniDone && onGround)
         {
 
             timedelay = 0.1f;
@@ -146,7 +146,7 @@ public class PlayerAniScript : MonoBehaviour
             FixedCounter = 0;
 
         }
-        else if (!Input.anyKey && !crouch && criticalAniDone)
+        else if (!Input.anyKey && !crouch && criticalAniDone&& onGround)
         {
 
             timedelay = 0.1f;
@@ -155,18 +155,21 @@ public class PlayerAniScript : MonoBehaviour
         }
     }
 
-    string animationState()
+    void animationState()
     {
 
-        // non-crouch ani
-        if (walking && !running && !jumping && !crouch && !crouching)
+       /* if (crouching && crouch){
+            CrouchCounter++;
+        }*/
+            // non-crouch ani
+            if (walking && !running && !jumping && !crouch && !crouching && onGround)
         {
             IsWalking = true;
             timedelay = 0.1f;
-            return walk;
+            currentstate= walk;
 
         }
-        else if (walking && running && !jumping && !crouching)
+        else if (walking && running && !jumping && !crouching && onGround)
         {
             IsWalking = false;
             if (crouch)
@@ -174,47 +177,50 @@ public class PlayerAniScript : MonoBehaviour
                 CrouchCounter++;
             }
             timedelay = 0.1f;
-            return run;
+            currentstate = run;
 
         }
-        else if (onGround && jumping && !crouching)
+        else if ( jumping)
         {
             IsWalking = false;
+            
             if (crouch)
             {
                 CrouchCounter++;
+               
             }
             // this might end up be redundant
             JumpCounter++;
-            timedelay = 0.4f;
-            return jump;
+            timedelay = 0.2f;
+            currentstate = jump;
 
             //Crounch animation
         }
-        else if (crouching && !crouch)
+        else if (crouching && !crouch && onGround)
         {
 
             CrouchCounter++;
             timedelay = 0.3f;
-            return startCrouch;
+            currentstate = startCrouch;
 
         }
-        else if (crouch && !walking && !running && !jumping)
+        else if (crouch && !walking && !running && !jumping && onGround )
         {
-            timedelay = 0.1f;
-            return idleCrouch;
+            timedelay = 0.2f;
+            currentstate = idleCrouch;
 
         }
-        else if (crouch && walking && !running && !jumping)
+        else if (crouch && walking && !running && !jumping && onGround)
         {
             timedelay = 0.1f;
-            return walkCrouch;
+            currentstate = walkCrouch;
         }
-        else
+       /* else
         {
             timedelay = 0.1f;
             IsWalking = false;
             return defaultIdle;
-        }
+        }*/
+
     }
 }
