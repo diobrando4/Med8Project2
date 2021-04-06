@@ -70,7 +70,7 @@ public class Patrol : MonoBehaviour
         int count = Physics.OverlapSphereNonAlloc(checkingObject.position, maxRadius, overlaps);
 
         // Basically this is used to see if the player is within the agent's FoV
-        for (int i = 0; i < count + 1; i++)
+        for (int i = 0; i < count; i++)
         {
             if (overlaps[i] != null)
             {
@@ -147,7 +147,8 @@ public class Patrol : MonoBehaviour
     void Awake()
     {
         // Added these lines to automatically add components in the inspector when the script is activated
-        player = GameObject.Find("Player").transform;
+       // player = GameObject.Find("Player").transform;
+       
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
 

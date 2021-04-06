@@ -12,6 +12,7 @@ public class PlayerAniScript : MonoBehaviour
     // needs to be shared to player movement script
     public CapsuleCollider runnerbody;
     public SphereCollider walkbody;
+    public float offsetY;
     //private Collider CurrentCollider;
 
     private AnimatorStateInfo animationInfo;
@@ -40,7 +41,7 @@ public class PlayerAniScript : MonoBehaviour
     private float AnimationTimeLength = 0;
     private const float JumpTime = 0.717f;
     private const float startCrouchTime = 0.264f;
-
+    Vector3 newPos;
     private int CrouchCounter = 0;
     private int FixedCounter = 0;
     private int JumpCounter = 0;
@@ -58,7 +59,9 @@ public class PlayerAniScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        transform.position = playerlead.transform.position;
+        newPos = playerlead.transform.position;
+        newPos.y = newPos.y - offsetY;
+        transform.position = newPos;
         ani.SetFloat("Vertical", Input.GetAxis("Vertical"));
         ani.SetFloat("Horizontal", Input.GetAxis("Vertical"));
         FixedCounter++;

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 public class basicmovement : MonoBehaviour
 {
     public PlayerAniScript pas;
@@ -11,6 +11,7 @@ public class basicmovement : MonoBehaviour
     [Tooltip("start Speed is the start value, max speed is x2 of the start speed, crouch speed is start speed/2")]
     [Range(0.5f, 5)] public float speed = 5;
 
+    [HideInInspector] public RaycastHit hit;
 
     private Vector3 playerPos;
     private Vector3 downDirection;
@@ -25,7 +26,7 @@ public class basicmovement : MonoBehaviour
     
     private bool crouching;
     private float crouchSpeed = 1f;
-
+    private Vector3 raypos;
    
     // Start is called before the first frame update
     void Start()
@@ -44,6 +45,8 @@ public class basicmovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        raypos = BodyCollider.transform.position;
+        raypos.y = raypos.y + 0.3f;// 927692
         crouching = pas.crouch;
         playerPos = rb.position;
         move();
@@ -57,15 +60,26 @@ public class basicmovement : MonoBehaviour
         
         horizontal = Input.GetAxis("Horizontal") * runSpeed();
         jump = Input.GetAxis("Jump");
-       
-       // rb.velocity = (transform.right * vertical + transform.forward * horizontal) * runSpeed();
-        //rb.velocity = (transform.forward * horizontal + transform.right * vertical) ;
-         rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed()*Time.fixedDeltaTime);
-         rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1* Time.fixedDeltaTime);
-        //rb.MovePosition(transform.position + (transform.forward * vertical) * Time.deltaTime);
-        /*Debug.Log("velocity x = "+rb.velocity.x);
-        Debug.Log("velocity y = "+rb.velocity.y);
-        Debug.Log("velocity z = "+rb.velocity.z);*/
+        if (!rayHitStop()) {
+            if (!rayHit()) {
+                // rb.velocity = (transform.right * vertical + transform.forward * horizontal) * runSpeed();
+                //rb.velocity = (transform.forward * horizontal + transform.right * vertical) ;
+                rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime);
+                rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1 * Time.fixedDeltaTime);
+                //rb.MovePosition(transform.position + (transform.forward * vertical) * Time.deltaTime);
+                /*Debug.Log("velocity x = "+rb.velocity.x);
+                Debug.Log("velocity y = "+rb.velocity.y);
+                Debug.Log("velocity z = "+rb.velocity.z);*/
+            } else if (rayHit() && Input.GetAxis("Vertical") < 0)
+            {
+                rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime);
+
+            }else{
+                speed--;
+            }
+            
+        }
+        else { rb.velocity = Vector3.zero; Debug.LogWarning(hit.collider.name); speed--; }
         // jump if player is on a collider
         if (jump > 0 && onSurface())
         {
@@ -74,12 +88,43 @@ public class basicmovement : MonoBehaviour
         }
 
 
+
     }
-   
+    public bool rayHit()
+    {
+        Debug.DrawRay(raypos, Camera.main.transform.forward);
+        try
+        {
+            return Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.4f);
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
+    public bool rayHitStop()
+    {
+        Debug.DrawRay(raypos, Camera.main.transform.forward);
+        try
+        {
+            return Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.1f);
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
+
     public bool onSurface()
     {
         //                      origin point,   direction   maxDis
         return Physics.Raycast(playerPos, downDirection, downDisRange);
+
+    }
+    public bool objectInfront()
+    {
+        //                      origin point,   direction   maxDis
+        return Physics.Raycast(playerPos, Vector3.forward, 0.1f);
 
     }
     private float runSpeed(){

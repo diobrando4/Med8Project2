@@ -66,7 +66,7 @@ public class basicFPSCameraScript : MonoBehaviour
 		targetRotationCamra.x -= rotAmountY;//invert the input = -=
 		targetRotationBody.y += rotAmountX; //rotates the body
 		targetRotationCamra.z = 0; // no cam flip
-
+		targetRotationCamra.z = 0;
 		//locks the camra rotation's  x coordinat between -90 and 90 degrees 
 		// look at the 3D camera degress
 		if (xAxisClamp > 25)
@@ -88,6 +88,7 @@ public class basicFPSCameraScript : MonoBehaviour
 		
 		rb.MoveRotation(Quaternion.Euler(targetRotationBody));
 		//targetRotationBody.y = targetRotationBody.y;
+		targetRotationCamra.x = -5;
 		playermodelRb.MoveRotation(Quaternion.Euler(targetRotationCamra));
 
 
