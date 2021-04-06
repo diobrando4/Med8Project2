@@ -119,7 +119,7 @@ public class basicmovement : MonoBehaviour
             
             grabbedObject = hit.collider.gameObject.GetComponent<Rigidbody>();
 
-            if (grabbedObject.mass < rb.mass+1000) {
+            if (grabbedObject.mass < rb.mass+110f) {
                 
                 hit.collider.gameObject.layer = 2;
                 grabDirection = transform.position - grabbedObject.transform.position;
@@ -162,6 +162,7 @@ public class basicmovement : MonoBehaviour
 
         if (grabbedObject!=null && !Input.GetKey(KeyCode.E))
         {
+            grabbedObject.useGravity = true;
             grabbedObject.transform.parent = null;
             grabbing = false;
             grabbedObject.gameObject.layer = 0;
