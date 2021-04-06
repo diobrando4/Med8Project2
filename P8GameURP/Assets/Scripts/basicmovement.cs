@@ -5,16 +5,24 @@ using System;
 public class basicmovement : MonoBehaviour
 {
     public PlayerAniScript pas;
-    [SerializeField] private Rigidbody rb;
+    private Rigidbody rb;
+    [SerializeField] private GameObject GrabPos;
+
     [Range(0.2f, 5)] public float jumpSpeed = 0.5f;
     [Header("Speed")]
     [Tooltip("start Speed is the start value, max speed is x2 of the start speed, crouch speed is start speed/2")]
     [Range(0.5f, 5)] public float speed = 5;
 
     [HideInInspector] public RaycastHit hit;
+    [HideInInspector] public Rigidbody grabbedObject;
+
+    private CapsuleCollider BodyCollider;
 
     private Vector3 playerPos;
     private Vector3 downDirection;
+    private Vector3 grabDirection;
+    private Vector3 raypos;
+
     private float downDisRange;
     private float downDis = 0.1f;
     private float jump = 0;
@@ -22,16 +30,23 @@ public class basicmovement : MonoBehaviour
     private float horizontal=0;
     private float startSpeed = 5;
     private float maxSpeed = 10;
-    private CapsuleCollider BodyCollider;
-    
-    private bool crouching;
     private float crouchSpeed = 1f;
-    private Vector3 raypos;
-   
+    private float grabY;
+    private float startWeight;
+    private float weight;
+
+    private bool forward;
+    private bool backward;
+    private bool crouching;
+    public bool grabbing;
+    
+    
+    
+    
     // Start is called before the first frame update
     void Start()
     {
-        rb = rb.GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
         
         downDirection = Vector3.down;
         startSpeed = speed;
@@ -40,16 +55,22 @@ public class basicmovement : MonoBehaviour
         downDisRange = BodyCollider.GetComponent<Collider>().GetComponent<Collider>().bounds.extents.y + downDis;
         Debug.LogError(downDisRange);
         crouchSpeed = startSpeed / 2;
+        startWeight = rb.mass;
+        weight = startWeight;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        forward = Input.GetAxis("Vertical") > 0;
+        backward = Input.GetAxis("Vertical") < 0;
+
         raypos = BodyCollider.transform.position;
         raypos.y = raypos.y + 0.3f;// 927692
         crouching = pas.crouch;
         playerPos = rb.position;
         move();
+        grab();
     }
     
     void move()
@@ -70,7 +91,7 @@ public class basicmovement : MonoBehaviour
                 /*Debug.Log("velocity x = "+rb.velocity.x);
                 Debug.Log("velocity y = "+rb.velocity.y);
                 Debug.Log("velocity z = "+rb.velocity.z);*/
-            } else if (rayHit() && Input.GetAxis("Vertical") < 0)
+            } else if (rayHit() && backward)
             {
                 rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime);
 
@@ -90,6 +111,74 @@ public class basicmovement : MonoBehaviour
 
 
     }
+    void grab(){
+        if (rayHit() && Input.GetKey(KeyCode.E) && hit.collider.attachedRigidbody)
+        {
+            
+            
+            
+            grabbedObject = hit.collider.gameObject.GetComponent<Rigidbody>();
+
+            if (grabbedObject.mass < rb.mass+1000) {
+                
+                hit.collider.gameObject.layer = 2;
+                grabDirection = transform.position - grabbedObject.transform.position;
+                if (onSurface()) {
+                    grabY = rb.position.y;
+                }
+                rb.position = new Vector3(rb.position.x, grabY, rb.position.z);
+                Debug.LogWarning("Grabbing");
+                grabbing = true;
+
+                
+                //  grabbedObject.position= transform.position- grabDirection ;
+                /*weight = grabbedObject.mass;
+                rb.mass = weight;*/
+                // grabbedObject.transform.SetParent(rb.transform);
+                /*if (forward) {
+                    grabbedObject.AddRelativeForce(grabDirection * (runSpeed()/weight));
+                    //grabbedObject.AddForce(Vector3.forward * grabForce(grabbedObject.mass,0.2f));
+                }else if(backward){
+                    grabbedObject.AddForce(grabDirection * speed*-1);
+                }*/
+            }
+        }
+
+        if (vertical != 0  && grabbing || horizontal != 0 && grabbing)
+        {
+
+            grabbedObject.velocity = rb.velocity*-1;
+            
+            grabbedObject.useGravity = true;
+
+        }
+        else if ( grabbing)
+        {
+
+            grabbedObject.useGravity = false;
+            grabbedObject.transform.position = GrabPos.transform.position;
+            Debug.Log("grabbedObject" + grabbedObject.transform.position + " goal position " + GrabPos.transform.position);
+        }
+
+        if (grabbedObject!=null && !Input.GetKey(KeyCode.E))
+        {
+            grabbedObject.transform.parent = null;
+            grabbing = false;
+            grabbedObject.gameObject.layer = 0;
+            Debug.LogWarning("Dropped the object");
+            grabbedObject = null;
+            rb.mass = startWeight;
+        }
+
+
+    }
+    float grabForce(float mass, float accelation){
+        float a = 1 / mass;
+        float force= mass * a;
+
+        return force;
+    }
+
     public bool rayHit()
     {
         Debug.DrawRay(raypos, Camera.main.transform.forward);

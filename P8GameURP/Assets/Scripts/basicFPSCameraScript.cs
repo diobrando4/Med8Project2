@@ -18,6 +18,7 @@ public class basicFPSCameraScript : MonoBehaviour
 	public Rigidbody playermodelRb;
 	public CapsuleCollider cap;
 
+	private basicmovement bm;
 	void Awake()
 	{
 		Debug.LogWarning("Unlock cursor press q ");
@@ -26,6 +27,7 @@ public class basicFPSCameraScript : MonoBehaviour
 	void Start()
 	{
 		//rb.GetComponent<Rigidbody>().rotation = Quaternion.identity;
+		bm = GetComponentInParent<basicmovement>();
 		myPos = GetComponent<Transform>().position;
 		PlayerPos = rb.GetComponent<Transform>().position;
 		playermodelPos = playermodelRb.GetComponent<Transform>().position;
@@ -90,6 +92,10 @@ public class basicFPSCameraScript : MonoBehaviour
 		//targetRotationBody.y = targetRotationBody.y;
 		targetRotationCamra.x = -5;
 		playermodelRb.MoveRotation(Quaternion.Euler(targetRotationCamra));
+		if(bm.grabbing){
+			
+			bm.grabbedObject.MoveRotation(Quaternion.Euler(targetRotationCamra));
+        }
 
 
 	}
