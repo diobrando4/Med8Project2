@@ -258,8 +258,8 @@ GameObject:
   - component: {fileID: 3390664}
   - component: {fileID: 2393662}
   - component: {fileID: 1138014423}
-  - component: {fileID: 6799444290545471571}
   - component: {fileID: 6088194601542353490}
+  - component: {fileID: 7925629124620385462}
   m_Layer: 0
   m_Name: Policecar
   m_TagString: Untagged
@@ -354,19 +354,6 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
---- !u!65 &6799444290545471571
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 134962}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.048301496, y: 0.014184672, z: 0.019492172}
-  m_Center: {x: 0.0026986534, y: 0, z: 9.313226e-10}
 --- !u!208 &6088194601542353490
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -383,6 +370,20 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0.003, y: 0.001, z: 0}
   m_TimeToStationary: 0.5
+--- !u!64 &7925629124620385462
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 134962}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 72127dfd2b4ece84fafa67f6eee23e99, type: 3}
 --- !u!1 &193266
 GameObject:
   m_ObjectHideFlags: 0

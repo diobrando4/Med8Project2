@@ -176,8 +176,8 @@ GameObject:
   - component: {fileID: 3348814}
   - component: {fileID: 2305816}
   - component: {fileID: 319182508}
-  - component: {fileID: 2198773803220627552}
   - component: {fileID: 1273239456643208192}
+  - component: {fileID: 7555235843277422059}
   m_Layer: 0
   m_Name: Car_4_Blue
   m_TagString: Untagged
@@ -272,19 +272,6 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
---- !u!65 &2198773803220627552
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 140570}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.047246356, y: 0.025, z: 0.022067524}
-  m_Center: {x: -0.0003447458, y: -0.003, z: 4.7593457e-10}
 --- !u!208 &1273239456643208192
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -301,6 +288,20 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
+--- !u!64 &7555235843277422059
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 140570}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 80492071631ffe442bdaacf7b2e4a9f3, type: 3}
 --- !u!1 &168118
 GameObject:
   m_ObjectHideFlags: 0

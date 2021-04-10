@@ -257,6 +257,7 @@ GameObject:
   - component: {fileID: 486056}
   - component: {fileID: 3389686}
   - component: {fileID: 2354994}
+  - component: {fileID: 8738783324200746957}
   m_Layer: 0
   m_Name: Truck 2 Cargo
   m_TagString: Untagged
@@ -327,6 +328,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &8738783324200746957
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138210}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300002, guid: 6849eddb80543a54ba22924bebe6d4ed, type: 3}
 --- !u!1 &142108
 GameObject:
   m_ObjectHideFlags: 0
@@ -584,8 +599,8 @@ GameObject:
   - component: {fileID: 456038}
   - component: {fileID: 3374458}
   - component: {fileID: 2378322}
-  - component: {fileID: 6529377127759740405}
   - component: {fileID: 6934911420003180842}
+  - component: {fileID: 4661912107924995682}
   m_Layer: 0
   m_Name: Truck_2_Blue
   m_TagString: Untagged
@@ -667,19 +682,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &6529377127759740405
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 157538}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.0803933, y: 0.030644886, z: 0.02936099}
-  m_Center: {x: 0.0026171114, y: -0.00023394497, z: 1.8595272e-17}
 --- !u!208 &6934911420003180842
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -696,6 +698,20 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0.003, y: 0, z: 0}
   m_TimeToStationary: 0.5
+--- !u!64 &4661912107924995682
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 157538}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 6849eddb80543a54ba22924bebe6d4ed, type: 3}
 --- !u!1 &165590
 GameObject:
   m_ObjectHideFlags: 0
