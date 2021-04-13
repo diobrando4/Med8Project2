@@ -82,6 +82,7 @@ public class PlayerAniScript : MonoBehaviour
                     currentstate = defaultIdle;
                     AnimationTimeLength = 0;
                     JumpCounter = 0;
+                    bm.playJumpAnimation = false;
 
                 }
                 else if (AnimationTimeLength >= startCrouchTime && currentstate == startCrouch)
@@ -102,6 +103,7 @@ public class PlayerAniScript : MonoBehaviour
             {
                 currentstate = defaultIdle;
                 JumpCounter = 0;
+                bm.playJumpAnimation = false;
 
             }
             else if (currentstate == startCrouch)
@@ -183,7 +185,7 @@ public class PlayerAniScript : MonoBehaviour
             currentstate = run;
 
         }
-        else if ( jumping)
+        else if ( bm.playJumpAnimation)
         {
             IsWalking = false;
             

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 2138677392}
-  m_IndirectSpecularColor: {r: 0.28502724, g: 0.37139392, b: 0.4960137, a: 1}
+  m_IndirectSpecularColor: {r: 0.28502703, g: 0.3713938, b: 0.49601156, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -32747,8 +32747,12 @@ MonoBehaviour:
   GrabPos: {fileID: 0}
   jumpSpeed: 0.7
   speed: 3
+  jumpForceIncrements: 0.2
+  jumpIncrements: 0.1
   grabbedObject: {fileID: 0}
   grabbing: 0
+  playJumpAnimation: 0
+  maxIncrements: 0
 --- !u!1001 &791591694
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -48141,8 +48145,12 @@ MonoBehaviour:
   GrabPos: {fileID: 1172938268}
   jumpSpeed: 5
   speed: 1.5
+  jumpForceIncrements: 0.2
+  jumpIncrements: 0.1
   grabbedObject: {fileID: 0}
   grabbing: 0
+  playJumpAnimation: 0
+  maxIncrements: 10
 --- !u!4 &1163864300 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 441386, guid: ab5e0beb1c36778479983f28b65d97dd, type: 3}

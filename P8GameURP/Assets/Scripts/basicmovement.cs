@@ -13,6 +13,12 @@ public class basicmovement : MonoBehaviour
     [Tooltip("start Speed is the start value, max speed is x2 of the start speed, crouch speed is start speed/2")]
     [Range(0.5f, 5)] public float speed = 5;
 
+    [Header("added jump force to player")]
+    [Range(0.0f, 1.5f)] public float jumpForceIncrements = 0.2f;
+
+    [Header("Jump speed incremential time mili sec")]
+    [Range(0.0f, 1)] public float jumpIncrements = 0.1f;
+
     [HideInInspector] public RaycastHit hit;
     [HideInInspector] public Rigidbody grabbedObject;
 
@@ -34,12 +40,23 @@ public class basicmovement : MonoBehaviour
     private float grabY;
     private float startWeight;
     private float weight;
+    private float startJumpSpeed = 0f;
+
 
     private bool forward;
     private bool backward;
     private bool crouching;
-    public bool grabbing;
-    
+    [HideInInspector]public bool grabbing;
+    [HideInInspector]public bool playJumpAnimation;
+    private bool canJump=false;
+    private bool jumpIsMaxed;
+
+
+    [Header("max increments depended on jumpincrements see tooltip")]
+    [Tooltip("if jumpincrements is 0.1 and maxincrements max jump height will be achived after 1 sec")]
+    public int maxIncrements = 10;
+    private int increments=0;
+    private int counter;
     
     
     
@@ -57,11 +74,13 @@ public class basicmovement : MonoBehaviour
         crouchSpeed = startSpeed / 2;
         startWeight = rb.mass;
         weight = startWeight;
+        startJumpSpeed = jumpSpeed;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        counter++;
         forward = Input.GetAxis("Vertical") > 0;
         backward = Input.GetAxis("Vertical") < 0;
 
@@ -71,6 +90,7 @@ public class basicmovement : MonoBehaviour
         playerPos = rb.position;
         move();
         grab();
+        jumping(jumpIncrements); Debug.Log("canJump" + canJump);
     }
     
     void move()
@@ -102,15 +122,47 @@ public class basicmovement : MonoBehaviour
         }
         else { rb.velocity = Vector3.zero; Debug.LogWarning(hit.collider.name); speed--; }
         // jump if player is on a collider
-        if (jump > 0 && onSurface())
-        {
-            
-            rb.velocity = new Vector3(0, jumpSpeed, 0);
-        }
+        
 
 
 
     }
+
+    void jumping(float increaseForcePrMiliSec){
+
+        
+        if (jump > 0 && onSurface())
+        {
+            canJump=true;
+           
+        }
+
+        if(canJump){
+            
+            if (counter % Mathf.Round(increaseForcePrMiliSec / Time.fixedDeltaTime) == 0 && jump > 0 && canJump && increments <= maxIncrements)
+            {
+
+                jumpSpeed += jumpForceIncrements;
+                increments++;
+                
+            }
+        }
+        if (jump==0 && canJump){
+            playJumpAnimation = true;
+            rb.velocity = new Vector3(0, jumpSpeed, 0);
+            jumpSpeed = startJumpSpeed;
+            maxIncrements = 0;
+            canJump = false;
+            counter = 0;
+        }
+        
+
+
+
+    }
+
+
+
     void grab(){
         if (rayHit() && Input.GetKey(KeyCode.E) && hit.collider.attachedRigidbody)
         {
