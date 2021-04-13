@@ -249,7 +249,7 @@ public class basicmovement : MonoBehaviour
         Debug.DrawRay(raypos, Camera.main.transform.forward);
         try
         {
-            return Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.1f);
+            return Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.1f) ;
         }
         catch (Exception e)
         {
@@ -266,7 +266,7 @@ public class basicmovement : MonoBehaviour
     public bool objectInfront()
     {
         //                      origin point,   direction   maxDis
-        return Physics.Raycast(playerPos, Vector3.forward, 0.1f);
+        return Physics.Raycast(playerPos, Vector3.forward, 0.1f) ;
 
     }
     private float runSpeed(){

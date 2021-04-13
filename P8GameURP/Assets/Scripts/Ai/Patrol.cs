@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI; // We need this for the NavMesh
-
+using UnityEngine.SceneManagement;
+using System;
 public class Patrol : MonoBehaviour
 {
     #region Variables
@@ -10,7 +11,6 @@ public class Patrol : MonoBehaviour
     [Header("Patrol stuff...")]
     [Tooltip("Array indicating patrol route. Gameobject is the target destination")]
     public Transform[] patrolPoints;
-    public List<Waypoint> pp;
     // Refer to the array index of patrolPoints
     private int currentPoint = 0;
 
@@ -19,20 +19,21 @@ public class Patrol : MonoBehaviour
     public Transform playerAni;
     private Rigidbody rb;
     private NavMeshAgent agent;
-    public float movementSpeed;
-    public float detectionRange;
-
+    public Transform raypos;
     [Header("FoV stuff...")]
     [Range(0, 180)] public float maxAngle;
     public float maxRadius;
     private bool playerInRange = false;
-
+    public float patroleSpeed = 1.5f;
+    public float AlertSpeed = 1.5f;
+    public float InvestigateSpeed = 1.5f;
+    public float ChaseSpeed = 2.2f;
     // For counting down between changing states
     private int currentState = 0;
 
-    // I'm experimenting here
-    private string behaviour;
-    
+    // Used for agent investigation
+    private Transform lastPlayerLocation;
+    RaycastHit hit;
     private PlayerAniScript pas;
     bool stealth = false;
     #endregion
@@ -59,13 +60,26 @@ public class Patrol : MonoBehaviour
         {
             Gizmos.color = Color.green;
         }
-        //Gizmos.DrawLine(transform.position, player.position);
-        Gizmos.DrawRay(transform.position, (player.position - transform.position).normalized * maxRadius);
+        // Draws line to the player, but line goes outsite FoV
+        Gizmos.DrawLine(transform.position, player.position);
+        // Draws line to the player, but line stays within FoV
+        //Gizmos.DrawRay(transform.position, (player.position - transform.position).normalized * maxRadius);
 
         Gizmos.color = Color.black;
         Gizmos.DrawRay(transform.position, transform.forward * maxRadius);
     }
-
+    public bool rayHit(Vector3 pos, Vector3 dir)
+    {
+        Debug.DrawRay(pos, dir);
+        try
+        {
+            return Physics.Raycast(pos, dir, out hit, 0.4f);
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
     // Agent's Field of View (FoV)
     bool inFov(Transform checkingObject, Transform target, float maxAngle, float maxRadius)
     {
@@ -73,13 +87,12 @@ public class Patrol : MonoBehaviour
         int count = Physics.OverlapSphereNonAlloc(checkingObject.position, maxRadius, overlaps);
 
         // Basically this is used to see if the player is within the agent's FoV
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < count ; i++)
         {
             if (overlaps[i] != null)
             {
                 if (overlaps[i].transform == target)
                 {
-
                     Vector3 directionBetween = (target.position - checkingObject.position).normalized;
                     // Just to make sure the y direction is always 0, so that height is not a factor
                     directionBetween.y *= 0;
@@ -88,13 +101,27 @@ public class Patrol : MonoBehaviour
 
                     if (angle <= maxAngle)
                     {
-                        Ray ray = new Ray(checkingObject.position, target.position - checkingObject.position);
-                        RaycastHit hit;
+                        //
+                            Ray ray = new Ray(checkingObject.position, target.position - checkingObject.position);
+                        
 
-                        if (Physics.Raycast(ray, out hit, maxRadius))
+                        // Only updates as long as player is within FoV
+                        lastPlayerLocation = player;
+                        //Debug.Log("Last player location: " + lastPlayerLocation.transform.position);
+                       
+
+                       /* if (rayHit(checkingObject.position, target.position - checkingObject.position) && hit.collider.tag== target.tag) {
+
+                            Debug.LogError(hit.collider.name);
+                            return true;
+                        }*/
+
+                        if (Physics.Raycast(ray, out hit, maxRadius,7))
                         {
-                            if (hit.transform == target)
+                            Debug.LogWarning("hitting ? " + true + " name " + hit.collider.name);
+                            if (hit.collider.tag == target.tag)
                             {
+                                Debug.LogError(hit.collider.name);
                                 return true;
                             }
                         }
@@ -102,23 +129,24 @@ public class Patrol : MonoBehaviour
                 }
             }
         }
-        // If none of our checks are true (that the player isn't within agent's FoV) 
-        // then it returns as false
+        // If none of our checks are true; the player isn't within agent's FoV 
+        // and is returned as false
         return false;
     }
 
-    bool lookingAtPlayer = false;
+    //bool lookingAtPlayer = false; // What is this used for? I commented it out and no errors are given
     int IncreaseCurrentState(int counter, float timeInSec, int value, bool playerInRange)
     {
-
         if (counter % Mathf.Round(timeInSec / Time.fixedDeltaTime) == 0 && playerInRange == true && !stealth)
         {
             value += 1;
             // Debug.Log("reset currentStatev to: " + currentState);
-        }else if (counter % Mathf.Round((timeInSec*2) / Time.fixedDeltaTime) == 0 && playerInRange == true && stealth)
+            Debug.LogWarning("not stealth: " + currentState + " for every " + timeInSec + " sec" );
+        }
+        else if (counter % Mathf.Round(((timeInSec*2)) / Time.fixedDeltaTime) == 0 && playerInRange == true && stealth)
         {
             value += 1;
-            // Debug.Log("reset currentStatev to: " + currentState);
+             Debug.LogWarning("stealth: " + currentState + " for every " + (timeInSec * 2) + " sec");
         }
         // currentState = IntRange(currentState, 0, 100); // Does this need to be here?
         return value;
@@ -129,7 +157,7 @@ public class Patrol : MonoBehaviour
         if (counter % Mathf.Round(timeInSec / Time.fixedDeltaTime) == 0 && playerInRange == false)
         {
             value -= 1;
-            Debug.Log("decreasing currentState by: " + currentState);
+            //Debug.Log("decreasing currentState by: " + currentState);
         }
         //currentState = IntRange(currentState, 0, 100); // Does this need to be here?
         return value;
@@ -149,17 +177,16 @@ public class Patrol : MonoBehaviour
         return value;
     }
 
-
     // Awake is called before Start()
     void Awake()
     {
+       
         // Added these lines to automatically add components in the inspector when the script is activated
-        // player = GameObject.Find("Player").transform;
-        pas = playerAni.GetComponent<PlayerAniScript>();
-        stealth = pas.crouch;
+        player = GameObject.Find("player").transform;
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
-
+        pas = playerAni.GetComponent<PlayerAniScript>();
+        
         // Checks if the NavMesh has been added to the agent/enemy
         if (agent == null)
         {
@@ -170,63 +197,70 @@ public class Patrol : MonoBehaviour
         {
             Debug.LogError("The Rigidbody isn't attached to " + gameObject.name);
         }
-        // I would like to have an if-statement checking if the player tag was found, but how to do that? :D
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-        agent.speed = movementSpeed;
-
-    }
-
-    // Maybe using FixedUpdate is better?
-    // Update is called once per frame
     int FixedCounter = 0;
     void FixedUpdate()
     {
-        // is always false....
-        playerInRange = inFov(transform, player, maxAngle, maxRadius);
-       
-        currentState = playerInRange ? IncreaseCurrentState(FixedCounter, 0.2f, currentState, playerInRange) : DecreaseCurrentState(FixedCounter, 0.2f, currentState, playerInRange);
 
+        stealth = pas.crouch;
+        if (stealth) { Debug.LogError(" stealth " + stealth); }
+        playerInRange = inFov(transform, player, maxAngle, maxRadius);
+        //Debug.LogWarning("Player is in range " + playerInRange);
+        currentState = playerInRange ? IncreaseCurrentState(FixedCounter, 0.2f, currentState, playerInRange) : DecreaseCurrentState(FixedCounter, 0.2f, currentState, playerInRange);
+        Debug.Log("playerInRange  " + playerInRange);
         currentState = IntRange(currentState, 0, 100);
-      
-        Debug.LogWarning(currentState);
-        
+        //Debug.LogWarning(currentState);
+
         FixedCounter++;
 
-        if(playerInRange)
+        if (playerInRange)
         {
             transform.LookAt(player, Vector3.left);
         }
-
-
+       
         switch (agentStateIndex(currentState))
         {
-
             case 0:
-                // Debug.LogWarning("Patrol");
                 Patrolling();
+                agent.speed = patroleSpeed;
+                Debug.LogWarning("Patrol");
                 break;
             case 1:
+                agent.speed = AlertSpeed;
                 Debug.LogWarning("Alert");
                 break;
-            case 2:
-                Debug.LogWarning("Disengage");
-                break;
             case 3:
+                Investigating();
+                agent.speed =InvestigateSpeed;
                 Debug.LogWarning("Investigate");
                 break;
             case 4:
                 Chasing();
+                agent.speed = ChaseSpeed;
                 Debug.LogWarning("Chase");
                 break;
-
         }
+    }
 
+    int agentStateIndex(int index)
+    {
+        Debug.Log("agent index: " + index);
 
+        if (BoolRange(index, 0, 2))
+        {
+            return 0;
+        }
+        /*else if (BoolRange(index, 3, 9))
+        {
+            return 1;
+        }
+        else if (BoolRange(index, 10, 19) && !playerInRange)
+        {
+            return 3;
+        }*/
+        else
+            return 4;
     }
 
     void Patrolling()
@@ -238,53 +272,58 @@ public class Patrol : MonoBehaviour
         {
             // Destination for the agent
             agent.destination = patrolPoints[currentPoint++].position;
-            Debug.Log("currentPoint node: " + currentPoint);
+            //Debug.Log("currentPoint node: " + currentPoint);
         }
         // Restart the current patrol point back to the first node
         if (currentPoint >= patrolPoints.Length)
         {
             currentPoint = 0;
-            Debug.Log("currentPoint reset node to: " + currentPoint);
+            //Debug.Log("currentPoint node reset to: " + currentPoint);
         }
     }
 
     void Chasing()
     {
         agent.SetDestination(player.position);
-        Debug.Log("Agent is chasing the player");
+        //Debug.Log("Agent is chasing the player");
+        //Debug.Log("Current player location: " + player.transform.position);
     }
+
+    void Investigating()
+    {
+        agent.SetDestination(lastPlayerLocation.position);
+    }
+
+    public float restartDelay = 0.5f;
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.tag == "Player")
+        {
+            agent.speed = 0;
+            Invoke("Restart", restartDelay);
+            // We don't need to use invoke, 
+            // it was just to have a small delay before resetting,
+            // but we should probably get do something nicer
+        }
+    }
+    
+
+    void Restart()
+    {
+        //Debug.Log("GAME OVER");
+        // Reloads the current scene
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //SceneManager.LoadScene("StartMenu");
+    }
+
+    // Used for the agent state index?
     bool BoolRange(int value, int min, int max)
     {
         return value >= min && value <= max ? true : false;
     }
-    int agentStateIndex(int index)
-    {
-        if (index < 2)// =0.4 secs
-        {
-            return 0;
-        }
-        /* else if (BoolRange(index, 10, 19))
-         {
-             return 1;
-         }
-         else if (BoolRange(index, 20, 29))
-         {
-             return 2;
-         }
-         else if (BoolRange(index, 30, 39))
-         {
-             return 3;
-         }*/
-        else
-            return 4;
-    }
-    void Investigating()
-    {
-        // doesn't exist yet :D
-    }
+
     bool timer(int counter, float timeInSec)
     {
-
         if (counter % Mathf.Round(timeInSec / Time.fixedDeltaTime) == 0)
         {
             return true;

@@ -120,7 +120,7 @@ public class PlayerAniScript : MonoBehaviour
         AnimationController();
 
         crouch = CrouchCounter % 2 == 0 ? false : true;
-
+        if (crouch) { Debug.LogError("player ani "+crouch); }
         walkbody.enabled = IsWalking;
         runnerbody.enabled = !IsWalking;
         //ani.PlayInFixedTime(currentstate, 0);
