@@ -16,6 +16,7 @@ public class Patrol : MonoBehaviour
 
     [Header("AI stuff...")]
     public Transform player;
+    public Transform playerAni;
     private Rigidbody rb;
     private NavMeshAgent agent;
     public float movementSpeed;
@@ -31,7 +32,9 @@ public class Patrol : MonoBehaviour
 
     // I'm experimenting here
     private string behaviour;
-
+    
+    private PlayerAniScript pas;
+    bool stealth = false;
     #endregion
 
     // This is only to visualize the agent's FoV
@@ -108,7 +111,11 @@ public class Patrol : MonoBehaviour
     int IncreaseCurrentState(int counter, float timeInSec, int value, bool playerInRange)
     {
 
-        if (counter % Mathf.Round(timeInSec / Time.fixedDeltaTime) == 0 && playerInRange == true)
+        if (counter % Mathf.Round(timeInSec / Time.fixedDeltaTime) == 0 && playerInRange == true && !stealth)
+        {
+            value += 1;
+            // Debug.Log("reset currentStatev to: " + currentState);
+        }else if (counter % Mathf.Round((timeInSec*2) / Time.fixedDeltaTime) == 0 && playerInRange == true && stealth)
         {
             value += 1;
             // Debug.Log("reset currentStatev to: " + currentState);
@@ -147,8 +154,9 @@ public class Patrol : MonoBehaviour
     void Awake()
     {
         // Added these lines to automatically add components in the inspector when the script is activated
-       // player = GameObject.Find("Player").transform;
-       
+        // player = GameObject.Find("Player").transform;
+        pas = playerAni.GetComponent<PlayerAniScript>();
+        stealth = pas.crouch;
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
 
@@ -178,11 +186,13 @@ public class Patrol : MonoBehaviour
     int FixedCounter = 0;
     void FixedUpdate()
     {
+        // is always false....
         playerInRange = inFov(transform, player, maxAngle, maxRadius);
-        Debug.LogWarning("%¤%%¤ " + playerInRange);
+       
         currentState = playerInRange ? IncreaseCurrentState(FixedCounter, 0.2f, currentState, playerInRange) : DecreaseCurrentState(FixedCounter, 0.2f, currentState, playerInRange);
 
         currentState = IntRange(currentState, 0, 100);
+      
         Debug.LogWarning(currentState);
         
         FixedCounter++;
