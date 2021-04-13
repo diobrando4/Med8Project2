@@ -151,7 +151,7 @@ public class basicmovement : MonoBehaviour
             playJumpAnimation = true;
             rb.velocity = new Vector3(0, jumpSpeed, 0);
             jumpSpeed = startJumpSpeed;
-            maxIncrements = 0;
+            increments = 0;
             canJump = false;
             counter = 0;
         }
