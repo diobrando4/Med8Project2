@@ -37,7 +37,7 @@ public class PlayerAniScript : MonoBehaviour
     private bool criticalAniDone = true;
 
 
-    private float timedelay = 0.1f;
+    private float timedelay = 0.2f;
     private float AnimationTimeLength = 0;
     private const float JumpTime = 0.717f;
     private const float startCrouchTime = 0.264f;
@@ -121,6 +121,8 @@ public class PlayerAniScript : MonoBehaviour
 
         crouch = CrouchCounter % 2 == 0 ? false : true;
         if (crouch) { Debug.LogError("player ani "+crouch); }
+
+        Debug.LogError(crouch);
         walkbody.enabled = IsWalking;
         runnerbody.enabled = !IsWalking;
         //ani.PlayInFixedTime(currentstate, 0);
@@ -146,7 +148,7 @@ public class PlayerAniScript : MonoBehaviour
         if (!Input.anyKey && crouch && criticalAniDone && onGround)
         {
 
-            timedelay = 0.1f;
+          //  timedelay = 0.1f;
             currentstate = idleCrouch;
             FixedCounter = 0;
 
@@ -170,7 +172,7 @@ public class PlayerAniScript : MonoBehaviour
             if (walking && !running && !jumping && !crouch && !crouching && onGround)
         {
             IsWalking = true;
-            timedelay = 0.1f;
+            //timedelay = 0.1f;
             currentstate= walk;
 
         }
@@ -181,7 +183,7 @@ public class PlayerAniScript : MonoBehaviour
             {
                 CrouchCounter++;
             }
-            timedelay = 0.1f;
+            //timedelay = 0.1f;
             currentstate = run;
 
         }
@@ -196,28 +198,30 @@ public class PlayerAniScript : MonoBehaviour
             }
             // this might end up be redundant
             JumpCounter++;
-            timedelay = 0.2f;
+            //timedelay = 0.2f;
             currentstate = jump;
 
             //Crounch animation
         }
-        else if (crouching && !crouch && onGround)
+        else if (crouching  && onGround)
         {
 
             CrouchCounter++;
-            timedelay = 0.3f;
-            currentstate = startCrouch;
+            //timedelay = 0.2f;
+            if (!crouch) {
+                currentstate = startCrouch;
+            }
 
         }
         else if (crouch && !walking && !running && !jumping && onGround )
         {
-            timedelay = 0.2f;
+            //timedelay = 0.2f;
             currentstate = idleCrouch;
 
         }
         else if (crouch && walking && !running && !jumping && onGround)
         {
-            timedelay = 0.1f;
+           // timedelay = 0.1f;
             currentstate = walkCrouch;
         }
        /* else

@@ -4824,7 +4824,7 @@ MonoBehaviour:
   raypos: {fileID: 1166190702}
   maxAngle: 45
   maxRadius: 4
-  patroleSpeed: 0
+  patroleSpeed: 1.5
   AlertSpeed: 1.5
   InvestigateSpeed: 1.5
   ChaseSpeed: 2.2
@@ -48852,7 +48852,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1172938269}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: GrabbedPosition
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -79549,7 +79549,7 @@ MonoBehaviour:
   raypos: {fileID: 0}
   maxAngle: 45
   maxRadius: 4
-  patroleSpeed: 0
+  patroleSpeed: 1.5
   AlertSpeed: 1.5
   InvestigateSpeed: 1.5
   ChaseSpeed: 2.2

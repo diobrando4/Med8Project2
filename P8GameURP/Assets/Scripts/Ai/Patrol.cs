@@ -139,13 +139,13 @@ public class Patrol : MonoBehaviour
     {
         if (counter % Mathf.Round(timeInSec / Time.fixedDeltaTime) == 0 && playerInRange == true && !stealth)
         {
-            value += 1;
+            value++;
             // Debug.Log("reset currentStatev to: " + currentState);
             Debug.LogWarning("not stealth: " + currentState + " for every " + timeInSec + " sec" );
         }
-        else if (counter % Mathf.Round(((timeInSec*2)) / Time.fixedDeltaTime) == 0 && playerInRange == true && stealth)
+        if (counter % Mathf.Round(((timeInSec*2)) / Time.fixedDeltaTime) == 0 && playerInRange == true && stealth)
         {
-            value += 1;
+            value ++;
              Debug.LogWarning("stealth: " + currentState + " for every " + (timeInSec * 2) + " sec");
         }
         // currentState = IntRange(currentState, 0, 100); // Does this need to be here?
@@ -156,8 +156,8 @@ public class Patrol : MonoBehaviour
     {
         if (counter % Mathf.Round(timeInSec / Time.fixedDeltaTime) == 0 && playerInRange == false)
         {
-            value -= 1;
-            //Debug.Log("decreasing currentState by: " + currentState);
+            value --;
+            Debug.Log("decreasing currentState by: " + currentState);
         }
         //currentState = IntRange(currentState, 0, 100); // Does this need to be here?
         return value;
