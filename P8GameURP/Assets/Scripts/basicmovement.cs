@@ -164,6 +164,7 @@ public class basicmovement : MonoBehaviour
 
 
     void grab(){
+        float y;
         if (rayHit() && Input.GetKey(KeyCode.E) && hit.collider.attachedRigidbody)
         {
             
@@ -181,7 +182,7 @@ public class basicmovement : MonoBehaviour
                 rb.position = new Vector3(rb.position.x, grabY, rb.position.z);
                 Debug.LogWarning("Grabbing");
                 grabbing = true;
-
+                
                 
                 //  grabbedObject.position= transform.position- grabDirection ;
                 /*weight = grabbedObject.mass;
@@ -198,24 +199,30 @@ public class basicmovement : MonoBehaviour
 
         if (vertical != 0  && grabbing || horizontal != 0 && grabbing)
         {
-
+            rb.velocity = new Vector3(rb.velocity.x,0,rb.velocity.z);
             grabbedObject.velocity = rb.velocity*-1;
-            
-            grabbedObject.useGravity = true;
+            y = grabbedObject.position.y;
 
+            grabbedObject.useGravity = true;
+            grabbedObject.transform.position = GrabPos.transform.position;
         }
         else if ( grabbing)
         {
 
             grabbedObject.useGravity = false;
             grabbedObject.transform.position = GrabPos.transform.position;
+            //grabbedObject.velocity = rb.velocity * -1;
+            
+           // grabbedObject.MovePosition(GrabPos.transform.position);
+            //grabbedObject.velocity = GrabPos.transform.position;
             Debug.Log("grabbedObject" + grabbedObject.transform.position + " goal position " + GrabPos.transform.position);
         }
 
         if (grabbedObject!=null && !Input.GetKey(KeyCode.E))
         {
             grabbedObject.useGravity = true;
-            grabbedObject.transform.parent = null;
+            //grabbedObject.transform.parent = null;
+         
             grabbing = false;
             grabbedObject.gameObject.layer = 0;
             Debug.LogWarning("Dropped the object");
@@ -272,7 +279,7 @@ public class basicmovement : MonoBehaviour
     private float runSpeed(){
 
         if (!crouching) {
-            if (Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetKey(KeyCode.LeftShift) && !grabbing)
             {
                 speed++;
             } else {
