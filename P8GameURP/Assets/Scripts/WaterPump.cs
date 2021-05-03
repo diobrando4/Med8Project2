@@ -7,11 +7,13 @@ public class WaterPump : MonoBehaviour
     public bool ispumping;
     private Outline ol;
     float y;
+    float starty;
     // Start is called before the first frame update
     void Start()
     {
         ol = GetComponent<Outline>();
         y = transform.position.y - 0.1f;
+        starty = transform.position.y;
     }
 
     // Update is called once per frame
@@ -24,12 +26,18 @@ public class WaterPump : MonoBehaviour
         if (collision.collider.tag == "pump")
         {
             ispumping = true;
-            transform.position = new Vector3(transform.position.x, y, transform.position.z);
-            ol.OutlineColor = new Vector4(27, 255, 0, 255);
+           
+            
         }
-        else
+       
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.collider.tag == "pump")
         {
             ispumping = false;
+
+
         }
     }
 }

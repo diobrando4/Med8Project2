@@ -28,6 +28,7 @@ public class basicmovement : MonoBehaviour
     private Vector3 downDirection;
     private Vector3 grabDirection;
     private Vector3 raypos;
+    
 
     private float downDisRange;
     private float downDis = 0.1f;
@@ -41,7 +42,8 @@ public class basicmovement : MonoBehaviour
     private float startWeight;
     private float weight;
     private float startJumpSpeed = 0f;
-
+    float rigNormalX;
+    float rigNormalZ;
 
     private bool forward;
     private bool backward;
@@ -62,7 +64,8 @@ public class basicmovement : MonoBehaviour
     private int increments = 0;
     private int counter;
     private int testCoutner = 0;
-
+    int multiplyierX = 1;
+    int multiplyierZ = 1;
 
 
     // Start is called before the first frame update
@@ -138,18 +141,28 @@ public class basicmovement : MonoBehaviour
                 Debug.Log("velocity y = "+rb.velocity.y);
                 Debug.Log("velocity z = "+rb.velocity.z);*/
             }
-            else if (rayHit() && backward)
+            else if (rayHit() && !forward)
             {
                 rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime);
+                rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1 * Time.fixedDeltaTime);
 
             }
-            else
+            else if(rayHit() && !forward)
             {
-                speed--;
+                rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime);
+                
+                rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1 * Time.fixedDeltaTime);
+            }else{
+                if (speed>0) { speed--; }
             }
 
+        }else if(rayHitStop() && !forward)
+        {
+            rb.MovePosition(rb.position + (transform.right * vertical) * 3* Time.fixedDeltaTime);
+
+            rb.MovePosition(rb.position + (transform.forward * horizontal) * 1.1f * -1 * Time.fixedDeltaTime);
         }
-        else { rb.velocity = Vector3.zero; Debug.LogWarning(hit.collider.name); speed--; }
+        else { rb.velocity = Vector3.zero; Debug.LogWarning(hit.collider.name); speed--;  }
         // jump if player is on a collider
 
 
@@ -189,15 +202,15 @@ public class basicmovement : MonoBehaviour
             jumpCountTest = true;
         }
         if(jumpCountTest && jump==0){
-            if (testCoutner % Mathf.Round(1.5f / Time.fixedDeltaTime) == 0 && startJumpCounter && !onSurface() && grabbing)
+            if (counter % Mathf.Round(1.5f / Time.fixedDeltaTime) == 0 && startJumpCounter && !onSurface() && grabbing)
             {
                 flying = false;
                 startJumpCounter = false;
-                testCoutner = 0;
+                counter = -10;
                 fall = true;
                 jumpCountTest = false;
             }
-        }else{
+        }/*else{
             if (testCoutner % Mathf.Round(1.5f / Time.fixedDeltaTime) == 0 && startJumpCounter && !onSurface() && grabbing&&!jumpCountTest)
             {
                 flying = false;
@@ -206,7 +219,7 @@ public class basicmovement : MonoBehaviour
                 fall = true;
                 
             }
-        }
+        }*/
         
         if (fall && onSurface())
         {
@@ -240,7 +253,7 @@ public class basicmovement : MonoBehaviour
         if (jump == 0 && canJump)
         {
             if(grabbing){
-                jumpSpeed = jumpSpeed + 1f;
+                jumpSpeed = jumpSpeed+1f;
             }
             playJumpAnimation = true;
             rb.velocity = new Vector3(0, jumpSpeed, 0);
@@ -262,18 +275,21 @@ public class basicmovement : MonoBehaviour
 
     void grab()
     {
-        float y;
-        if (rayHit() && Input.GetKey(KeyCode.E) && hit.collider.attachedRigidbody && grabbedObject==null)
+        
+        float y =  Physics.gravity.y + rb.velocity.y;
+        if ( Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.4f) && Input.GetKey(KeyCode.E) && hit.collider.attachedRigidbody && grabbedObject==null)
         {
 
 
 
+            
+            
             grabbedObject = hit.collider.gameObject.GetComponent<Rigidbody>();
-
+            Debug.LogError(hit.normal);
             if (grabbedObject.mass < rb.mass + 110f)
             {
-
-                hit.collider.gameObject.layer = 2;
+                grabbedObject.freezeRotation = true;
+                //hit.collider.gameObject.layer = 2;
                 grabDirection = transform.position - grabbedObject.transform.position;
                 if (onSurface())
                 {
@@ -296,27 +312,43 @@ public class basicmovement : MonoBehaviour
                 }*/
             }
         }
-
+        
         if (vertical != 0 && grabbing || horizontal != 0 && grabbing)
         {
-            jumping(jumpIncrements);
-            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-            grabbedObject.velocity = rb.velocity * -1;
-            y = grabbedObject.position.y;
 
-            rb.useGravity = true;
-            grabbedObject.transform.position = GrabPos.transform.position;
+            multiplyierX = hit.normal.x > 0 ? 1 : -1;
+            multiplyierZ = hit.normal.z > 0 ? 1 : -1;
+            if(!flying)
+                rb.velocity = new Vector3(rb.velocity.x*multiplyierX, y, rb.velocity.z*multiplyierZ);
+           // jumping(jumpIncrements);
+            grabbedObject.velocity = rb.velocity;
+           // grabbedObject.MovePosition(GrabPos.transform.position - grabbedObject.transform.position);
+           // y = grabbedObject.position.y;
+           
+            //grabbedObject.transform.position = Vector3.Lerp(GrabPos.transform.position, grabbedObject.transform.position, Time.fixedDeltaTime * 100);
+            //grabbedObject.transform.position = GrabPos.transform.position;
         }
-        else if (grabbing)
+         if (grabbing)
         {
-            jumping(jumpIncrements);
-            grabbedObject.useGravity = false;
+            multiplyierX = hit.normal.x > 0 ? 1 : -1;
+            multiplyierZ = hit.normal.z > 0 ? 1 : -1;
+            if (!flying)
+                rb.velocity = new Vector3(rb.velocity.x * multiplyierX, y, rb.velocity.z * multiplyierZ);
+            if (hit.normal.x > 0) { hit.normal.Equals(0); }
             rb.useGravity = true;
-            grabbedObject.transform.position = GrabPos.transform.position;
+            grabbedObject.velocity = Vector3.zero;
+            //jumping(jumpIncrements);
+            grabbedObject.useGravity = false;
+            
+            // grabbedObject.MovePosition(GrabPos.transform.position - grabbedObject.transform.position);
+            //grabbedObject.transform.position = GrabPos.transform.position - grabbedObject.transform.position;
             //grabbedObject.velocity = rb.velocity * -1;
 
             // grabbedObject.MovePosition(GrabPos.transform.position);
-            //grabbedObject.velocity = GrabPos.transform.position;
+            //Vector3.Lerp(startMarker.position, endMarker.position, fractionOfJourney);
+            //  grabbedObject.transform.position = GrabPos.transform.position;
+            grabbedObject.transform.position = GrabPos.transform.position;
+           // grabbedObject.transform.position = Vector3.Lerp(GrabPos.transform.position, grabbedObject.transform.position, Time.fixedDeltaTime*100);
             Debug.Log("grabbedObject" + grabbedObject.transform.position + " goal position " + GrabPos.transform.position);
         }
 
@@ -324,9 +356,9 @@ public class basicmovement : MonoBehaviour
         {
             grabbedObject.useGravity = true;
             //grabbedObject.transform.parent = null;
-
+            grabbedObject.freezeRotation = false;
             grabbing = false;
-            grabbedObject.gameObject.layer = 0;
+           // grabbedObject.gameObject.layer = 0;
             Debug.LogWarning("Dropped the object");
             grabbedObject = null;
             rb.mass = startWeight;
@@ -347,7 +379,14 @@ public class basicmovement : MonoBehaviour
         Debug.DrawRay(raypos, Camera.main.transform.forward);
         try
         {
-            return Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.4f);
+            if (Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.4f) && hit.collider.attachedRigidbody)
+            {
+                return false;
+            }
+            else
+            {
+                return Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.4f);
+            }
         }
         catch (Exception e)
         {
@@ -359,7 +398,14 @@ public class basicmovement : MonoBehaviour
         Debug.DrawRay(raypos, Camera.main.transform.forward);
         try
         {
-            return Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.1f);
+            if (Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.4f) && hit.collider.attachedRigidbody)
+            {
+                return false;
+            }
+            else
+            {
+                return Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.4f);
+            }
         }
         catch (Exception e)
         {
@@ -392,15 +438,16 @@ public class basicmovement : MonoBehaviour
             {
                 speed--;
             }
-            if(grabbing && !onSurface()){
-                speed = speed + .5f;
+            if(grabbing ){
+                speed =  startSpeed+0.25f;
             }
-            speed = Mathf.Clamp(speed, startSpeed, maxSpeed);
+            
         }
         else
         {
             speed = crouchSpeed;
         }
+        speed = Mathf.Clamp(speed, startSpeed, maxSpeed);
         return speed;
     }
 }

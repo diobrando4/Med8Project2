@@ -14,13 +14,15 @@ public class WaterRender : MonoBehaviour
     Outline BR;
     Outline MR;
     Outline TR;
-
+    AudioSource AS;
     WaterPump wp;
     // Start is called before the first frame update
     void Start()
     {
         bottomRender = GetComponent<MeshRenderer>();
         BR = GetComponent<Outline>();
+        AS = GetComponent<AudioSource>();
+        AS.enabled = false;
         middleRender = middleWater.GetComponent<MeshRenderer>();
         MR = middleWater.GetComponent<Outline>();
         topRender = topWater.GetComponent<MeshRenderer>();
@@ -57,6 +59,7 @@ public class WaterRender : MonoBehaviour
             BR.enabled = true;
             MR.enabled = true;
             TR.enabled = true;
+
         }
         if(waterCounter<1 && !wp.ispumping)
         {
@@ -67,6 +70,7 @@ public class WaterRender : MonoBehaviour
             MR.enabled = false;
             TR.enabled = false;
         }
+        AS.enabled = FountainComplete();
     }
     private void OnTriggerEnter(Collider other)
     {
