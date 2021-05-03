@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Selectable
   - water
+  - pump
+  - basket
   layers:
   - Default
   - TransparentFX
