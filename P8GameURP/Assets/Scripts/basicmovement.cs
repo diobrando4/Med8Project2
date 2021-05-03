@@ -8,7 +8,7 @@ public class basicmovement : MonoBehaviour
     private Rigidbody rb;
     [SerializeField] private GameObject GrabPos;
 
-    [Range(0.2f, 10)] public float jumpSpeed = 0.5f;
+    [Range(0.2f, 5)] public float jumpSpeed = 0.5f;
     [Header("Speed")]
     [Tooltip("start Speed is the start value, max speed is x2 of the start speed, crouch speed is start speed/2")]
     [Range(0.5f, 5)] public float speed = 5;
@@ -46,21 +46,17 @@ public class basicmovement : MonoBehaviour
     private bool forward;
     private bool backward;
     private bool crouching;
-    private bool flying;
-    private bool startJumpCounter;
     [HideInInspector]public bool grabbing;
     [HideInInspector]public bool playJumpAnimation;
     private bool canJump=false;
-    private bool fall = false;
     private bool jumpIsMaxed;
-    float velY = 1;
+
 
     [Header("max increments depended on jumpincrements see tooltip")]
     [Tooltip("if jumpincrements is 0.1 and maxincrements max jump height will be achived after 1 sec")]
     public int maxIncrements = 10;
     private int increments=0;
     private int counter;
-    private int testCoutner =0;
     
     
     
@@ -95,22 +91,6 @@ public class basicmovement : MonoBehaviour
         move();
         grab();
         jumping(jumpIncrements); Debug.Log("canJump" + canJump);
-
-        //  if (!onSurface() && grabbing&& vertical!=0 && !canJump|| !onSurface() && grabbing && horizontal != 0 && !canJump) { preventFlying(1.5f); };
-        test();
-        preventFlying();
-        if (!flying && !onSurface() && grabbing && vertical != 0 || !flying && !onSurface() && grabbing && horizontal != 0) { };
-        // Debug.LogError(counter % Mathf.Round(1.5f / Time.fixedDeltaTime));
-        //preventFlying(0.0f);
-        Debug.LogError("first part " + (!flying && !onSurface() && grabbing && vertical != 0));
-       // Debug.LogError("test =  "+test());
-        //Debug.LogError("total  =  "+(!flying && !onSurface() && grabbing && vertical != 0 && test()));
-
-        /*if (!flying && !onSurface() && grabbing && vertical != 0 && test() ||test() && !flying && !onSurface() && grabbing && horizontal != 0)
-        {
-            rb.velocity = new Vector3(rb.velocity.x, Physics.gravity.y + rb.velocity.y, rb.velocity.z);
-        }*/
-        if (onSurface()) degrease = false;
     }
     
     void move()
@@ -144,21 +124,9 @@ public class basicmovement : MonoBehaviour
         // jump if player is on a collider
         
 
-        
 
-    }
-    bool degrease = false; int count = 0;
-    void preventFlying(){
-       
-        if (fall && vertical != 0 || horizontal != 0 && fall)
-        {
-            rb.velocity = new Vector3(rb.velocity.x, Physics.gravity.y + rb.velocity.y, rb.velocity.z);
-        }
-     
 
-       
-    }
-
+<<<<<<< HEAD
     void test(){
         if (startJumpCounter && !onSurface())
         {
@@ -178,21 +146,22 @@ public class basicmovement : MonoBehaviour
             fall = false;
         }
        
+=======
+>>>>>>> parent of 1148289 (flying exploit fixed)
     }
 
-   
     void jumping(float increaseForcePrMiliSec){
 
         
         if (jump > 0 && onSurface())
         {
             canJump=true;
-            flying = true;
+           
         }
 
         if(canJump){
             
-            if (counter % Mathf.Round(increaseForcePrMiliSec / Time.fixedDeltaTime) == 0 && jump > 0 && canJump && increments <= maxIncrements && !Input.GetKey(KeyCode.LeftShift))
+            if (counter % Mathf.Round(increaseForcePrMiliSec / Time.fixedDeltaTime) == 0 && jump > 0 && canJump && increments <= maxIncrements)
             {
 
                 jumpSpeed += jumpForceIncrements;
@@ -207,11 +176,8 @@ public class basicmovement : MonoBehaviour
             increments = 0;
             canJump = false;
             counter = 0;
-            startJumpCounter = true;
-          
         }
         
-
 
 
 
@@ -255,19 +221,17 @@ public class basicmovement : MonoBehaviour
 
         if (vertical != 0  && grabbing || horizontal != 0 && grabbing)
         {
-            jumping(jumpIncrements);
             rb.velocity = new Vector3(rb.velocity.x,0,rb.velocity.z);
             grabbedObject.velocity = rb.velocity*-1;
             y = grabbedObject.position.y;
 
-            rb.useGravity = true;
+            grabbedObject.useGravity = true;
             grabbedObject.transform.position = GrabPos.transform.position;
         }
         else if ( grabbing)
         {
-            jumping(jumpIncrements);
+
             grabbedObject.useGravity = false;
-            rb.useGravity = true;
             grabbedObject.transform.position = GrabPos.transform.position;
             //grabbedObject.velocity = rb.velocity * -1;
             
