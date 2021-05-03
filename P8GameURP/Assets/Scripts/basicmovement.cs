@@ -164,7 +164,7 @@ public class basicmovement : MonoBehaviour
         {
             testCoutner++;
         }
-        if (counter % Mathf.Round(1f / Time.fixedDeltaTime) == 0 && startJumpCounter && !onSurface())
+        if (counter % Mathf.Round(1.2f / Time.fixedDeltaTime) == 0 && startJumpCounter && !onSurface())
         {
             flying = false;
             startJumpCounter = false;
