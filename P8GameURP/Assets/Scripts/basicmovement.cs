@@ -126,28 +126,6 @@ public class basicmovement : MonoBehaviour
 
 
 
-<<<<<<< HEAD
-    void test(){
-        if (startJumpCounter && !onSurface())
-        {
-            testCoutner++;
-        }
-        if (counter % Mathf.Round(1.2f / Time.fixedDeltaTime) == 0 && startJumpCounter && !onSurface())
-        {
-            flying = false;
-            startJumpCounter = false;
-            testCoutner = 0;
-            fall = true;
-         
-            
-            
-        }
-        if(fall && onSurface()){
-            fall = false;
-        }
-       
-=======
->>>>>>> parent of 1148289 (flying exploit fixed)
     }
 
     void jumping(float increaseForcePrMiliSec){
