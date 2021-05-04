@@ -12,6 +12,7 @@ public class MainPuzzleController : MonoBehaviour
     private Puzzle2Controller p2c;
     private Puzzle3Controller p3c;
     bool startP1, startP2, startP3, gameFinish;
+   
     void Start()
     {
         p1c = Puzzle1Controller.GetComponent<Puzzle1Controller>();
@@ -28,6 +29,8 @@ public class MainPuzzleController : MonoBehaviour
         startP3 = p2c.puzzle2Complete();
 
         p2c.startPuzzle2(startP2);
+        p3c.startPuzzle3(startP3);
+       
         Debug.LogError("puzzle 1 is active " + p1c.isActive + " puzzle 2 is active " + startP2 + " puzzle 3 is active " + startP3);
     }
 }

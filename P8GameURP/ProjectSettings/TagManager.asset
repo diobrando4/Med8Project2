@@ -8,6 +8,7 @@ TagManager:
   - water
   - pump
   - basket
+  - Electric_Box_Objective
   layers:
   - Default
   - TransparentFX
