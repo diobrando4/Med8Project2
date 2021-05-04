@@ -288,7 +288,7 @@ public class basicmovement : MonoBehaviour
             
             
             grabbedObject = hit.collider.gameObject.GetComponent<Rigidbody>();
-            Debug.LogError(hit.normal);
+            Debug.LogError(grabbedObject.name);
             if (grabbedObject.mass < rb.mass + 110f)
             {
                 grabbedObject.freezeRotation = true;
@@ -316,9 +316,9 @@ public class basicmovement : MonoBehaviour
             }
         }
         
-        if (vertical != 0 && grabbing || horizontal != 0 && grabbing)
+        if (vertical != 0 && grabbing || horizontal != 0 && grabbing && grabbedObject != null)
         {
-
+            Debug.LogError(grabbedObject.name);
             multiplyierX = hit.normal.x > 0 ? 1 : -1;
             multiplyierZ = hit.normal.z > 0 ? 1 : -1;
             if(!flying)
@@ -331,13 +331,13 @@ public class basicmovement : MonoBehaviour
             //grabbedObject.transform.position = Vector3.Lerp(GrabPos.transform.position, grabbedObject.transform.position, Time.fixedDeltaTime * 100);
             //grabbedObject.transform.position = GrabPos.transform.position;
         }
-         if (grabbing)
+         if (grabbing && grabbedObject != null)
         {
             multiplyierX = hit.normal.x > 0 ? 1 : -1;
             multiplyierZ = hit.normal.z > 0 ? 1 : -1;
             if (!flying)
                 rb.velocity = new Vector3(rb.velocity.x * multiplyierX, y, rb.velocity.z * multiplyierZ);
-            if (hit.normal.x > 0) { hit.normal.Equals(0); }
+          
             rb.useGravity = true;
             grabbedObject.velocity = Vector3.zero;
             //jumping(jumpIncrements);

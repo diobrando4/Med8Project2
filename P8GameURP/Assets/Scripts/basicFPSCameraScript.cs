@@ -94,7 +94,7 @@ public class basicFPSCameraScript : MonoBehaviour
 		//targetRotationBody.y = targetRotationBody.y;
 		targetRotationCamra.x = -5;
 		playermodelRb.MoveRotation(Quaternion.Euler(targetRotationCamra));
-		if(bm.grabbing){
+		if(bm.grabbing && bm.grabbedObject!=null){
 			
 			bm.grabbedObject.MoveRotation(Quaternion.Euler(targetRotationCamra));
         }
