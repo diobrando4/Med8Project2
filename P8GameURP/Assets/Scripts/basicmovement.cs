@@ -134,8 +134,9 @@ public class basicmovement : MonoBehaviour
             {
                 // rb.velocity = (transform.right * vertical + transform.forward * horizontal) * runSpeed();
                 //rb.velocity = (transform.forward * horizontal + transform.right * vertical) ;
-                rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime);
-                rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1 * Time.fixedDeltaTime);
+                if(forward || backward) { rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime); }
+                else if(vertical!=0) { rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1 * Time.fixedDeltaTime); }
+               
                 //rb.MovePosition(transform.position + (transform.forward * vertical) * Time.deltaTime);
                 /*Debug.Log("velocity x = "+rb.velocity.x);
                 Debug.Log("velocity y = "+rb.velocity.y);
@@ -143,16 +144,18 @@ public class basicmovement : MonoBehaviour
             }
             else if (rayHit() && !forward)
             {
-                rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime);
-                rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1 * Time.fixedDeltaTime);
+                if (backward) { rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime); }
+                else if (vertical != 0) { rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1 * Time.fixedDeltaTime); }
+
 
             }
             else if(rayHit() && !forward)
             {
-                rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime);
+                if (backward) { rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime); }
+                else if (vertical != 0) { rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1 * Time.fixedDeltaTime); }
                 
-                rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1 * Time.fixedDeltaTime);
-            }else{
+            }
+            else{
                 if (speed>0) { speed--; }
             }
 

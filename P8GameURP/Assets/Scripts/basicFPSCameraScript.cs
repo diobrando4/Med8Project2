@@ -17,7 +17,7 @@ public class basicFPSCameraScript : MonoBehaviour
 	private Vector3 differencePos;
 	public Rigidbody playermodelRb;
 	public CapsuleCollider cap;
-
+	float y=0;
 	private basicmovement bm;
 	void Awake()
 	{
@@ -32,6 +32,7 @@ public class basicFPSCameraScript : MonoBehaviour
 		PlayerPos = rb.GetComponent<Transform>().position;
 		playermodelPos = playermodelRb.GetComponent<Transform>().position;
 		differencePos = PlayerPos - myPos;
+		y = transform.position.y - playermodelPos.y;
 	}	
 	void unlockMouse()
 	{
@@ -46,6 +47,7 @@ public class basicFPSCameraScript : MonoBehaviour
 	{
 		rotateCamra();
 		unlockMouse();
+		
 		
 	}
 
