@@ -83,6 +83,7 @@ public class basicmovement : MonoBehaviour
         startWeight = rb.mass;
         weight = startWeight;
         startJumpSpeed = jumpSpeed;
+        horiMax = startSpeed * 1.6f;
     }
 
     // Update is called once per frame
@@ -103,10 +104,10 @@ public class basicmovement : MonoBehaviour
         //  if (!onSurface() && grabbing&& vertical!=0 && !canJump|| !onSurface() && grabbing && horizontal != 0 && !canJump) { preventFlying(1.5f); };
         test();
         preventFlying();
-        if (!flying && !onSurface() && grabbing && vertical != 0 || !flying && !onSurface() && grabbing && horizontal != 0) { };
+        //if (!flying && !onSurface() && grabbing && vertical != 0 || !flying && !onSurface() && grabbing && horizontal != 0) { };
         // Debug.LogError(counter % Mathf.Round(1.5f / Time.fixedDeltaTime));
         //preventFlying(0.0f);
-        Debug.LogError("first part " + (!flying && !onSurface() && grabbing && vertical != 0));
+        //Debug.LogError("first part " + (!flying && !onSurface() && grabbing && vertical != 0));
         // Debug.LogError("test =  "+test());
         //Debug.LogError("total  =  "+(!flying && !onSurface() && grabbing && vertical != 0 && test()));
 
@@ -134,8 +135,8 @@ public class basicmovement : MonoBehaviour
             {
                 // rb.velocity = (transform.right * vertical + transform.forward * horizontal) * runSpeed();
                 //rb.velocity = (transform.forward * horizontal + transform.right * vertical) ;
-                if(forward || backward) { rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime); }
-                else if(vertical!=0) { rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1 * Time.fixedDeltaTime); }
+                 rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime); 
+                 rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1 * Time.fixedDeltaTime); 
                
                 //rb.MovePosition(transform.position + (transform.forward * vertical) * Time.deltaTime);
                 /*Debug.Log("velocity x = "+rb.velocity.x);
@@ -144,15 +145,15 @@ public class basicmovement : MonoBehaviour
             }
             else if (rayHit() && !forward)
             {
-                if (backward) { rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime); }
-                else if (vertical != 0) { rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1 * Time.fixedDeltaTime); }
+                 rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime); 
+                 rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1 * Time.fixedDeltaTime); 
 
 
             }
             else if(rayHit() && !forward)
             {
-                if (backward) { rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime); }
-                else if (vertical != 0) { rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1 * Time.fixedDeltaTime); }
+                 rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime); 
+                 rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1 * Time.fixedDeltaTime); 
                 
             }
             else{
@@ -288,7 +289,7 @@ public class basicmovement : MonoBehaviour
             
             
             grabbedObject = hit.collider.gameObject.GetComponent<Rigidbody>();
-            Debug.LogError(grabbedObject.name);
+           // Debug.LogError(grabbedObject.name);
             if (grabbedObject.mass < rb.mass + 110f)
             {
                 grabbedObject.freezeRotation = true;
@@ -318,7 +319,7 @@ public class basicmovement : MonoBehaviour
         
         if (vertical != 0 && grabbing || horizontal != 0 && grabbing && grabbedObject != null)
         {
-            Debug.LogError(grabbedObject.name);
+           // Debug.LogError(grabbedObject.name);
             multiplyierX = hit.normal.x > 0 ? 1 : -1;
             multiplyierZ = hit.normal.z > 0 ? 1 : -1;
             if(!flying)
@@ -352,7 +353,7 @@ public class basicmovement : MonoBehaviour
             //  grabbedObject.transform.position = GrabPos.transform.position;
             grabbedObject.transform.position = GrabPos.transform.position;
            // grabbedObject.transform.position = Vector3.Lerp(GrabPos.transform.position, grabbedObject.transform.position, Time.fixedDeltaTime*100);
-            Debug.Log("grabbedObject" + grabbedObject.transform.position + " goal position " + GrabPos.transform.position);
+            //Debug.Log("grabbedObject" + grabbedObject.transform.position + " goal position " + GrabPos.transform.position);
         }
 
         if (grabbedObject != null && !Input.GetKey(KeyCode.E))
@@ -362,7 +363,7 @@ public class basicmovement : MonoBehaviour
             grabbedObject.freezeRotation = false;
             grabbing = false;
            // grabbedObject.gameObject.layer = 0;
-            Debug.LogWarning("Dropped the object");
+            //Debug.LogWarning("Dropped the object");
             grabbedObject = null;
             rb.mass = startWeight;
         }
@@ -428,29 +429,38 @@ public class basicmovement : MonoBehaviour
         return Physics.Raycast(playerPos, Vector3.forward, 0.1f);
 
     }
+    float horiMax;
+    float diffMaxSpeed;
     private float runSpeed()
     {
-
+        diffMaxSpeed=maxSpeed;
         if (!crouching)
         {
             if (Input.GetKey(KeyCode.LeftShift) && !grabbing)
             {
                 speed++;
-            }
+                diffMaxSpeed = maxSpeed;
+            } 
             else
             {
                 speed--;
+                diffMaxSpeed = maxSpeed;
             }
             if(grabbing ){
+                diffMaxSpeed = maxSpeed;
                 speed =  startSpeed+0.25f;
             }
             
-        }
-        else
-        {
+        }else{
             speed = crouchSpeed;
         }
-        speed = Mathf.Clamp(speed, startSpeed, maxSpeed);
+
+        if(vertical!=0 && horizontal!=0){
+            //speed = speed * 0.7f;
+            diffMaxSpeed = horiMax;
+        }
+       // Debug.LogError("diffmax"+diffMaxSpeed);
+        speed = Mathf.Clamp(speed, startSpeed, diffMaxSpeed);
         return speed;
     }
 }

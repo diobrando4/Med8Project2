@@ -8,6 +8,8 @@ public class WaterRender : MonoBehaviour
     public GameObject middleWater;
     public GameObject topWater;
     public GameObject waterpump;
+  //  public GameObject puzzle2Controller;
+    private Puzzle2Controller p2c;
     MeshRenderer bottomRender;
     MeshRenderer middleRender;
     MeshRenderer topRender;
@@ -28,12 +30,8 @@ public class WaterRender : MonoBehaviour
         topRender = topWater.GetComponent<MeshRenderer>();
         TR = topWater.GetComponent<Outline>();
         wp = waterpump.GetComponent<WaterPump>();
-        bottomRender.enabled = false;
-        middleRender.enabled = false;
-        topRender.enabled = false;
-        BR.enabled = false;
-        MR.enabled = false;
-        TR.enabled = false;
+       // p2c = puzzle2Controller.GetComponent<Puzzle2Controller>();
+        
     }
 
     // Update is called once per frame
@@ -72,6 +70,18 @@ public class WaterRender : MonoBehaviour
         }
         AS.enabled = FountainComplete();
     }
+
+    public void RenderWater (bool turnOn){
+        if (!turnOn) {
+            bottomRender.enabled = turnOn;
+            middleRender.enabled = turnOn;
+            topRender.enabled = turnOn;
+            BR.enabled = turnOn;
+            MR.enabled = turnOn;
+            TR.enabled = turnOn;
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "basket")
