@@ -23,8 +23,13 @@ public class PickUpObject : MonoBehaviour
             p1c.collection = p1c.collection + 1;
             onlyOnce = true;
             transform.position = new Vector3(0, -100, 0);
+            
             ol.OutlineMode= (Outline.Mode)1;
         }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if(transform.position == new Vector3(0, -100, 0)){ onlyOnce = false; }
     }
     void OnTriggerStay(Collider collider)
     {

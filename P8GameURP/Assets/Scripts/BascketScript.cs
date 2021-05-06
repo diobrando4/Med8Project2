@@ -17,7 +17,7 @@ public class BascketScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.LogError(other.tag);
+       // Debug.LogError(other.tag);
         if (other.tag == "water")
         {
             meshrender.enabled = true;

@@ -42,8 +42,6 @@ public class basicmovement : MonoBehaviour
     private float startWeight;
     private float weight;
     private float startJumpSpeed = 0f;
-    float rigNormalX;
-    float rigNormalZ;
 
     private bool forward;
     private bool backward;
@@ -78,7 +76,7 @@ public class basicmovement : MonoBehaviour
         maxSpeed = startSpeed * 2;
         BodyCollider = GetComponent<CapsuleCollider>();
         downDisRange = BodyCollider.GetComponent<Collider>().GetComponent<Collider>().bounds.extents.y + downDis;
-        Debug.LogError(downDisRange);
+      //  Debug.LogError(downDisRange);
         crouchSpeed = startSpeed / 2;
         startWeight = rb.mass;
         weight = startWeight;
@@ -281,7 +279,7 @@ public class basicmovement : MonoBehaviour
     {
         
         float y =  Physics.gravity.y + rb.velocity.y;
-        if ( Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.4f) && Input.GetKey(KeyCode.E) && hit.collider.attachedRigidbody && grabbedObject==null)
+        if ( Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.4f) && Input.GetKey(KeyCode.E) && hit.collider.attachedRigidbody && grabbedObject==null &&!prevent)
         {
 
 
@@ -430,6 +428,7 @@ public class basicmovement : MonoBehaviour
 
     }
     float horiMax;
+    public bool prevent = false;
     float diffMaxSpeed;
     private float runSpeed()
     {
@@ -440,6 +439,7 @@ public class basicmovement : MonoBehaviour
             {
                 speed++;
                 diffMaxSpeed = maxSpeed;
+                
             } 
             else
             {
@@ -447,14 +447,20 @@ public class basicmovement : MonoBehaviour
                 diffMaxSpeed = maxSpeed;
             }
             if(grabbing ){
+              
                 diffMaxSpeed = maxSpeed;
                 speed =  startSpeed+0.25f;
             }
             
         }else{
+           
             speed = crouchSpeed;
         }
-
+        if(speed> startSpeed+0.25f){
+            prevent = true;
+        }else{
+            prevent = false;
+        }
         if(vertical!=0 && horizontal!=0){
             //speed = speed * 0.7f;
             diffMaxSpeed = horiMax;

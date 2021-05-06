@@ -5,18 +5,21 @@ using UnityEngine;
 public class TruckScript : MonoBehaviour
 {
     public Transform p3Pos;
-    public bool start;
+    //public bool start;
+    private Vector3 startPos;
+   // private Vector3 self;
     // Start is called before the first frame update
     void Start()
     {
-        
+        //self = GetComponent<Transform>();
+        startPos = this.transform.position;
+        //Debug.LogError("(__ " + startPos + " __)" );
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (start){
-            transform.position = Vector3.Lerp(transform.position, p3Pos.position, Time.deltaTime * 0.25f);
-        }
+    public void startTrucks(){
+        transform.position = Vector3.Lerp(transform.position, p3Pos.position, Time.deltaTime * 0.25f);       
+    }
+    public void resetTrucks(){
+        transform.position = startPos;
     }
 }

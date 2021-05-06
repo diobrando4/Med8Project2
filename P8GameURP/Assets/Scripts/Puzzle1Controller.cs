@@ -7,9 +7,21 @@ public class Puzzle1Controller : MonoBehaviour
     public int collection=0;
     public bool isActive;
     public GameObject puzzleObjectsGroup;
+    public bool spawn = false;
+    public Transform playerSpawnPos;
+    public Transform player;
+    public bool turnOffOnce = false;
+    public bool turnOnOnce = false;
+    //private Vector3 groupPos;
+    public List<Vector3> D_PosList;
 // Start is called before the first frame update
     void Start()
     {
+        D_PosList = new List<Vector3>();
+        for (int i =0; i<puzzleObjectsGroup.transform.childCount; i++){          
+            D_PosList.Insert(i, puzzleObjectsGroup.transform.GetChild(i).position);                     
+        }
+        collection = 0;
         
     }
 
@@ -17,11 +29,78 @@ public class Puzzle1Controller : MonoBehaviour
     void Update()
     {
         
-        puzzleObjectsGroup.SetActive(isActive);
+        
         if(puzzle1Complete()) { Debug.LogError("PUZZLE 1 COMPLETE !!! "); }
-        Debug.LogError(collection);
+     //   Debug.LogError(collection);
+    }
+   public void startPuzzle1(bool start){
+        // puzzleObjectsGroup.transform.position = groupPos;
+
+
+        if (start && spawn)
+        {
+             
+
+
+            
+            /*if (spawnPlayer) {
+                player.transform.position = playerSpawnPos.position;
+                player.transform.rotation = playerSpawnPos.rotation;
+            }*/
+            for (int i = 0; i < puzzleObjectsGroup.transform.childCount; i++)
+            {
+                puzzleObjectsGroup.transform.GetChild(i).position = D_PosList[i];
+            }
+            spawn = false;
+
+            turnOffOnce = false;
+           // Debug.LogError("Spawning objects");
+        }
+        puzzleObjectsGroup.SetActive(start);
+       // Debug.LogError("col: "+collection + " start: " +start);
+       if(!turnOffOnce && collection>4){
+            for (int i = 0; i < puzzleObjectsGroup.transform.childCount; i++)
+            {
+                puzzleObjectsGroup.transform.GetChild(i).gameObject.SetActive(false);//position = new Vector3(0, -100, 0);
+            }
+
+            turnOffOnce = true;
+            turnOnOnce = false;
+       }
+
+
+    }
+    public void resetP1(bool spawnPlayer)
+    {
+
+        if (spawnPlayer)
+        {
+            player.transform.position = playerSpawnPos.position;
+            player.transform.rotation = playerSpawnPos.rotation;
+        }
+        if (!turnOnOnce){
+                for (int i = 0; i<puzzleObjectsGroup.transform.childCount; i++)
+                {
+                    puzzleObjectsGroup.transform.GetChild(i).gameObject.SetActive(true);//position = new Vector3(0, -100, 0);
+                }
+
+            turnOnOnce = true;
+        }
+        collection = 0;
+
     }
 
+
+    public void skipPuzzle1(){
+        collection = 5;
+        if (collection>4) {
+            for (int i = 0; i < puzzleObjectsGroup.transform.childCount; i++)
+            {
+                puzzleObjectsGroup.transform.GetChild(i).position = new Vector3(0, -100, 0);
+            }
+        }
+       
+    }
     public bool puzzle1Complete(){
         return collection >4;
     }

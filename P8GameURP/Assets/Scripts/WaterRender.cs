@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class WaterRender : MonoBehaviour
 {
-    int waterCounter;
+    public int waterCounter;
     public GameObject middleWater;
     public GameObject topWater;
     public GameObject waterpump;
-  //  public GameObject puzzle2Controller;
+    public GameObject puzzle2Controller;
     private Puzzle2Controller p2c;
     MeshRenderer bottomRender;
     MeshRenderer middleRender;
@@ -18,9 +18,11 @@ public class WaterRender : MonoBehaviour
     Outline TR;
     AudioSource AS;
     WaterPump wp;
+    public bool isPumping;
     // Start is called before the first frame update
     void Start()
     {
+        p2c = puzzle2Controller.GetComponent<Puzzle2Controller>();
         bottomRender = GetComponent<MeshRenderer>();
         BR = GetComponent<Outline>();
         AS = GetComponent<AudioSource>();
@@ -37,6 +39,7 @@ public class WaterRender : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        isPumping = wp.ispumping;
         if (waterCounter > 0)
         {
             bottomRender.enabled = true;
@@ -49,26 +52,17 @@ public class WaterRender : MonoBehaviour
             MR.enabled = true;
             TR.enabled = true;
         }
-        if (wp.ispumping)
-        {
+      
+        if (FountainComplete()){
+            AS.enabled = true;
             bottomRender.enabled = true;
             middleRender.enabled = true;
             topRender.enabled = true;
             BR.enabled = true;
             MR.enabled = true;
             TR.enabled = true;
-
         }
-        if(waterCounter<1 && !wp.ispumping)
-        {
-            bottomRender.enabled = false;
-            middleRender.enabled = false;
-            topRender.enabled = false;
-            BR.enabled = false;
-            MR.enabled = false;
-            TR.enabled = false;
-        }
-        AS.enabled = FountainComplete();
+        
     }
 
     public void RenderWater (bool turnOn){
@@ -101,6 +95,9 @@ public class WaterRender : MonoBehaviour
 
     public bool FountainComplete()
     {
-        return bottomRender.enabled && middleRender.enabled && topRender.enabled;
+        if (p2c.skipLvl) { waterCounter = 2; }
+        if (waterCounter > 1) { return true; }
+        if (isPumping) { return true; }
+        return false;       
     }
 }
