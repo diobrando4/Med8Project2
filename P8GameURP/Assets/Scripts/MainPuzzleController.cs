@@ -12,7 +12,8 @@ public class MainPuzzleController : MonoBehaviour
     private Puzzle1Controller p1c;
     private Puzzle2Controller p2c;
     private Puzzle3Controller p3c;
-    bool startP1, startP2, startP3, gameFinish;
+    [HideInInspector]public bool startP1, startP2, startP3;
+    [HideInInspector] public bool gameFinish = false;
     public InputField command;
     private bool executeCommand;
     public string textCommand;
@@ -26,7 +27,10 @@ public class MainPuzzleController : MonoBehaviour
     bool p3Once = false;
     private string lastCommand="";
     private int fixedCounter=0;
+    private int fixedCounter2=0;
     private bool canContinue = false;
+    private bool once=false;
+    int test=0;
     void Start()
     {
         p1c = Puzzle1Controller.GetComponent<Puzzle1Controller>();
@@ -39,11 +43,33 @@ public class MainPuzzleController : MonoBehaviour
     private void FixedUpdate()
     {
         fixedCounter++;
+        fixedCounter2++;
     }
     // Update is called once per frame
+    
     void Update()
     {
         Commands();
+        if (p3c.Puzzle3Complete())
+        {
+            if (!once)
+            {
+                canContinue = true;
+                once = true;
+            }
+            if (canContinue)
+            {
+                fixedCounter2 = 0;
+                canContinue = false;
+            }
+            if (Delay2(3.0f) && !canContinue)
+            {
+                fixedCounter2 = 0;
+                gameFinish = true;
+            }
+        }
+
+
         if (p1c.collection<4 && !p1Once){
             startP1 = true;
             p1Once = true;
@@ -69,7 +95,7 @@ public class MainPuzzleController : MonoBehaviour
             activateP3(startP3);
         }
 
-        if (!executeCommand&&Delay()) {
+        if (!executeCommand&&Delay(0.2f)) {
             activateP1(startP1);
             activateP2(startP2);
             activateP3(startP3);
@@ -78,9 +104,23 @@ public class MainPuzzleController : MonoBehaviour
             activateP2(startP2);
             activateP3(startP3);
         }
+       
+
     }
-    bool Delay(){
-        return fixedCounter % Mathf.Round(0.2f / Time.fixedDeltaTime) == 0;
+
+    bool Delay(float time){
+        return fixedCounter % Mathf.Round(time/ Time.fixedDeltaTime) == 0;
+    }
+    bool stop= false;
+    bool Delay2(float time)
+    {
+        if (fixedCounter2 % Mathf.Round((time/3) / Time.fixedDeltaTime) == 0 && !stop){
+            test++;
+        }
+        if(test==3){
+            stop = true;
+        }
+        return stop;
     }
     public void Commands(){
         if(Input.GetKeyDown(KeyCode.Tab))
@@ -98,19 +138,18 @@ public class MainPuzzleController : MonoBehaviour
             if (closeInputField) {              
                 closeInputField = false;
                 enterCounter++;          
-            }         
-        }
-        else{
-            Cursor.lockState = CursorLockMode.Locked;
+            }
+            
+        }else{
+            if (Time.timeScale==1) {
+                Cursor.lockState = CursorLockMode.Locked;
+            }
             command.text = "";
             command.enabled = false;
             command.image.enabled = false;
             command.textComponent.enabled = false;
             
         }
-       
-        
-       
     }
     public void activateP1(bool start){
         if (start) {
@@ -135,14 +174,15 @@ public class MainPuzzleController : MonoBehaviour
         }        
     }
 
-   
+    public void ExecuteCommandFunction(string optional="_optional_"){
+        if (optional != "_optional_"){
+            lastCommand = optional;
+            Debug.LogError(optional);
 
-    void ExecuteCommandFunction(string optional="_optional_"){
-        if(optional != "_optional_"){
-            command.text = optional;
+        }else{
+            lastCommand = command.text;
         }
-        lastCommand = command.text;
-        switch (command.text)
+        switch (lastCommand)
         {
             case "p1":
                 p1c.resetP1(true);

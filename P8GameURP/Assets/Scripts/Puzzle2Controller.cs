@@ -96,10 +96,12 @@ public class Puzzle2Controller : MonoBehaviour
             if (hasRuned)// are used in startPuzzle2
                 hasRuned = false;
 
-            if (spawnPlayer){
-                player.transform.position = playerSpawn.position;
-                player.transform.rotation = playerSpawn.rotation;
-            }
+            
+        }
+        if (spawnPlayer)
+        {
+            player.transform.position = playerSpawn.position;
+            player.transform.rotation = playerSpawn.rotation;
         }
         //startPuzzle2(true);
     }

@@ -9,6 +9,7 @@ TagManager:
   - pump
   - basket
   - Electric_Box_Objective
+  - MainPuzzleController
   layers:
   - Default
   - TransparentFX

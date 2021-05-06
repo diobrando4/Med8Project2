@@ -39,40 +39,25 @@ public class Puzzle1Controller : MonoBehaviour
 
         if (start && spawn)
         {
-             
-
-
-            
-            /*if (spawnPlayer) {
-                player.transform.position = playerSpawnPos.position;
-                player.transform.rotation = playerSpawnPos.rotation;
-            }*/
             for (int i = 0; i < puzzleObjectsGroup.transform.childCount; i++)
             {
                 puzzleObjectsGroup.transform.GetChild(i).position = D_PosList[i];
             }
             spawn = false;
-
             turnOffOnce = false;
-           // Debug.LogError("Spawning objects");
         }
         puzzleObjectsGroup.SetActive(start);
-       // Debug.LogError("col: "+collection + " start: " +start);
        if(!turnOffOnce && collection>4){
             for (int i = 0; i < puzzleObjectsGroup.transform.childCount; i++)
             {
                 puzzleObjectsGroup.transform.GetChild(i).gameObject.SetActive(false);//position = new Vector3(0, -100, 0);
             }
-
             turnOffOnce = true;
             turnOnOnce = false;
        }
-
-
     }
     public void resetP1(bool spawnPlayer)
     {
-
         if (spawnPlayer)
         {
             player.transform.position = playerSpawnPos.position;
@@ -86,8 +71,8 @@ public class Puzzle1Controller : MonoBehaviour
 
             turnOnOnce = true;
         }
+        spawn = true;
         collection = 0;
-
     }
 
 
