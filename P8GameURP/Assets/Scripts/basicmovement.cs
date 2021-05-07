@@ -254,7 +254,7 @@ public class basicmovement : MonoBehaviour
        
         float y =  Physics.gravity.y + rb.velocity.y;
         //GUI
-        if (Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.4f) && hit.collider.attachedRigidbody && grabbedObject == null && !prevent && onSurface() && !grabbing && !Input.GetKey(KeyCode.E))
+        if (Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.4f) && hit.collider.attachedRigidbody && grabbedObject == null && !prevent && onSurface() && !grabbing && !Input.GetKey(KeyCode.E) && hit.collider.tag!="car")
         {
             InteractCanvas.SetActive(true);
             Vector3 newVector = new Vector3(transform.position.x, Camera.main.transform.position.y, transform.position.z);
@@ -283,6 +283,7 @@ public class basicmovement : MonoBehaviour
             grabbedObject = hit.collider.gameObject.GetComponent<Rigidbody>();
             if (grabbedObject.mass < rb.mass + 110f)
             {
+                
                 audio.volume = 0.5f;
                 audio.PlayOneShot(GrabbingSound);
                
