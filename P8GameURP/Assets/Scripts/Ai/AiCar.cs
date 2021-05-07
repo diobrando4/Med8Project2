@@ -8,10 +8,32 @@ public class AiCar : MonoBehaviour
 {
     private Rigidbody rb;
     private NavMeshAgent agentCar;
-
+   
+    private  List<Vector3> WaypointList;
+    public bool forward;
+    public Transform patrolPoints;
+    private int currentPoint = 0;
     // Awake is called before Start()
     void Awake()
     {
+        WaypointList = new List<Vector3>();
+        int counter = 0;
+       
+        for (int i = 0; i < patrolPoints.transform.childCount; i++) {
+            WaypointList.Insert(i, patrolPoints.transform.GetChild(i).transform.position);
+        }
+        if(!forward){
+            WaypointList.Reverse();
+        }
+       
+        int startPos=0;
+        for (int i=0;i<WaypointList.Count; i++){
+            if(Vector3.Distance(WaypointList[i], transform.position)<20)
+            {
+                Debug.LogError( "index " +i + "distance " + Vector3.Distance(WaypointList[i], transform.position) + " name: " + this.name);
+                startPos = i;
+            }
+        }
         // Added these lines to automatically add components in the inspector when the script is activated
         rb = GetComponent<Rigidbody>();
         agentCar = GetComponent<NavMeshAgent>();
@@ -26,6 +48,9 @@ public class AiCar : MonoBehaviour
         {
             Debug.LogError("The Rigidbody isn't attached to " + gameObject.name);
         }
+        Debug.LogError("start pos " + startPos + " name: " + this.name);
+        currentPoint = startPos;
+        agentCar.destination = WaypointList[startPos];
     }
 
     // everytime you work with physics you want to use fixed update instead of update!
@@ -34,34 +59,20 @@ public class AiCar : MonoBehaviour
         Driving();
     }
 
-    public Transform[] patrolPoints;
-    private int currentPoint = 0;
+   
     
     void Driving()
-    {
-        //Debug.Log("Distance to current node is " + agent.remainingDistance);
+    {    
+            if (agentCar.remainingDistance < 2f)
+           // if (agentCar.transform.position == patrolPoints[currentPoint].transform.position)
+            {
+                currentPoint++;
+                if (currentPoint >= WaypointList.Count)
+                {
+                    currentPoint = 0;
+                }
 
-        // Agent goes to next patrol point after reaching its current node
-        if (agentCar.remainingDistance < 0.5f)
-        {
-            // Destination for the agent
-            agentCar.destination = patrolPoints[currentPoint++].position;
-            //Debug.Log("currentPoint node: " + currentPoint);
-        }
-        // Restart the current patrol point back to the first node
-        if (currentPoint >= patrolPoints.Length)
-        {
-            currentPoint = 0;
-            //Debug.Log("currentPoint node reset to: " + currentPoint);
-        }
-    }
-
-    void OnTriggerEnter(Collider collider)
-    {
-        if (collider.tag == "Player")
-        {
-            //Debug.Log("YOU DIED");
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
+                 agentCar.destination = WaypointList[currentPoint];
+            }   
     }
 }

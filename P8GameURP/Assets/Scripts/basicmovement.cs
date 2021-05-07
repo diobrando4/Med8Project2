@@ -283,7 +283,7 @@ public class basicmovement : MonoBehaviour
             grabbedObject = hit.collider.gameObject.GetComponent<Rigidbody>();
             if (grabbedObject.mass < rb.mass + 110f)
             {
-                
+                audio.volume = 0.5f;
                 audio.PlayOneShot(GrabbingSound);
                
                 grabbedObject.freezeRotation = true;

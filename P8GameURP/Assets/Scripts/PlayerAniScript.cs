@@ -27,6 +27,7 @@ public class PlayerAniScript : MonoBehaviour
     string walkCrouch = "Crouch_Walk";
    [HideInInspector] public string currentstate;
 
+    public bool isAnimating = false;
     public bool crouch = false;
     private bool onGround = false;
     private bool running = false;
@@ -36,6 +37,7 @@ public class PlayerAniScript : MonoBehaviour
     private bool IsWalking = false;
     private bool criticalAniDone = true;
 
+    private Rigidbody rb;
 
     private float timedelay = 0.2f;
     private float AnimationTimeLength = 0;
@@ -46,9 +48,11 @@ public class PlayerAniScript : MonoBehaviour
     private int FixedCounter = 0;
     private int JumpCounter = 0;
     private int CrouchStartCounter = 0;
+    
     // Start is called before the first frame update
     void Awake()
     {
+        rb = player.GetComponent<Rigidbody>();
         ani = GetComponent<Animator>();
         bm = player.GetComponent<basicmovement>();
         runnerbody = runnerbody.GetComponent<CapsuleCollider>();
@@ -126,7 +130,14 @@ public class PlayerAniScript : MonoBehaviour
         walkbody.enabled = IsWalking;
         runnerbody.enabled = !IsWalking;
         //ani.PlayInFixedTime(currentstate, 0);
+        if (rb.velocity.magnitude>2) {
+            isAnimating = true;
+            Debug.LogError(rb.velocity.magnitude);
+        }else{
+            isAnimating = false;
+        }
         ani.Play(currentstate,0);
+       // isAnimating = ani.GetCurrentAnimatorClipInfo(0)[0].clip.length;
     }
 
     public bool GetCurrentCollider()
