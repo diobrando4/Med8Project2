@@ -7,7 +7,7 @@ public class basicmovement : MonoBehaviour
 {
     public PlayerAniScript pas;
     private Rigidbody rb;
-    public GameObject InteractGUI;
+    public GameObject InteractCanvas;
     public Image JumpBarGUI;
     public Image JumpOverlayGUI;
 
@@ -190,10 +190,8 @@ public class basicmovement : MonoBehaviour
                 jumpSpeed += jumpForceIncrements;
                 increments++;
                 JumpBarUnits = Mathf.Lerp(0, 1, increments*increaseForcePrMiliSec);
-                Debug.LogError("a= "+ JumpBarUnits);
+               // Debug.LogError("a= "+ JumpBarUnits);
             }
-            
-            //UnitySuck();
             JumpBarGUI.fillAmount = JumpBarUnits;
         }
        
@@ -218,9 +216,55 @@ public class basicmovement : MonoBehaviour
     }
 
     void grab()
-    {      
+    {    
+        float GuiHeight;
+       
         float y =  Physics.gravity.y + rb.velocity.y;
-        if ( Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.4f) && Input.GetKey(KeyCode.E) && hit.collider.attachedRigidbody && grabbedObject==null &&!prevent && onSurface())
+        //GUI
+        if (Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.4f) && hit.collider.attachedRigidbody && grabbedObject == null && !prevent && onSurface() && !grabbing && !Input.GetKey(KeyCode.E))
+        {
+            /*float x = 0.3f;
+            float _y = 0.3f;
+            float z = 0.3f;
+            if(hit.normal.x<0){
+                x = x * -1;
+            }else{
+                x = 0.3f;
+            }
+            if (hit.normal.y < 0)
+            {
+                _y = _y * -1;
+            }
+            if (hit.normal.z < 0)
+            {
+                z = z * -1;
+            }
+            else
+            {
+                z = 0.3f;
+            }*/
+            InteractCanvas.SetActive(true);
+            Vector3 newVector = new Vector3(transform.position.x, Camera.main.transform.position.y, transform.position.z);
+            //GuiHeight = hit.transform.position.y;
+            
+            if (Vector3.Distance(hit.point, newVector) <0.36 &&  hit.normal.y>0){
+                InteractCanvas.transform.position = new Vector3(hit.point.x, hit.point.y + 0.2f, hit.point.z);
+                
+            }
+            else{ 
+                InteractCanvas.transform.position = Vector3.Lerp(InteractCanvas.transform.position,newVector, Time.deltaTime * 50f);
+
+            }
+            
+           
+           InteractCanvas.transform.LookAt(Camera.main.transform.position);
+
+
+
+        }else{
+            InteractCanvas.SetActive(false);
+        }
+            if ( Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.4f) && Input.GetKey(KeyCode.E) && hit.collider.attachedRigidbody && grabbedObject==null &&!prevent && onSurface())
         {
             grabbedObject = hit.collider.gameObject.GetComponent<Rigidbody>();
             if (grabbedObject.mass < rb.mass + 110f)
@@ -355,151 +399,5 @@ public class basicmovement : MonoBehaviour
         return Physics.Raycast(playerPos, Vector3.forward, 0.1f);
 
     }
-    void UnitySuck()
-    {
-        if (increments == maxIncrements)
-        {
-            JumpBarUnits = 1f;
-        }
-        else if (increments == maxIncrements * 0.975)
-        {
-            JumpBarUnits = 0.975f;
-        }
-        else if (increments == maxIncrements * 0.95)
-        {
-            JumpBarUnits = 0.95f;
-        }
-        else if (increments == maxIncrements * 0.925)
-        {
-            JumpBarUnits = 0.925f;
-        }
-        else if (increments == maxIncrements * 0.9)
-        {
-            JumpBarUnits = 0.9f;
-        }
-        else if (increments == maxIncrements * 0.875)
-        {
-            JumpBarUnits = 0.875f;
-        }
-        else if (increments == maxIncrements * 0.85)
-        {
-            JumpBarUnits = 0.85f;
-        }
-        else if (increments == maxIncrements * 0.825)
-        {
-            JumpBarUnits = 0.825f;
-        }
-        else if (increments == maxIncrements * 0.8)
-        {
-            JumpBarUnits = 0.8f;
-        }
-        else if (increments == maxIncrements * 0.775)
-        {
-            JumpBarUnits = 0.775f;
-        }
-        else if (increments == maxIncrements * 0.75)
-        {
-            JumpBarUnits = 0.75f;
-        }
-        else if (increments == maxIncrements * 0.725)
-        {
-            JumpBarUnits = 0.725f;
-        }
-        else if (increments == maxIncrements * 0.6)
-        {
-            JumpBarUnits = 0.6f;
-        }
-        else if (increments == maxIncrements * 0.575)
-        {
-            JumpBarUnits = 0.575f;
-        }
-        else if (increments == maxIncrements * 0.55)
-        {
-            JumpBarUnits = 0.55f;
-        }
-        else if (increments == maxIncrements * 0.525)
-        {
-            JumpBarUnits = 0.525f;
-        }
-        else if (increments == maxIncrements * 0.5)
-        {
-            JumpBarUnits = 0.5f;
-        }
-        else if (increments == maxIncrements * 0.475)
-        {
-            JumpBarUnits = 0.475f;
-        }
-        else if (increments == maxIncrements * 0.45)
-        {
-            JumpBarUnits = 0.45f;
-        }
-        else if (increments == maxIncrements * 0.425)
-        {
-            JumpBarUnits = 0.425f;
-        }
-        else if (increments == maxIncrements * 0.4)
-        {
-            JumpBarUnits = 0.4f;
-        }
-        else if (increments == maxIncrements * 0.375)
-        {
-            JumpBarUnits = 0.375f;
-        }
-        else if (increments == maxIncrements * 0.35)
-        {
-            JumpBarUnits = 0.35f;
-        }
-        else if (increments == maxIncrements * 0.325)
-        {
-            JumpBarUnits = 0.325f;
-        }
-        else if (increments == maxIncrements * 0.3)
-        {
-            JumpBarUnits = 0.3f;
-        }
-        else if (increments == maxIncrements * 0.275)
-        {
-            JumpBarUnits = 0.275f;
-        }
-        else if (increments == maxIncrements * 0.25)
-        {
-            JumpBarUnits = 0.25f;
-        }
-        else if (increments == maxIncrements * 0.225)
-        {
-            JumpBarUnits = 0.225f;
-        }
-        else if (increments == maxIncrements * 0.2)
-        {
-            JumpBarUnits = 0.2f;
-        }
-        else if (increments == maxIncrements * 0.175)
-        {
-            JumpBarUnits = 0.175f;
-        }
-        else if (increments == maxIncrements * 0.15)
-        {
-            JumpBarUnits = 0.15f;
-        }
-        else if (increments == maxIncrements * 0.125)
-        {
-            JumpBarUnits = 0.125f;
-        }
-        else if (increments == maxIncrements * 0.1)
-        {
-            JumpBarUnits = 0.1f;
-        }
-        else if (increments == maxIncrements * 0.075)
-        {
-            JumpBarUnits = 0.075f;
-        }
-        else if (increments == maxIncrements * 0.05)
-        {
-            JumpBarUnits = 0.05f;
-        }
-        else if (increments == maxIncrements * 0.025)
-        {
-            JumpBarUnits = 0.025f;
-        }
-    }
+    
 }
