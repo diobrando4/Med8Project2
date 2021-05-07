@@ -6,7 +6,7 @@ public class PlayerAniScript : MonoBehaviour
 {
     Animator ani;
     basicmovement bm;
-    [SerializeField] private GameObject player;
+    [SerializeField] public GameObject player;
     [SerializeField] private GameObject playerlead;
 
     // needs to be shared to player movement script
@@ -25,7 +25,7 @@ public class PlayerAniScript : MonoBehaviour
     string startCrouch = "Start_Crouch";
     string idleCrouch = "Idle_Crouch";
     string walkCrouch = "Crouch_Walk";
-    string currentstate;
+   [HideInInspector] public string currentstate;
 
     public bool crouch = false;
     private bool onGround = false;
