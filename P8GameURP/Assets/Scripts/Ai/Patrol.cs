@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI; // We need this for the NavMesh
 using UnityEngine.SceneManagement;
 using System;
+
 public class Patrol : MonoBehaviour
 {
     #region Variables
@@ -20,6 +21,7 @@ public class Patrol : MonoBehaviour
     private Rigidbody rb;
     private NavMeshAgent agent;
     public Transform raypos;
+
     [Header("FoV stuff...")]
     [Range(0, 180)] public float maxAngle;
     public float maxRadius;
@@ -180,12 +182,12 @@ public class Patrol : MonoBehaviour
     // Awake is called before Start()
     void Awake()
     {
-       
         // Added these lines to automatically add components in the inspector when the script is activated
         player = GameObject.Find("player").transform;
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         pas = playerAni.GetComponent<PlayerAniScript>();
+        audioSource = GetComponent<AudioSource>();
         
         // Checks if the NavMesh has been added to the agent/enemy
         if (agent == null)
@@ -197,6 +199,11 @@ public class Patrol : MonoBehaviour
         {
             Debug.LogError("The Rigidbody isn't attached to " + gameObject.name);
         }
+    }
+
+    void Start()
+    {
+        InvokeRepeating("CallFootsteps", 0, 1);
     }
 
     int FixedCounter = 0;
@@ -224,21 +231,25 @@ public class Patrol : MonoBehaviour
             case 0:
                 Patrolling();
                 agent.speed = patroleSpeed;
-                Debug.LogWarning("Patrol");
+                //Debug.LogWarning("Patrol");
+                agentIsMoving = true;
                 break;
             case 1:
                 agent.speed = AlertSpeed;
-                Debug.LogWarning("Alert");
+                //Debug.LogWarning("Alert");
+                agentIsMoving = false;
                 break;
             case 3:
                 Investigating();
                 agent.speed =InvestigateSpeed;
-                Debug.LogWarning("Investigate");
+                //Debug.LogWarning("Investigate");
+                agentIsMoving = true;
                 break;
             case 4:
                 Chasing();
                 agent.speed = ChaseSpeed;
-                Debug.LogWarning("Chase");
+                //Debug.LogWarning("Chase");
+                agentIsMoving = true;
                 break;
         }
     }
@@ -306,7 +317,6 @@ public class Patrol : MonoBehaviour
             // but we should probably get do something nicer
         }
     }
-    
 
     void Restart()
     {
@@ -314,6 +324,18 @@ public class Patrol : MonoBehaviour
         // Reloads the current scene
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         //SceneManager.LoadScene("StartMenu");
+    }
+
+    bool agentIsMoving = false;
+    AudioSource audioSource;
+    public AudioClip footstepSound;
+
+    void CallFootsteps()
+    {
+        if(agentIsMoving == true)
+        {
+            audioSource.PlayOneShot(footstepSound);
+        }
     }
 
     // Used for the agent state index?
