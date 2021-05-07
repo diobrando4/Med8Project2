@@ -2,10 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
 public class basicmovement : MonoBehaviour
 {
     public PlayerAniScript pas;
     private Rigidbody rb;
+    public GameObject InteractGUI;
+    public Image JumpBarGUI;
+    public Image JumpOverlayGUI;
+
     [SerializeField] private GameObject GrabPos;
 
     [Range(0.2f, 10)] public float jumpSpeed = 0.5f;
@@ -42,87 +47,73 @@ public class basicmovement : MonoBehaviour
     private float startWeight;
     private float weight;
     private float startJumpSpeed = 0f;
+    private float JumpBarUnits=0.000f;
+    private float velY = 1;
 
+
+    [HideInInspector] public bool grabbing;
+    [HideInInspector] public bool playJumpAnimation;
     private bool forward;
     private bool backward;
     private bool crouching;
     private bool flying;
     private bool startJumpCounter;
-    [HideInInspector] public bool grabbing;
-    [HideInInspector] public bool playJumpAnimation;
     private bool canJump = false;
     private bool fall = false;
     private bool jumpCountTest;
     private bool jumpIsMaxed;
-    float velY = 1;
+   
 
     [Header("max increments depended on jumpincrements see tooltip")]
     [Tooltip("if jumpincrements is 0.1 and maxincrements max jump height will be achived after 1 sec")]
     public int maxIncrements = 10;
     private int increments = 0;
     private int counter;
-    private int testCoutner = 0;
-    int multiplyierX = 1;
-    int multiplyierZ = 1;
+    private int multiplyierX = 1;
+    private int multiplyierZ = 1;
 
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-
+  
         downDirection = Vector3.down;
         startSpeed = speed;
         maxSpeed = startSpeed * 2;
         BodyCollider = GetComponent<CapsuleCollider>();
         downDisRange = BodyCollider.GetComponent<Collider>().GetComponent<Collider>().bounds.extents.y + downDis;
-      //  Debug.LogError(downDisRange);
         crouchSpeed = startSpeed / 2;
         startWeight = rb.mass;
         weight = startWeight;
         startJumpSpeed = jumpSpeed;
-        horiMax = startSpeed * 1.6f;
+        horiMax = startSpeed * 1.6f;              
     }
 
     // Update is called once per frame
     void FixedUpdate()
-    {
+    {       
         counter++;
         forward = Input.GetAxis("Vertical") > 0;
         backward = Input.GetAxis("Vertical") < 0;
 
         raypos = BodyCollider.transform.position;
-        raypos.y = raypos.y + 0.3f;// 927692
+        raypos.y = raypos.y + 0.32f;// 927692
         crouching = pas.crouch;
         playerPos = rb.position;
+
         move();
         grab();
-        jumping(jumpIncrements); Debug.Log("canJump" + canJump);
-
-        //  if (!onSurface() && grabbing&& vertical!=0 && !canJump|| !onSurface() && grabbing && horizontal != 0 && !canJump) { preventFlying(1.5f); };
-        test();
+        jumping(jumpIncrements);     
         preventFlying();
-        //if (!flying && !onSurface() && grabbing && vertical != 0 || !flying && !onSurface() && grabbing && horizontal != 0) { };
-        // Debug.LogError(counter % Mathf.Round(1.5f / Time.fixedDeltaTime));
-        //preventFlying(0.0f);
-        //Debug.LogError("first part " + (!flying && !onSurface() && grabbing && vertical != 0));
-        // Debug.LogError("test =  "+test());
-        //Debug.LogError("total  =  "+(!flying && !onSurface() && grabbing && vertical != 0 && test()));
-
-        /*if (!flying && !onSurface() && grabbing && vertical != 0 && test() ||test() && !flying && !onSurface() && grabbing && horizontal != 0)
-        {
-            rb.velocity = new Vector3(rb.velocity.x, Physics.gravity.y + rb.velocity.y, rb.velocity.z);
-        }*/
+  
         if(transform.position.y<0 && !onSurface()){
             transform.position = new Vector3(transform.position.x, 1f, transform.position.z);
-
         }
     }
 
     void move()
     {
-        Vector3 jumping = Vector3.up * rb.velocity.y * jumpSpeed;
-        Vector3 j = Vector3.zero;
         vertical = Input.GetAxis("Vertical") * runSpeed();
 
         horizontal = Input.GetAxis("Horizontal") * runSpeed();
@@ -131,28 +122,13 @@ public class basicmovement : MonoBehaviour
         {
             if (!rayHit())
             {
-                // rb.velocity = (transform.right * vertical + transform.forward * horizontal) * runSpeed();
-                //rb.velocity = (transform.forward * horizontal + transform.right * vertical) ;
                  rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime); 
                  rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1 * Time.fixedDeltaTime); 
-               
-                //rb.MovePosition(transform.position + (transform.forward * vertical) * Time.deltaTime);
-                /*Debug.Log("velocity x = "+rb.velocity.x);
-                Debug.Log("velocity y = "+rb.velocity.y);
-                Debug.Log("velocity z = "+rb.velocity.z);*/
             }
             else if (rayHit() && !forward)
             {
                  rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime); 
                  rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1 * Time.fixedDeltaTime); 
-
-
-            }
-            else if(rayHit() && !forward)
-            {
-                 rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime); 
-                 rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1 * Time.fixedDeltaTime); 
-                
             }
             else{
                 if (speed>0) { speed--; }
@@ -165,41 +141,11 @@ public class basicmovement : MonoBehaviour
             rb.MovePosition(rb.position + (transform.forward * horizontal) * 1.1f * -1 * Time.fixedDeltaTime);
         }
         else { rb.velocity = Vector3.zero; Debug.LogWarning(hit.collider.name); speed--;  }
-        // jump if player is on a collider
-
-
-
-
+        
     }
-    bool degrease = false; int count = 0;
+   
     void preventFlying()
     {
-
-        if (fall && vertical != 0 || horizontal != 0 && fall)
-        {
-            rb.velocity = new Vector3(rb.velocity.x, Physics.gravity.y + rb.velocity.y, rb.velocity.z);
-        }
-
-
-
-    }
-
-    void test()
-    {
-        if (startJumpCounter && !onSurface())
-        {
-            testCoutner++;
-        }
-       /* if (testCoutner % Mathf.Round(1f / Time.fixedDeltaTime) == 0 && startJumpCounter && !onSurface() && !grabbing)
-        {
-            flying = false;
-            startJumpCounter = false;
-            testCoutner = 0;
-            fall = true;
-
-
-
-        }*/
         if (jump>0){
             jumpCountTest = true;
         }
@@ -212,29 +158,20 @@ public class basicmovement : MonoBehaviour
                 fall = true;
                 jumpCountTest = false;
             }
-        }/*else{
-            if (testCoutner % Mathf.Round(1.5f / Time.fixedDeltaTime) == 0 && startJumpCounter && !onSurface() && grabbing&&!jumpCountTest)
-            {
-                flying = false;
-                startJumpCounter = false;
-                testCoutner = 0;
-                fall = true;
-                
-            }
-        }*/
-        
+        }        
         if (fall && onSurface())
         {
             fall = false;
         }
+        if (fall && vertical != 0 || horizontal != 0 && fall)
+        {
+            rb.velocity = new Vector3(rb.velocity.x, Physics.gravity.y + rb.velocity.y, rb.velocity.z);
+        }
 
     }
-
-
     void jumping(float increaseForcePrMiliSec)
     {
-
-
+        float a=0;
         if (jump > 0 && onSurface())
         {
             canJump = true;
@@ -243,15 +180,23 @@ public class basicmovement : MonoBehaviour
 
         if (canJump)
         {
-
-            if (counter % Mathf.Round(increaseForcePrMiliSec / Time.fixedDeltaTime) == 0 && jump > 0 && canJump && increments <= maxIncrements && !Input.GetKey(KeyCode.LeftShift))
+            if (!JumpBarGUI.enabled || !JumpOverlayGUI.enabled)
             {
-
+                JumpBarGUI.enabled = true;
+                JumpOverlayGUI.enabled = true;
+            }
+            if ((counter/4) % Mathf.Round(increaseForcePrMiliSec / Time.fixedDeltaTime) == 0 && jump > 0 && canJump && increments < maxIncrements && !Input.GetKey(KeyCode.LeftShift))
+            {
                 jumpSpeed += jumpForceIncrements;
                 increments++;
-
+                JumpBarUnits = Mathf.Lerp(0, 1, increments*increaseForcePrMiliSec);
+                Debug.LogError("a= "+ JumpBarUnits);
             }
+            
+            //UnitySuck();
+            JumpBarGUI.fillAmount = JumpBarUnits;
         }
+       
         if (jump == 0 && canJump)
         {
             if(grabbing){
@@ -264,34 +209,23 @@ public class basicmovement : MonoBehaviour
             canJump = false;
             counter = 0;
             startJumpCounter = true;
+            JumpBarGUI.enabled = false;
+            JumpOverlayGUI.enabled = false;
+            JumpBarGUI.fillAmount = 0;
+            JumpBarUnits = 0;
 
         }
-
-
-
-
-
     }
 
-
-
     void grab()
-    {
-        
+    {      
         float y =  Physics.gravity.y + rb.velocity.y;
-        if ( Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.4f) && Input.GetKey(KeyCode.E) && hit.collider.attachedRigidbody && grabbedObject==null &&!prevent)
+        if ( Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.4f) && Input.GetKey(KeyCode.E) && hit.collider.attachedRigidbody && grabbedObject==null &&!prevent && onSurface())
         {
-
-
-
-            
-            
             grabbedObject = hit.collider.gameObject.GetComponent<Rigidbody>();
-           // Debug.LogError(grabbedObject.name);
             if (grabbedObject.mass < rb.mass + 110f)
             {
                 grabbedObject.freezeRotation = true;
-                //hit.collider.gameObject.layer = 2;
                 grabDirection = transform.position - grabbedObject.transform.position;
                 if (onSurface())
                 {
@@ -300,35 +234,16 @@ public class basicmovement : MonoBehaviour
                 rb.position = new Vector3(rb.position.x, grabY, rb.position.z);
                 Debug.LogWarning("Grabbing");
                 grabbing = true;
-
-
-                //  grabbedObject.position= transform.position- grabDirection ;
-                /*weight = grabbedObject.mass;
-                rb.mass = weight;*/
-                // grabbedObject.transform.SetParent(rb.transform);
-                /*if (forward) {
-                    grabbedObject.AddRelativeForce(grabDirection * (runSpeed()/weight));
-                    //grabbedObject.AddForce(Vector3.forward * grabForce(grabbedObject.mass,0.2f));
-                }else if(backward){
-                    grabbedObject.AddForce(grabDirection * speed*-1);
-                }*/
             }
         }
         
         if (vertical != 0 && grabbing || horizontal != 0 && grabbing && grabbedObject != null)
         {
-           // Debug.LogError(grabbedObject.name);
             multiplyierX = hit.normal.x > 0 ? 1 : -1;
             multiplyierZ = hit.normal.z > 0 ? 1 : -1;
             if(!flying)
                 rb.velocity = new Vector3(rb.velocity.x*multiplyierX, y, rb.velocity.z*multiplyierZ);
-           // jumping(jumpIncrements);
             grabbedObject.velocity = rb.velocity;
-           // grabbedObject.MovePosition(GrabPos.transform.position - grabbedObject.transform.position);
-           // y = grabbedObject.position.y;
-           
-            //grabbedObject.transform.position = Vector3.Lerp(GrabPos.transform.position, grabbedObject.transform.position, Time.fixedDeltaTime * 100);
-            //grabbedObject.transform.position = GrabPos.transform.position;
         }
          if (grabbing && grabbedObject != null)
         {
@@ -339,41 +254,54 @@ public class basicmovement : MonoBehaviour
           
             rb.useGravity = true;
             grabbedObject.velocity = Vector3.zero;
-            //jumping(jumpIncrements);
             grabbedObject.useGravity = false;
-            
-            // grabbedObject.MovePosition(GrabPos.transform.position - grabbedObject.transform.position);
-            //grabbedObject.transform.position = GrabPos.transform.position - grabbedObject.transform.position;
-            //grabbedObject.velocity = rb.velocity * -1;
-
-            // grabbedObject.MovePosition(GrabPos.transform.position);
-            //Vector3.Lerp(startMarker.position, endMarker.position, fractionOfJourney);
-            //  grabbedObject.transform.position = GrabPos.transform.position;
             grabbedObject.transform.position = GrabPos.transform.position;
-           // grabbedObject.transform.position = Vector3.Lerp(GrabPos.transform.position, grabbedObject.transform.position, Time.fixedDeltaTime*100);
-            //Debug.Log("grabbedObject" + grabbedObject.transform.position + " goal position " + GrabPos.transform.position);
         }
 
         if (grabbedObject != null && !Input.GetKey(KeyCode.E))
         {
             grabbedObject.useGravity = true;
-            //grabbedObject.transform.parent = null;
             grabbedObject.freezeRotation = false;
             grabbing = false;
-           // grabbedObject.gameObject.layer = 0;
-            //Debug.LogWarning("Dropped the object");
             grabbedObject = null;
             rb.mass = startWeight;
         }
-
-
-    }
-    float grabForce(float mass, float accelation)
+    }  
+    float horiMax;
+    public bool prevent = false;
+    float diffMaxSpeed;
+    private float runSpeed()
     {
-        float a = 1 / mass;
-        float force = mass * a;
-
-        return force;
+        diffMaxSpeed=maxSpeed;
+        if (!crouching)
+        {
+            if (Input.GetKey(KeyCode.LeftShift) && !grabbing)
+            {
+                speed++;
+                diffMaxSpeed = maxSpeed;               
+            } 
+            else
+            {
+                speed--;
+                diffMaxSpeed = maxSpeed;
+            }
+            if(grabbing ){            
+                diffMaxSpeed = maxSpeed;
+                speed =  startSpeed+0.25f;
+            }           
+        }else{         
+            speed = crouchSpeed;
+        }
+        if(speed> startSpeed+0.25f){
+            prevent = true;
+        }else{
+            prevent = false;
+        }
+        if(vertical!=0 && horizontal!=0){
+            diffMaxSpeed = horiMax;
+        }
+        speed = Mathf.Clamp(speed, startSpeed, diffMaxSpeed);
+        return speed;
     }
 
     public bool rayHit()
@@ -427,46 +355,151 @@ public class basicmovement : MonoBehaviour
         return Physics.Raycast(playerPos, Vector3.forward, 0.1f);
 
     }
-    float horiMax;
-    public bool prevent = false;
-    float diffMaxSpeed;
-    private float runSpeed()
+    void UnitySuck()
     {
-        diffMaxSpeed=maxSpeed;
-        if (!crouching)
+        if (increments == maxIncrements)
         {
-            if (Input.GetKey(KeyCode.LeftShift) && !grabbing)
-            {
-                speed++;
-                diffMaxSpeed = maxSpeed;
-                
-            } 
-            else
-            {
-                speed--;
-                diffMaxSpeed = maxSpeed;
-            }
-            if(grabbing ){
-              
-                diffMaxSpeed = maxSpeed;
-                speed =  startSpeed+0.25f;
-            }
-            
-        }else{
-           
-            speed = crouchSpeed;
+            JumpBarUnits = 1f;
         }
-        if(speed> startSpeed+0.25f){
-            prevent = true;
-        }else{
-            prevent = false;
+        else if (increments == maxIncrements * 0.975)
+        {
+            JumpBarUnits = 0.975f;
         }
-        if(vertical!=0 && horizontal!=0){
-            //speed = speed * 0.7f;
-            diffMaxSpeed = horiMax;
+        else if (increments == maxIncrements * 0.95)
+        {
+            JumpBarUnits = 0.95f;
         }
-       // Debug.LogError("diffmax"+diffMaxSpeed);
-        speed = Mathf.Clamp(speed, startSpeed, diffMaxSpeed);
-        return speed;
+        else if (increments == maxIncrements * 0.925)
+        {
+            JumpBarUnits = 0.925f;
+        }
+        else if (increments == maxIncrements * 0.9)
+        {
+            JumpBarUnits = 0.9f;
+        }
+        else if (increments == maxIncrements * 0.875)
+        {
+            JumpBarUnits = 0.875f;
+        }
+        else if (increments == maxIncrements * 0.85)
+        {
+            JumpBarUnits = 0.85f;
+        }
+        else if (increments == maxIncrements * 0.825)
+        {
+            JumpBarUnits = 0.825f;
+        }
+        else if (increments == maxIncrements * 0.8)
+        {
+            JumpBarUnits = 0.8f;
+        }
+        else if (increments == maxIncrements * 0.775)
+        {
+            JumpBarUnits = 0.775f;
+        }
+        else if (increments == maxIncrements * 0.75)
+        {
+            JumpBarUnits = 0.75f;
+        }
+        else if (increments == maxIncrements * 0.725)
+        {
+            JumpBarUnits = 0.725f;
+        }
+        else if (increments == maxIncrements * 0.6)
+        {
+            JumpBarUnits = 0.6f;
+        }
+        else if (increments == maxIncrements * 0.575)
+        {
+            JumpBarUnits = 0.575f;
+        }
+        else if (increments == maxIncrements * 0.55)
+        {
+            JumpBarUnits = 0.55f;
+        }
+        else if (increments == maxIncrements * 0.525)
+        {
+            JumpBarUnits = 0.525f;
+        }
+        else if (increments == maxIncrements * 0.5)
+        {
+            JumpBarUnits = 0.5f;
+        }
+        else if (increments == maxIncrements * 0.475)
+        {
+            JumpBarUnits = 0.475f;
+        }
+        else if (increments == maxIncrements * 0.45)
+        {
+            JumpBarUnits = 0.45f;
+        }
+        else if (increments == maxIncrements * 0.425)
+        {
+            JumpBarUnits = 0.425f;
+        }
+        else if (increments == maxIncrements * 0.4)
+        {
+            JumpBarUnits = 0.4f;
+        }
+        else if (increments == maxIncrements * 0.375)
+        {
+            JumpBarUnits = 0.375f;
+        }
+        else if (increments == maxIncrements * 0.35)
+        {
+            JumpBarUnits = 0.35f;
+        }
+        else if (increments == maxIncrements * 0.325)
+        {
+            JumpBarUnits = 0.325f;
+        }
+        else if (increments == maxIncrements * 0.3)
+        {
+            JumpBarUnits = 0.3f;
+        }
+        else if (increments == maxIncrements * 0.275)
+        {
+            JumpBarUnits = 0.275f;
+        }
+        else if (increments == maxIncrements * 0.25)
+        {
+            JumpBarUnits = 0.25f;
+        }
+        else if (increments == maxIncrements * 0.225)
+        {
+            JumpBarUnits = 0.225f;
+        }
+        else if (increments == maxIncrements * 0.2)
+        {
+            JumpBarUnits = 0.2f;
+        }
+        else if (increments == maxIncrements * 0.175)
+        {
+            JumpBarUnits = 0.175f;
+        }
+        else if (increments == maxIncrements * 0.15)
+        {
+            JumpBarUnits = 0.15f;
+        }
+        else if (increments == maxIncrements * 0.125)
+        {
+            JumpBarUnits = 0.125f;
+        }
+        else if (increments == maxIncrements * 0.1)
+        {
+            JumpBarUnits = 0.1f;
+        }
+        else if (increments == maxIncrements * 0.075)
+        {
+            JumpBarUnits = 0.075f;
+        }
+        else if (increments == maxIncrements * 0.05)
+        {
+            JumpBarUnits = 0.05f;
+        }
+        else if (increments == maxIncrements * 0.025)
+        {
+            JumpBarUnits = 0.025f;
+        }
     }
 }
