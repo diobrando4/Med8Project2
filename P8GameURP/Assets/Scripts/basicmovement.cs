@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class basicmovement : MonoBehaviour
 {
     public PlayerAniScript pas;
-    private Rigidbody rb;
+    [HideInInspector] public Rigidbody rb;
     public GameObject InteractCanvas;
     public Image JumpBarGUI;
     public Image JumpOverlayGUI;
@@ -23,6 +23,20 @@ public class basicmovement : MonoBehaviour
 
     [Header("Jump speed incremential time mili sec")]
     [Range(0.0f, 1)] public float jumpIncrements = 0.1f;
+
+
+    [Header("max increments depended on jumpincrements see tooltip")]
+    [Tooltip("if jumpincrements is 0.1 and maxincrements max jump height will be achived after 1 sec")]
+    public int maxIncrements = 10;
+
+    [Header("Sound Files")]
+    [Tooltip("for sound")]
+    
+    public AudioClip QuickJumpSound;
+    public AudioClip LongJumpSound;
+    public AudioClip GrabbingSound;
+    private AudioSource audio;
+
 
     [HideInInspector] public RaycastHit hit;
     [HideInInspector] public Rigidbody grabbedObject;
@@ -62,11 +76,8 @@ public class basicmovement : MonoBehaviour
     private bool fall = false;
     private bool jumpCountTest;
     private bool jumpIsMaxed;
-   
+    private bool movement;
 
-    [Header("max increments depended on jumpincrements see tooltip")]
-    [Tooltip("if jumpincrements is 0.1 and maxincrements max jump height will be achived after 1 sec")]
-    public int maxIncrements = 10;
     private int increments = 0;
     private int counter;
     private int multiplyierX = 1;
@@ -76,8 +87,9 @@ public class basicmovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+       
         rb = GetComponent<Rigidbody>();
-  
+        audio = GetComponent<AudioSource>();
         downDirection = Vector3.down;
         startSpeed = speed;
         maxSpeed = startSpeed * 2;
@@ -96,7 +108,7 @@ public class basicmovement : MonoBehaviour
         counter++;
         forward = Input.GetAxis("Vertical") > 0;
         backward = Input.GetAxis("Vertical") < 0;
-
+        movement = Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0;
         raypos = BodyCollider.transform.position;
         raypos.y = raypos.y + 0.32f;// 927692
         crouching = pas.crouch;
@@ -110,6 +122,7 @@ public class basicmovement : MonoBehaviour
         if(transform.position.y<0 && !onSurface()){
             transform.position = new Vector3(transform.position.x, 1f, transform.position.z);
         }
+        
     }
 
     void move()
@@ -124,11 +137,13 @@ public class basicmovement : MonoBehaviour
             {
                  rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime); 
                  rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1 * Time.fixedDeltaTime); 
+        
             }
             else if (rayHit() && !forward)
             {
                  rb.MovePosition(rb.position + (transform.right * vertical) * runSpeed() * Time.fixedDeltaTime); 
-                 rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1 * Time.fixedDeltaTime); 
+                 rb.MovePosition(rb.position + (transform.forward * horizontal) * runSpeed() * -1 * Time.fixedDeltaTime);
+                
             }
             else{
                 if (speed>0) { speed--; }
@@ -139,9 +154,21 @@ public class basicmovement : MonoBehaviour
             rb.MovePosition(rb.position + (transform.right * vertical) * 3* Time.fixedDeltaTime);
 
             rb.MovePosition(rb.position + (transform.forward * horizontal) * 1.1f * -1 * Time.fixedDeltaTime);
+       
         }
         else { rb.velocity = Vector3.zero; Debug.LogWarning(hit.collider.name); speed--;  }
-        
+      /*  if (!audio.isPlaying && onSurface() && movement && rb.velocity.magnitude>0)
+        {
+
+            //audio.Stop();
+            walkSoundTest = walkSound;
+            audio.PlayOneShot(walkSoundTest);
+
+            
+        }else{
+            walkSoundTest = null;
+        }*/
+
     }
    
     void preventFlying()
@@ -197,6 +224,12 @@ public class basicmovement : MonoBehaviour
        
         if (jump == 0 && canJump)
         {
+            if( increments>=maxIncrements/2){ // if jumpbar>50%
+                audio.PlayOneShot(LongJumpSound);
+            }else{
+                audio.PlayOneShot(QuickJumpSound);
+            }
+
             if(grabbing){
                 jumpSpeed = jumpSpeed+1f;
             }
@@ -223,26 +256,6 @@ public class basicmovement : MonoBehaviour
         //GUI
         if (Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.4f) && hit.collider.attachedRigidbody && grabbedObject == null && !prevent && onSurface() && !grabbing && !Input.GetKey(KeyCode.E))
         {
-            /*float x = 0.3f;
-            float _y = 0.3f;
-            float z = 0.3f;
-            if(hit.normal.x<0){
-                x = x * -1;
-            }else{
-                x = 0.3f;
-            }
-            if (hit.normal.y < 0)
-            {
-                _y = _y * -1;
-            }
-            if (hit.normal.z < 0)
-            {
-                z = z * -1;
-            }
-            else
-            {
-                z = 0.3f;
-            }*/
             InteractCanvas.SetActive(true);
             Vector3 newVector = new Vector3(transform.position.x, Camera.main.transform.position.y, transform.position.z);
             //GuiHeight = hit.transform.position.y;
@@ -264,11 +277,15 @@ public class basicmovement : MonoBehaviour
         }else{
             InteractCanvas.SetActive(false);
         }
-            if ( Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.4f) && Input.GetKey(KeyCode.E) && hit.collider.attachedRigidbody && grabbedObject==null &&!prevent && onSurface())
-        {
+
+        if ( Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.4f) && Input.GetKey(KeyCode.E) && hit.collider.attachedRigidbody && grabbedObject==null &&!prevent && onSurface()){
+
             grabbedObject = hit.collider.gameObject.GetComponent<Rigidbody>();
             if (grabbedObject.mass < rb.mass + 110f)
             {
+                
+                audio.PlayOneShot(GrabbingSound);
+               
                 grabbedObject.freezeRotation = true;
                 grabDirection = transform.position - grabbedObject.transform.position;
                 if (onSurface())
@@ -279,18 +296,17 @@ public class basicmovement : MonoBehaviour
                 Debug.LogWarning("Grabbing");
                 grabbing = true;
             }
+            audio.volume=1;
         }
         
-        if (vertical != 0 && grabbing || horizontal != 0 && grabbing && grabbedObject != null)
-        {
+        if (vertical != 0 && grabbing || horizontal != 0 && grabbing && grabbedObject != null){
             multiplyierX = hit.normal.x > 0 ? 1 : -1;
             multiplyierZ = hit.normal.z > 0 ? 1 : -1;
             if(!flying)
                 rb.velocity = new Vector3(rb.velocity.x*multiplyierX, y, rb.velocity.z*multiplyierZ);
             grabbedObject.velocity = rb.velocity;
         }
-         if (grabbing && grabbedObject != null)
-        {
+         if (grabbing && grabbedObject != null){
             multiplyierX = hit.normal.x > 0 ? 1 : -1;
             multiplyierZ = hit.normal.z > 0 ? 1 : -1;
             if (!flying)
@@ -302,8 +318,7 @@ public class basicmovement : MonoBehaviour
             grabbedObject.transform.position = GrabPos.transform.position;
         }
 
-        if (grabbedObject != null && !Input.GetKey(KeyCode.E))
-        {
+        if (grabbedObject != null && !Input.GetKey(KeyCode.E)){
             grabbedObject.useGravity = true;
             grabbedObject.freezeRotation = false;
             grabbing = false;

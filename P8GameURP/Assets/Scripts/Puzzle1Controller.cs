@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Puzzle1Controller : MonoBehaviour
 {
+    
     public int collection=0;
     public bool isActive;
     public GameObject puzzleObjectsGroup;

@@ -11,6 +11,10 @@ public class MenuGUI : MonoBehaviour
     public GameObject MenuScreenGUI;
     public GameObject EmergentGUI;
     public GameObject LinierGUI;
+
+    public AudioSource click;
+
+
     public bool PauseBool = false;
     private bool MenuBool = false;
     private string StartSceneName;
@@ -90,6 +94,17 @@ public class MenuGUI : MonoBehaviour
             }
         }
 
+    }
+    public void ClickSound(){
+        if(!click.enabled){
+            click.enabled = true;
+        }else{
+            click.Play();
+        }
+        
+        /*if(!click.isPlaying){
+            click.enabled = false;
+        }*/
     }
     public void loadGame() {
 

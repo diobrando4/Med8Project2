@@ -14,6 +14,7 @@ public class MainPuzzleController : MonoBehaviour
     private Puzzle3Controller p3c;
     [HideInInspector]public bool startP1, startP2, startP3;
     [HideInInspector] public bool gameFinish = false;
+    public int Dcounter;
     public InputField command;
     private bool executeCommand;
     public string textCommand;
@@ -31,6 +32,7 @@ public class MainPuzzleController : MonoBehaviour
     private bool canContinue = false;
     private bool once=false;
     int test=0;
+    [HideInInspector] public bool p3com;
     void Start()
     {
         p1c = Puzzle1Controller.GetComponent<Puzzle1Controller>();
@@ -49,6 +51,8 @@ public class MainPuzzleController : MonoBehaviour
     
     void Update()
     {
+        p3com = p3c.Puzzle3Complete();
+        Dcounter = p1c.collection;
         Commands();
         if (p3c.Puzzle3Complete())
         {
