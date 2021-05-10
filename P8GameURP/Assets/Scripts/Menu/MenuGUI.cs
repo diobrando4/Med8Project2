@@ -13,7 +13,7 @@ public class MenuGUI : MonoBehaviour
     public GameObject LinierGUI;
 
     public AudioSource click;
-
+    
 
     public bool PauseBool = false;
     private bool MenuBool = false;
@@ -24,12 +24,16 @@ public class MenuGUI : MonoBehaviour
     static float gameType;
     static int GameCompletionCounter = 0;
     GameObject MainPuzzleControllerObject;
+    static GameObject SaveData;
+    static WriteJasonData WJD;
     MainPuzzleController mpc;
     bool runOnce;
+    static bool StaticRunOnce = false;
     bool p1Active;
     bool p2Active;
     bool p3Active;
     bool gameIsCompleted;
+    
     // Start is called before the first frame update
     void Start() {
 
@@ -45,10 +49,11 @@ public class MenuGUI : MonoBehaviour
                 setGameOnce = true;
                 Debug.LogError("game type is set: " + setGameOnce);
 
-            }else{
+            }else if(setGameOnce){
 
                 setGameType();
                 Debug.LogError("ELSE game type is set: " + setGameOnce);
+                setGameOnce = false;
             }
         }
         MenuScreen();
@@ -66,7 +71,7 @@ public class MenuGUI : MonoBehaviour
         }
     }
 
-    public static bool getGameType() {
+    public bool getGameType() {
         return EmergentGame;
     }
 
@@ -79,19 +84,27 @@ public class MenuGUI : MonoBehaviour
             p1Active = mpc.startP1;
             p2Active = mpc.startP2;
             p3Active = mpc.startP3;
+           
+
 
         }else if(SceneManager.GetActiveScene().name != StartSceneName ) {
             if (!runOnce){
 
                 MainPuzzleControllerObject = GameObject.FindGameObjectWithTag("MainPuzzleController");
+                SaveData = GameObject.FindGameObjectWithTag("WriteData");
+                WJD = SaveData.GetComponent<WriteJasonData>();
                 mpc = MainPuzzleControllerObject.GetComponent<MainPuzzleController>();
                 runOnce = true;
             }
-            gameIsCompleted = mpc.gameFinish;
+            MenuScreenGUI.SetActive(false);
+            WJD.Emergent = getGameType();
+            Debug.LogError("my bool: " + getGameType() + " WJD.Emergent: " + WJD.Emergent);
+            //gameIsCompleted = mpc.gameFinish;
 
-            if (gameIsCompleted){
-                GameIsCompleted();
-            }
+            /* if (mpc.gameFinish)
+             {
+                 GameIsCompleted();
+             }*/
         }
 
     }
@@ -144,7 +157,8 @@ public class MenuGUI : MonoBehaviour
     }
     void GameIsCompleted(){
         GameCompletionCounter++;
-        SceneManager.LoadSceneAsync(0);
+        Debug.LogError(" load game gameIsCompleted " + gameIsCompleted);
+       // SceneManager.LoadSceneAsync(0);
     }
     public void resumeBtn(){
 
@@ -197,6 +211,10 @@ public class MenuGUI : MonoBehaviour
         if(!PauseBool){
             PauseBool = true;
         }
+    }
+
+    public bool GetEmergentType(){
+        return EmergentGame;
     }
 
     public void exitGame(){

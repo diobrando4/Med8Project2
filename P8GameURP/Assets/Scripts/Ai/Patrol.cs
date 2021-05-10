@@ -159,7 +159,7 @@ public class Patrol : MonoBehaviour
         if (counter % Mathf.Round(timeInSec / Time.fixedDeltaTime) == 0 && playerInRange == false)
         {
             value --;
-            Debug.Log("decreasing currentState by: " + currentState);
+            //Debug.Log("decreasing currentState by: " + currentState);
         }
         //currentState = IntRange(currentState, 0, 100); // Does this need to be here?
         return value;
@@ -215,7 +215,7 @@ public class Patrol : MonoBehaviour
         playerInRange = inFov(transform, player, maxAngle, maxRadius);
         //Debug.LogWarning("Player is in range " + playerInRange);
         currentState = playerInRange ? IncreaseCurrentState(FixedCounter, 0.2f, currentState, playerInRange) : DecreaseCurrentState(FixedCounter, 0.2f, currentState, playerInRange);
-        Debug.Log("playerInRange  " + playerInRange);
+       // Debug.Log("playerInRange  " + playerInRange);
         currentState = IntRange(currentState, 0, 100);
         //Debug.LogWarning(currentState);
 
@@ -256,7 +256,6 @@ public class Patrol : MonoBehaviour
 
     int agentStateIndex(int index)
     {
-        Debug.Log("agent index: " + index);
 
         if (BoolRange(index, 0, 2))
         {

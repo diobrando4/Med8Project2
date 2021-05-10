@@ -11,6 +11,11 @@ TagManager:
   - Electric_Box_Objective
   - MainPuzzleController
   - car
+  - Timer1
+  - Timer2
+  - Timer3
+  - GUI
+  - WriteData
   layers:
   - Default
   - TransparentFX

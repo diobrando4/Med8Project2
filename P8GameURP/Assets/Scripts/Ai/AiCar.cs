@@ -30,7 +30,7 @@ public class AiCar : MonoBehaviour
         for (int i=0;i<WaypointList.Count; i++){
             if(Vector3.Distance(WaypointList[i], transform.position)<20)
             {
-                Debug.LogError( "index " +i + "distance " + Vector3.Distance(WaypointList[i], transform.position) + " name: " + this.name);
+                //Debug.LogError( "index " +i + "distance " + Vector3.Distance(WaypointList[i], transform.position) + " name: " + this.name);
                 startPos = i;
             }
         }
@@ -48,7 +48,6 @@ public class AiCar : MonoBehaviour
         {
             Debug.LogError("The Rigidbody isn't attached to " + gameObject.name);
         }
-        Debug.LogError("start pos " + startPos + " name: " + this.name);
         currentPoint = startPos;
         agentCar.destination = WaypointList[startPos];
     }

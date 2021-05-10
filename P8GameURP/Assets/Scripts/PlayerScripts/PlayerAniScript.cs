@@ -130,12 +130,12 @@ public class PlayerAniScript : MonoBehaviour
         walkbody.enabled = IsWalking;
         runnerbody.enabled = !IsWalking;
         //ani.PlayInFixedTime(currentstate, 0);
-        if (rb.velocity.magnitude>2) {
+        /*if (rb.velocity.magnitude>2) {
             isAnimating = true;
             Debug.LogError(rb.velocity.magnitude);
         }else{
             isAnimating = false;
-        }
+        }*/
         ani.Play(currentstate,0);
        // isAnimating = ani.GetCurrentAnimatorClipInfo(0)[0].clip.length;
     }

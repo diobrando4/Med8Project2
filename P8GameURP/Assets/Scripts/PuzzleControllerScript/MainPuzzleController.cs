@@ -23,6 +23,8 @@ public class MainPuzzleController : MonoBehaviour
     public Transform cheatP2Pos;
     public Transform cheatP3Pos;
     public Transform player;
+    public bool WaterPumpIsPumping=false;
+    public int basketCollection=0;
     bool p1Once = false;
     bool p2Once = false;
     bool p3Once = false;
@@ -44,11 +46,28 @@ public class MainPuzzleController : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        WaterPumpIsPumping = p2c.isPumping;
+        basketCollection = p2c.basketCounter;
+
         fixedCounter++;
         fixedCounter2++;
     }
     // Update is called once per frame
-    
+    public bool startP1_Boolean(){
+        
+        return startP1;
+    }
+    public bool startP2_Boolean()
+    {
+        return startP2;
+    }
+    public bool startP3_Boolean()
+    {
+        return startP3;
+    }
+    public bool startP4_Boolean(){
+        return gameFinish;
+    }
     void Update()
     {
         p3com = p3c.Puzzle3Complete();
@@ -68,23 +87,23 @@ public class MainPuzzleController : MonoBehaviour
             }
             if (Delay2(3.0f) && !canContinue)
             {
+                
                 fixedCounter2 = 0;
                 gameFinish = true;
+                Debug.LogError("gameFinish"+gameFinish);
+                SceneManager.LoadSceneAsync(0);
             }
         }
-
 
         if (p1c.collection<4 && !p1Once){
             startP1 = true;
             p1Once = true;
-            Debug.LogError("1___ " + startP1);
         }
     
         if (p1c.collection > 4 && !p2Once)
         {
             p2Once = true;
             startP2 = true;
-            Debug.LogError("2___ " + startP2);
             if (executeCommand) {
                 activateP2(startP2);
             }
@@ -94,7 +113,6 @@ public class MainPuzzleController : MonoBehaviour
         {
             p3Once = true;
             startP3 = true;
-            Debug.LogError("3___ " + startP3);
             fixedCounter = 0;
             activateP3(startP3);
         }
