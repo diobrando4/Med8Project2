@@ -50,17 +50,10 @@ public class WriteJasonData : MonoBehaviour
     private  bool p2once = false;
     private  bool p3once = false;
 
-    /* private static bool p1onceEmergent =false;
-     private static bool p2onceEmergent = false;   
-     private static bool p3onceEmergent = false;*/
     static CollectSavedData csd;
     List<string> p1pos;
     List<string> p2pos;
     List<string> p3pos;
-
-    /*List<string> posp1Emergent;   
-    List<string> posp2Emergent; 
-    List<string> posp3Emergent;*/
 
     static PuzzleData P1Data = null;
     static PuzzleData P2Data = null;
@@ -69,14 +62,10 @@ public class WriteJasonData : MonoBehaviour
     static PuzzleData P2Data_2 = null;
     static PuzzleData P3Data_2 = null;
 
-    // static CollectSavedData CSD;
-    /* static Puzzle1 p1DataEmergent = null;    
-     static Puzzle2 p2DataEmergent = null;   
-     static Puzzle3 p3DataEmergent = null;*/
     static bool staticOnce = false;
     static bool staticWriteOnce = false;
     private bool JustOnce = false;
-    // Start is called before the first frame update
+
     void Awake()
     {
         if(!staticOnce){
@@ -92,10 +81,6 @@ public class WriteJasonData : MonoBehaviour
         p1timer = p1TimerObject.GetComponent<PuzzleTimer>();
         p2timer = p2TimerObject.GetComponent<PuzzleTimer>();
         p3timer = p3TimerObject.GetComponent<PuzzleTimer>();
-        /* posp1Emergent = new List<string>();
-         posp2Emergent = new List<string>();
-         posp3Emergent = new List<string>();*/
-        //}
     }
     static bool getGameType(){
         return mGUI.getGameType();
@@ -183,18 +168,6 @@ public class WriteJasonData : MonoBehaviour
             }
         }
     }
-   
-   /* public void SaveData(PuzzleData p1, PuzzleData p2, PuzzleData p3){
-        p1Data = p1;
-        p2Data = p2;
-        p3Data = p3;
-       
-        if (p1Data!=null && p2Data!=null && p3Data!=null){ 
-               
-            CSD = new CollectSavedData(p1Data, p2Data, p3Data);          
-            writeJson(CSD);          
-        }
-    }*/
 
    static void writeJson(CollectSavedData ClassData)
     {
@@ -209,31 +182,3 @@ public class WriteJasonData : MonoBehaviour
         Debug.LogError(" Json is done ");
     }
 }
-/*public class Puzzle2
-{
-    public int Time;
-    public bool Emergent;
-    public int BasketCounter;   
-    public bool WaterIsPumping;
-    public List<string> P2_positions;
-
-    public Puzzle2(int Time, bool Emergent)
-    {
-        this.Time = Time;
-        this.Emergent = Emergent;
-        this.P2_positions = new List<string>();
-    }
-}
-public class Puzzle3
-{
-    public int Time;
-    public bool Emergent;
-    public List<string> P3_positions;
-
-    public Puzzle3(int Time, bool Emergent)
-    {
-        this.Time = Time;
-        this.Emergent = Emergent;
-        this.P3_positions = new List<string>();
-    }
-}*/
