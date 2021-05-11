@@ -9,6 +9,9 @@ public class MenuGUI : MonoBehaviour
     public GameObject PauseScreenGUI;
     public GameObject SettingsScreenGUI;
     public GameObject MenuScreenGUI;
+    public GameObject QuistionarScreen;
+    public GameObject QuistionarContinue;
+    public GameObject QuistionarEndGame;
     public GameObject EmergentGUI;
     public GameObject LinierGUI;
 
@@ -17,7 +20,7 @@ public class MenuGUI : MonoBehaviour
 
     public bool PauseBool = false;
     private bool MenuBool = false;
-    private string StartSceneName;
+    private static string StartSceneName = "menu";
     private int escCounter = 0;
     public static bool EmergentGame;
     private static bool setGameOnce = false;
@@ -27,50 +30,56 @@ public class MenuGUI : MonoBehaviour
     static GameObject SaveData;
     static WriteJasonData WJD;
     MainPuzzleController mpc;
-    bool runOnce;
+    bool runOnce=false;
     static bool StaticRunOnce = false;
     bool p1Active;
     bool p2Active;
     bool p3Active;
     bool gameIsCompleted;
-    
+    public static double UniqueID = 0f;
+    public MenuGUI My_instance;
+    bool startSceneOnce = false;
     // Start is called before the first frame update
     void Start() {
 
         MenuBool = true;
-        StartSceneName = "menu";
 
-        if (SceneManager.GetActiveScene().name == StartSceneName){
-            if(runOnce){ runOnce = false; }
-
-            if (!setGameOnce){
-
-                setGameType();
-                setGameOnce = true;
-                Debug.LogError("game type is set: " + setGameOnce);
-
-            }else if(setGameOnce){
-
-                setGameType();
-                Debug.LogError("ELSE game type is set: " + setGameOnce);
-                setGameOnce = false;
-            }
-        }
+        startSceneOnce = true;
         MenuScreen();
     }
     private void Awake() {
-        DontDestroyOnLoad(this.gameObject);
+        /* if (My_instance == null)
+         {
+             My_instance = this;
+             Debug.LogError(My_instance);
+         }else{
+             Destroy(this.gameObject);
+         }
+
+         */
+        DontDestroyOnLoad(gameObject);
+
     }
     public static void setGameType() {
         if (!setGameOnce) {
+            setGameOnce = true;
             gameType = Random.value;
-            Debug.LogError("value below 0.5 is Linear: " + gameType);
+           
+           
             EmergentGame = gameType > 0.5f ? true : false;
-        } else {
+            Debug.LogError("value below 0.5 is Linear: " + EmergentGame);
+            if (UniqueID==0f) {
+                UniqueID = Random.Range(1, 1000) + gameType;
+                Debug.LogError("UniqeID " + UniqueID);
+            }
+        }else{
             EmergentGame = !EmergentGame;
+            Debug.LogError(" setGameOnce: EmergentGame: " + EmergentGame);
         }
     }
-
+    public double getUniqeID(){
+        return UniqueID;
+    }
     public bool getGameType() {
         return EmergentGame;
     }
@@ -78,9 +87,26 @@ public class MenuGUI : MonoBehaviour
     // Update is called once per frame
     void Update() {
 
+        if (SceneManager.GetActiveScene().name == StartSceneName && startSceneOnce)
+        {
+            
+            setGameType();
+            setGameOnce = true;
+            runOnce = true;
+            Debug.LogError("game type is Emergernt: " + getGameType());
+            if (GameCompletionCounter!=0) {
+                QuistionarEndScreen();
+            }
+            GameIsCompleted();
+            startSceneOnce = false;
+
+
+        }
+
+
         if (SceneManager.GetActiveScene().name != StartSceneName && Input.GetKeyDown(KeyCode.Escape)){
             pauseBtn();
-            
+            runOnce = false;
             p1Active = mpc.startP1;
             p2Active = mpc.startP2;
             p3Active = mpc.startP3;
@@ -92,13 +118,13 @@ public class MenuGUI : MonoBehaviour
 
                 MainPuzzleControllerObject = GameObject.FindGameObjectWithTag("MainPuzzleController");
                 SaveData = GameObject.FindGameObjectWithTag("WriteData");
-                WJD = SaveData.GetComponent<WriteJasonData>();
+                //WJD = SaveData.GetComponent<WriteJasonData>();
                 mpc = MainPuzzleControllerObject.GetComponent<MainPuzzleController>();
                 runOnce = true;
             }
-            MenuScreenGUI.SetActive(false);
-            WJD.Emergent = getGameType();
-            Debug.LogError("my bool: " + getGameType() + " WJD.Emergent: " + WJD.Emergent);
+            startSceneOnce = true;
+            //WJD.Emergent = getGameType();
+            //Debug.LogError("my bool: " + getGameType() + " WJD.Emergent: " + WJD.Emergent);
             //gameIsCompleted = mpc.gameFinish;
 
             /* if (mpc.gameFinish)
@@ -130,6 +156,24 @@ public class MenuGUI : MonoBehaviour
             PauseScreen();
         } else {
             MenuScreen();
+        }
+    }
+
+    public void QuistionarEndScreen(){
+        if (Time.timeScale != 0)
+        {
+            Time.timeScale = 0;
+        }
+        Cursor.lockState = CursorLockMode.None;
+        QuistionarScreen.SetActive(true);
+        Debug.LogError(" GameCompletionCounter: " + GameCompletionCounter);
+        if (GameCompletionCounter % 2==1){
+            QuistionarContinue.SetActive(true);
+            QuistionarEndGame.SetActive(false);
+        
+        }else{
+            QuistionarContinue.SetActive(false);
+            QuistionarEndGame.SetActive(true);
         }
     }
 
@@ -165,6 +209,7 @@ public class MenuGUI : MonoBehaviour
         MenuScreenGUI.SetActive(false);
         SettingsScreenGUI.SetActive(false);
         PauseScreenGUI.SetActive(false);
+        QuistionarScreen.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         if(Time.timeScale != 1){
             Time.timeScale = 1;
@@ -176,19 +221,23 @@ public class MenuGUI : MonoBehaviour
 
     public void MenuScreen(){
 
+        //setGameType();
         Cursor.lockState = CursorLockMode.None;
         MenuScreenGUI.SetActive(true);        
         SettingsScreenGUI.SetActive(false);
         PauseScreenGUI.SetActive(false);
-
-        if(EmergentGame){
+        QuistionarScreen.SetActive(false);
+        Debug.LogError("MENU!!!!");
+        if (EmergentGame)
+        {
             EmergentGUI.SetActive(true);
             LinierGUI.SetActive(false);
         }
-        if(!EmergentGame){ 
+        if (!EmergentGame)
+        {
             EmergentGUI.SetActive(false);
             LinierGUI.SetActive(true);
-            
+
         }
     }
 

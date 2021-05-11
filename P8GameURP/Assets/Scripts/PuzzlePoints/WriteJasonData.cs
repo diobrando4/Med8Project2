@@ -4,7 +4,9 @@ using UnityEngine;
 using System.IO;
 using LitJson;
 using UnityEngine.SceneManagement;
-public class PuzzleData{
+public class PuzzleData
+{
+    public double UniqueID;
     public string Name;
     public int Time;
     public bool _Emergent;
@@ -12,7 +14,8 @@ public class PuzzleData{
     public bool WaterIsPumping=false;
     public List<string> Player_Positions;
     
-  public PuzzleData(string Name, int Time, bool Emergent){
+  public PuzzleData(double UniqueID, string Name, int Time, bool Emergent){
+        this.UniqueID = UniqueID;
         this.Name = Name;
         this.Time = Time;
         this._Emergent = Emergent;
@@ -21,9 +24,9 @@ public class PuzzleData{
 }
 
 public class CollectSavedData {
-
     public List<PuzzleData> CollectionList;
     public CollectSavedData() {
+        
         this.CollectionList = new List<PuzzleData>();
     }
  
@@ -31,7 +34,7 @@ public class CollectSavedData {
 
 public class WriteJasonData : MonoBehaviour
 {
-    private static string path = "/Json/PuzzleStates.json";
+    private static string path = "/Json/PuzzleStates_.json";
 
     public GameObject GUIMenu;
     private MenuGUI MGUI;
@@ -65,13 +68,10 @@ public class WriteJasonData : MonoBehaviour
     static bool staticOnce = false;
     static bool staticWriteOnce = false;
     private bool JustOnce = false;
-
-    void Awake()
+    static double MyUniqueID;
+    void Start()
     {
-        if(!staticOnce){
-            csd = new CollectSavedData();
-            staticOnce = true;
-        }
+       
         GUI = GameObject.FindGameObjectWithTag("GUI");      
         mGUI = GUI.GetComponent<MenuGUI>();
 
@@ -81,38 +81,48 @@ public class WriteJasonData : MonoBehaviour
         p1timer = p1TimerObject.GetComponent<PuzzleTimer>();
         p2timer = p2TimerObject.GetComponent<PuzzleTimer>();
         p3timer = p3TimerObject.GetComponent<PuzzleTimer>();
+       
+        if (!staticOnce)
+        {
+            MyUniqueID = getUniqueID();
+            csd = new CollectSavedData();
+            staticOnce = true;
+        }
     }
     static bool getGameType(){
         return mGUI.getGameType();
     }
+    static double getUniqueID()
+    {
+        return mGUI.getUniqeID();
+    }
     private void Update()
     {
-        if (SceneManager.GetActiveScene().name != "menu")
-        {
+
             if(!JustOnce){
              
                 JustOnce = true;
             }
 
-            MyEmergent = getGameType();
-            if (!p1timer.MyPuzzle && p1timer.NextPuzzle && !p1once){
+        MyEmergent = getGameType();
+        if (!p1timer.MyPuzzle && p1timer.NextPuzzle && !p1once){
                 p1once = true;
                 for (int i = 0; i < p1timer.playerPositionList.Count; i++)
                 {
                     p1pos.Insert(0, p1timer.playerPositionList[i].ToString());
                 }
                 if (P1Data==null) {
-                    P1Data = new PuzzleData(p1timer.MyName+p1timer.selfID, p1timer.PlayerTimeCounter, MyEmergent);
+                    P1Data = new PuzzleData(MyUniqueID, p1timer.MyName+p1timer.selfID, p1timer.PlayerTimeCounter, MyEmergent);
                     P1Data.Player_Positions = p1pos;
                     csd.CollectionList.Insert(0,P1Data);
                 }
                 else if(P1Data!=null){
-                    P1Data_2 = new PuzzleData(p1timer.MyName + p1timer.selfID, p1timer.PlayerTimeCounter, MyEmergent);
+                    P1Data_2 = new PuzzleData(MyUniqueID, p1timer.MyName + p1timer.selfID, p1timer.PlayerTimeCounter, MyEmergent);
                     P1Data_2.Player_Positions = p1pos;
                     csd.CollectionList.Insert(3, P1Data_2);
                 }
                
-                Debug.LogError("Save Data P1 Emergent:" + MyEmergent);
+               // Debug.LogError("Save Data P1 Emergent:" + MyEmergent);
                 Debug.LogError("csd.CollectionList: " + csd.CollectionList.Count + " game is emergent " + MyEmergent);
             }
 
@@ -123,23 +133,23 @@ public class WriteJasonData : MonoBehaviour
                     p2pos.Insert(0, p2timer.playerPositionList[i].ToString());
                 }
                 if (P2Data==null) {
-                    P2Data = new PuzzleData(p2timer.MyName + p2timer.selfID, p2timer.PlayerTimeCounter, MyEmergent);
+                    P2Data = new PuzzleData(MyUniqueID, p2timer.MyName + p2timer.selfID, p2timer.PlayerTimeCounter, MyEmergent);
                     P2Data.Player_Positions = p2pos;
                     P2Data.BasketCounter = p2timer.basketCounter;
                     P2Data.WaterIsPumping = p2timer.WaterPumpBool;
                     csd.CollectionList.Insert(1, P2Data);
-                    Debug.LogError("P2Data loaded");
+                   // Debug.LogError("P2Data loaded");
                 }
                 else if(P2Data!=null){
                     
-                    P2Data_2 = new PuzzleData(p2timer.MyName + p2timer.selfID, p2timer.PlayerTimeCounter, MyEmergent);
+                    P2Data_2 = new PuzzleData(MyUniqueID, p2timer.MyName + p2timer.selfID, p2timer.PlayerTimeCounter, MyEmergent);
                     P2Data_2.Player_Positions = p2pos;
                     P2Data_2.BasketCounter = p2timer.basketCounter;
                     P2Data_2.WaterIsPumping = p2timer.WaterPumpBool;
                     csd.CollectionList.Insert(4, P2Data_2);
-                    Debug.LogError("P2Data_2 loaded");
+                   // Debug.LogError("P2Data_2 loaded");
                 }
-                Debug.LogError("Save Data P2 Emergent:" + MyEmergent);
+              //  Debug.LogError("Save Data P2 Emergent:" + MyEmergent);
                 Debug.LogError("csd.CollectionList: " + csd.CollectionList.Count + " game is emergent " + MyEmergent);
             }
 
@@ -150,23 +160,24 @@ public class WriteJasonData : MonoBehaviour
                     p3pos.Insert(0, p3timer.playerPositionList[i].ToString());
                 }
                 if (P3Data==null) {
-                    P3Data = new PuzzleData(p3timer.MyName + p3timer.selfID, p3timer.PlayerTimeCounter, MyEmergent);
+                    P3Data = new PuzzleData(MyUniqueID, p3timer.MyName + p3timer.selfID, p3timer.PlayerTimeCounter, MyEmergent);
                     P3Data.Player_Positions = p3pos;
                     csd.CollectionList.Insert(2, P3Data);
 
                 }else if(P3Data!= null){
-                    P3Data_2 = new PuzzleData(p3timer.MyName + p3timer.selfID, p3timer.PlayerTimeCounter, MyEmergent);
+                    P3Data_2 = new PuzzleData(MyUniqueID, p3timer.MyName + p3timer.selfID, p3timer.PlayerTimeCounter, MyEmergent);
                     P3Data_2.Player_Positions = p3pos;
                     csd.CollectionList.Insert(5, P3Data_2);
                 }
-                Debug.LogError("Save Data P3 Emergent:" + MyEmergent);
+             //   Debug.LogError("Save Data P3 Emergent:" + MyEmergent);
                 Debug.LogError("csd.CollectionList: " + csd.CollectionList.Count + " game is emergent " + MyEmergent);
             }
+           
             if(csd.CollectionList.Count==6 && !staticWriteOnce) {
                 writeJson(csd);
                 staticWriteOnce = true;
             }
-        }
+        
     }
 
    static void writeJson(CollectSavedData ClassData)
@@ -176,9 +187,9 @@ public class WriteJasonData : MonoBehaviour
 
         newData = JsonMapper.ToJson(ClassData);
 
-        string data = newData.ToString()+"\n";
+        string data = newData.ToString();
 
-        File.AppendAllText(Application.dataPath + path, data);
+        File.WriteAllText(Application.dataPath + path, data);
         Debug.LogError(" Json is done ");
     }
 }
