@@ -13,6 +13,9 @@ public class playerWalkSound : MonoBehaviour
     private bool isRunning;
     private bool isCrouching;
     private bool start;
+    
+    [Range(0.0f, 0.5f)] public float minVol= 0.1f;
+    [Range(0.0f, 0.5f)] public float maxVol= 0.2f;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,19 +33,19 @@ public class playerWalkSound : MonoBehaviour
         if (isWalking && !audio.isPlaying && !start) {
             start = true;
             audio.pitch = Random.Range(0.7f, 1.2f);
-            audio.volume = Random.Range(0.25f, 0.4f);
+            audio.volume = Random.Range(minVol, maxVol);
             audio.PlayOneShot(walkSound);
             audio.Play();
         } else if (isRunning && !audio.isPlaying && !start) {
             start = true;
             audio.pitch = Random.Range(0.7f, 1.2f);
-            audio.volume = Random.Range(0.25f, 0.4f);
+            audio.volume = Random.Range(minVol, maxVol);
             audio.PlayOneShot(runSound);
             audio.Play();
         } else if (isCrouching && !audio.isPlaying && !start){
             start = true;
             audio.pitch = Random.Range(0.7f, 1.2f);
-            audio.volume = Random.Range(0.25f, 0.4f);
+            audio.volume = Random.Range(minVol, maxVol);
             audio.PlayOneShot(crouchSound);
             audio.Play();
         } else {
