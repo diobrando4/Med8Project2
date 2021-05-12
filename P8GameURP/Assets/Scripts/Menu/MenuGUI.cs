@@ -45,7 +45,7 @@ public class MenuGUI : MonoBehaviour
         MenuBool = true;
 
         startSceneOnce = true;
-        MenuScreen();
+       // MenuScreen();
     }
     private void Awake() {
         /* if (My_instance == null)
@@ -64,10 +64,11 @@ public class MenuGUI : MonoBehaviour
         if (!setGameOnce) {
             setGameOnce = true;
             gameType = Random.value;
-           
-           
+
+
             EmergentGame = gameType > 0.5f ? true : false;
-            Debug.LogError("value below 0.5 is Linear: " + EmergentGame);
+            //EmergentGame = true;
+            Debug.LogError("value above 0.5 is Emergent: " + EmergentGame);
             if (UniqueID==0f) {
                 UniqueID = Random.Range(1, 1000) + gameType;
                 Debug.LogError("UniqeID " + UniqueID);
@@ -89,16 +90,27 @@ public class MenuGUI : MonoBehaviour
 
         if (SceneManager.GetActiveScene().name == StartSceneName && startSceneOnce)
         {
-            
+           
+
             setGameType();
             setGameOnce = true;
             runOnce = true;
             Debug.LogError("game type is Emergernt: " + getGameType());
+           
             if (GameCompletionCounter!=0) {
                 QuistionarEndScreen();
             }
             GameIsCompleted();
+            MenuScreen();
+            if (GameCompletionCounter == 0)
+            {
+                Debug.LogError("GameCompletionCounter: " + GameCompletionCounter);
+                
+            }
             startSceneOnce = false;
+            
+            
+
 
 
         }
@@ -222,19 +234,19 @@ public class MenuGUI : MonoBehaviour
     public void MenuScreen(){
 
         //setGameType();
+        GameCompletionCounter = 0;
         Cursor.lockState = CursorLockMode.None;
         MenuScreenGUI.SetActive(true);        
         SettingsScreenGUI.SetActive(false);
         PauseScreenGUI.SetActive(false);
         QuistionarScreen.SetActive(false);
-        Debug.LogError("MENU!!!!");
+        Debug.LogError("###### EMERGENT :" + EmergentGame);
         if (EmergentGame)
         {
+            Debug.LogError("I AM EMERGENT!!!!");
             EmergentGUI.SetActive(true);
             LinierGUI.SetActive(false);
-        }
-        if (!EmergentGame)
-        {
+        }else if (!EmergentGame){
             EmergentGUI.SetActive(false);
             LinierGUI.SetActive(true);
 

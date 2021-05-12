@@ -34,7 +34,7 @@ public class Puzzle3Controller : MonoBehaviour
        
         if (start)
         {
-            Debug.LogError(start);
+           // Debug.LogError(start);
             /*if(stop){
                 return;
             }*/
