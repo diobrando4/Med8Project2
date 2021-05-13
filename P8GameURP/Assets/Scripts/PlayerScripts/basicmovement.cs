@@ -35,6 +35,7 @@ public class basicmovement : MonoBehaviour
     public AudioClip QuickJumpSound;
     public AudioClip LongJumpSound;
     public AudioClip GrabbingSound;
+    public AudioClip LandingSound;
     private AudioSource audio;
 
 
@@ -47,7 +48,7 @@ public class basicmovement : MonoBehaviour
     private Vector3 downDirection;
     private Vector3 grabDirection;
     private Vector3 raypos;
-    
+    bool landingBool;
 
     private float downDisRange;
     private float downDis = 0.1f;
@@ -118,7 +119,18 @@ public class basicmovement : MonoBehaviour
         grab();
         jumping(jumpIncrements);     
         preventFlying();
-  
+        if(!onSurface() ){
+            landingBool = false;
+        }
+
+        if(onSurface() && !landingBool){
+
+            if (!audio.isPlaying) {
+                audio.PlayOneShot(LandingSound);
+            }
+            landingBool = true;
+            //audio.volume = 1;
+        }
         if(transform.position.y<0 && !onSurface()){
             transform.position = new Vector3(transform.position.x, 1f, transform.position.z);
         }

@@ -4,32 +4,47 @@ using UnityEngine;
 
 public class PickUpObject : MonoBehaviour
 {
-    
+
     private Puzzle1Controller p1c;
     public GameObject controller;
     private Outline ol;
-    private bool onlyOnce=false;
+    private bool onlyOnce = false;
+    private AudioSource audio;
+    bool start = false;
     private void Start()
     {
         p1c = controller.GetComponent<Puzzle1Controller>();
         ol = GetComponent<Outline>();
+        audio = GetComponent<AudioSource>();
     }
     void OnTriggerEnter(Collider collider)
     {
-        
-        
+
+
         if (collider.gameObject.tag == "Player" && !onlyOnce)
         {
+            audio.pitch = Random.Range(0.7f, 1.2f);
+            audio.Play();
             p1c.collection = p1c.collection + 1;
             onlyOnce = true;
-            transform.position = new Vector3(0, -100, 0);
-            
-            ol.OutlineMode= (Outline.Mode)1;
+            start = true;
+            //StopPlayAudio();
+            ol.OutlineMode = (Outline.Mode)1;
         }
     }
     private void OnTriggerExit(Collider other)
     {
-        if(transform.position == new Vector3(0, -100, 0)){ onlyOnce = false; }
+       // StopPlayAudio();
+        if (transform.position == new Vector3(0, -100, 0)) { onlyOnce = false; }
+    }
+    void StopPlayAudio(){
+        
+    }
+    void Update(){
+        if (start && !audio.isPlaying)
+        {
+            transform.position = new Vector3(0, -100, 0);
+        }
     }
     void OnTriggerStay(Collider collider)
     {
