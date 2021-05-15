@@ -3,7 +3,19 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Selectable
+  - water
+  - pump
+  - basket
+  - Electric_Box_Objective
+  - MainPuzzleController
+  - car
+  - Timer1
+  - Timer2
+  - Timer3
+  - GUI
+  - WriteData
   layers:
   - Default
   - TransparentFX
@@ -11,8 +23,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - WorldLayer
+  - PlayerLayer
   - 
   - 
   - 
