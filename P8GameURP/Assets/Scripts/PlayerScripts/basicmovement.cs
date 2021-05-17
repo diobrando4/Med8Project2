@@ -38,7 +38,6 @@ public class basicmovement : MonoBehaviour
     public AudioClip LandingSound;
     private AudioSource audio;
 
-
     [HideInInspector] public RaycastHit hit;
     [HideInInspector] public Rigidbody grabbedObject;
 
@@ -65,7 +64,6 @@ public class basicmovement : MonoBehaviour
     private float JumpBarUnits=0.000f;
     private float velY = 1;
 
-
     [HideInInspector] public bool grabbing;
     [HideInInspector] public bool playJumpAnimation;
     private bool forward;
@@ -84,11 +82,9 @@ public class basicmovement : MonoBehaviour
     private int multiplyierX = 1;
     private int multiplyierZ = 1;
 
-
     // Start is called before the first frame update
     void Start()
     {
-       
         rb = GetComponent<Rigidbody>();
         audio = GetComponent<AudioSource>();
         downDirection = Vector3.down;
@@ -105,7 +101,7 @@ public class basicmovement : MonoBehaviour
 
     // Update is called once per frame
     void FixedUpdate()
-    {       
+    {
         counter++;
         forward = Input.GetAxis("Vertical") > 0;
         backward = Input.GetAxis("Vertical") < 0;
@@ -120,11 +116,10 @@ public class basicmovement : MonoBehaviour
         jumping(jumpIncrements);     
         preventFlying();
         if(!onSurface() ){
-            landingBool = false;
+        landingBool = false;
         }
 
         if(onSurface() && !landingBool){
-
             if (!audio.isPlaying) {
                 audio.PlayOneShot(LandingSound);
             }
@@ -134,7 +129,6 @@ public class basicmovement : MonoBehaviour
         if(transform.position.y<0 && !onSurface()){
             transform.position = new Vector3(transform.position.x, 1f, transform.position.z);
         }
-        
     }
 
     void move()
@@ -237,8 +231,10 @@ public class basicmovement : MonoBehaviour
         if (jump == 0 && canJump)
         {
             if( increments>=maxIncrements/2){ // if jumpbar>50%
+                audio.volume = 0.5f;
                 audio.PlayOneShot(LongJumpSound);
             }else{
+                audio.volume = 0.5f;
                 audio.PlayOneShot(QuickJumpSound);
             }
 
