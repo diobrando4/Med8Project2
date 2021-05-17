@@ -11,6 +11,8 @@ public class PickUpObject : MonoBehaviour
     private bool onlyOnce = false;
     private AudioSource audio;
     bool start = false;
+    public Vector3 rotation;
+    public float angle;
     private void Start()
     {
         p1c = controller.GetComponent<Puzzle1Controller>();
@@ -41,6 +43,7 @@ public class PickUpObject : MonoBehaviour
         
     }
     void Update(){
+        transform.Rotate(rotation * angle * Time.deltaTime, Space.Self);
         if (start && !audio.isPlaying)
         {
             transform.position = new Vector3(0, -100, 0);

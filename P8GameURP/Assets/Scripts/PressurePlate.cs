@@ -13,6 +13,7 @@ public class PressurePlate : MonoBehaviour
     public bool bruteForce = false;
     public bool isActive;
     float controllY;
+    AudioSource audio;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,6 +25,7 @@ public class PressurePlate : MonoBehaviour
         ol.enabled = false;
         ol_Objective.enabled = false;
         objective.transform.position = objectiveStartPos;
+        audio = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -62,7 +64,7 @@ public class PressurePlate : MonoBehaviour
         if(collision.collider.tag== "Electric_Box_Objective"&&!p3Complete)
         {
             p3Complete = true;
-           
+            audio.enabled = true;
            
         }
     }
