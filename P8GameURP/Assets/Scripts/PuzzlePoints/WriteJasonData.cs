@@ -6,21 +6,24 @@ using LitJson;
 using UnityEngine.SceneManagement;
 public class PuzzleData
 {
+    
     public double UniqueID;
     public string Name;
     public int Time;
     public bool _Emergent;
+    public int EventCapsuleCounter = 0;
     public int BasketCounter = 0;
     public bool WaterIsPumping = false;
     public List<string> Player_Positions;
 
-    public PuzzleData(double UniqueID, string Name, int Time, bool Emergent)
+    public PuzzleData(double UniqueID, string Name, int Time, bool Emergent, int EventCapsuleCounter)
     {
         this.UniqueID = UniqueID;
         this.Name = Name;
         this.Time = Time;
         this._Emergent = Emergent;
         this.Player_Positions = new List<string>();
+        this.EventCapsuleCounter = EventCapsuleCounter;
     }
 }
 
@@ -190,12 +193,12 @@ public class WriteJasonData : MonoBehaviour
             for (int i = 0; i < MyPuzzleData.playerPositionList.Count; i++){
                 MyList.Insert(indexCounter, MyPuzzleData.playerPositionList[i].ToString());
             }
-            SetMyPuzzleData = new PuzzleData(MyUniqueID, MyPuzzleData.MyName + MyPuzzleData.selfID, MyPuzzleData.PlayerTimeCounter, MyEmergent);
+            SetMyPuzzleData = new PuzzleData(MyUniqueID, MyPuzzleData.MyName + MyPuzzleData.selfID, MyPuzzleData.PlayerTimeCounter, MyEmergent, (MyPuzzleData.ECC_1+ MyPuzzleData.ECC_2));
             SetMyPuzzleData.Player_Positions = MyList;
             Debug.LogError("csd.CollectionList: " + csd.CollectionList.Count + " game is emergent " + MyEmergent);
             return SetMyPuzzleData;
         }
-        return new PuzzleData(MyUniqueID, MyPuzzleData.MyName + MyPuzzleData.selfID, MyPuzzleData.PlayerTimeCounter, MyEmergent);
+        return new PuzzleData(MyUniqueID, MyPuzzleData.MyName + MyPuzzleData.selfID, MyPuzzleData.PlayerTimeCounter, MyEmergent, (MyPuzzleData.ECC_1 + MyPuzzleData.ECC_2));
     }
 
     /*static void SetSave(CollectSavedData data)
