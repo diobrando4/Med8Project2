@@ -158,7 +158,7 @@ public class WriteJasonData : MonoBehaviour
                 P3Data = SetPuzzleData(p3timer, P3Data, P3Data_2, MyEmergent);
                 csd.CollectionList.Insert(indexCounter, P3Data);
                 indexCounter++;
-            }else if (P1Data != null && !p1once && P3Data_2 == null){
+            }else if (P3Data != null && !p3once && P3Data_2 == null){
                 P3Data_2 = SetPuzzleData(p3timer, P3Data, P3Data_2, MyEmergent);
                 csd.CollectionList.Insert(indexCounter, P3Data_2);
                 indexCounter++;
