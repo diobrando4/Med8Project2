@@ -35,10 +35,13 @@ public class PuzzleTimer : MonoBehaviour
     public int ECC_2 = 0;
     public GameObject eventCapsule1;
     public GameObject eventCapsule2;
+    private rotateObject eventCap1;
+    private rotateObject eventCap2;
     private bool hasPlayed = false;
     private bool GetValuesOnce = false;
     private int nextID;
-
+    private bool checkEventOnce1 = false;
+    private bool checkEventOnce2 = false;
     // not finished yet :D
     AudioSource audioSource;
     public AudioClip emergentStart;
@@ -49,7 +52,8 @@ public class PuzzleTimer : MonoBehaviour
 
     void Start(){
         audioSource = GetComponent<AudioSource>();
-
+        eventCap1 = eventCapsule1.GetComponent<rotateObject>();
+        eventCap2 = eventCapsule2.GetComponent<rotateObject>();
         myTimer = new PuzzleTimer();
         writeJason = writeJsonObj.GetComponent<WriteJasonData>();
         playerPositionList = new List<Vector3>();
@@ -76,7 +80,13 @@ public class PuzzleTimer : MonoBehaviour
         isEmergent = mpc.isEmergentBool();
         WaterPumpBool = mpc.WaterPumpIsPumping;
         basketCounter = mpc.basketCollection;
-
+        if(eventCap1.IamTriggered() && !checkEventOnce1){
+            ECC_1 = eventCap1.ECC;
+        }
+        if (eventCap2.IamTriggered() && !checkEventOnce2)
+        {
+            ECC_2 = eventCap2.ECC;
+        }
         if (!GetValuesOnce){
             if (isEmergent){
                 nextID = 4;
