@@ -117,7 +117,9 @@ public class PuzzleTimer : MonoBehaviour
         if(MyPuzzle && other.tag=="Player"){
             isInside = true;
             playerPosition = new Vector3(other.transform.position.x, other.transform.position.y, other.transform.position.z);
-            PlayerTimer();           
+
+            PlayerTimer();
+            Debug.Log("I am true player inside of me");
         }
     }
     private void OnTriggerExit(Collider other){

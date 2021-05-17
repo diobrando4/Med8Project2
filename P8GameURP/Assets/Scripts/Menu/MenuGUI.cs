@@ -96,17 +96,18 @@ public class MenuGUI : MonoBehaviour
             setGameOnce = true;
             runOnce = true;
             Debug.LogError("game type is Emergernt: " + getGameType());
-           
-            if (GameCompletionCounter!=0) {
+
+            // if 
+            
+            if (GameCompletionCounter != 0 && GameCompletionCounter < 3)
+            {
                 QuistionarEndScreen();
+            }else{
+                
+                MenuScreen();
             }
             GameIsCompleted();
-            MenuScreen();
-            if (GameCompletionCounter == 0)
-            {
-                Debug.LogError("GameCompletionCounter: " + GameCompletionCounter);
-                
-            }
+            Debug.LogError("GameCompletionCounter: " + GameCompletionCounter);
             startSceneOnce = false;
             
             
@@ -119,15 +120,16 @@ public class MenuGUI : MonoBehaviour
         if (SceneManager.GetActiveScene().name != StartSceneName && Input.GetKeyDown(KeyCode.Escape)){
             pauseBtn();
             runOnce = false;
-            p1Active = mpc.startP1;
-            p2Active = mpc.startP2;
-            p3Active = mpc.startP3;
+            
            
 
 
         }else if(SceneManager.GetActiveScene().name != StartSceneName ) {
             if (!runOnce){
-
+                
+                p1Active = mpc.startP1;
+                p2Active = mpc.startP2;
+                p3Active = mpc.startP3;
                 MainPuzzleControllerObject = GameObject.FindGameObjectWithTag("MainPuzzleController");
                 SaveData = GameObject.FindGameObjectWithTag("WriteData");
                 //WJD = SaveData.GetComponent<WriteJasonData>();

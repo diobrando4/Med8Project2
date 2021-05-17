@@ -202,7 +202,7 @@ public class MainPuzzleController : MonoBehaviour
             GUI = GUIObject.GetComponent<MenuGUI>();
             getGUIOnce = true;
         }
-
+       
         
         isEmergent = GUI.getGameType();
         Debug.LogError("basketCounter = " + basketCollection);
