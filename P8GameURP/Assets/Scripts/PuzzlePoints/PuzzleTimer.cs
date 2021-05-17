@@ -23,7 +23,7 @@ public class PuzzleTimer : MonoBehaviour
     public string MyName;
     private string selfIDString = string.Empty;
 
-    public bool MyPuzzle = false; // if false then the puzzle is completed and the sound should be disabled?
+    public bool MyPuzzle = false;
     public bool NextPuzzle = false;
     private bool isInside = false;
     private bool isEmergent = false;
@@ -42,13 +42,10 @@ public class PuzzleTimer : MonoBehaviour
     private int nextID;
     private bool checkEventOnce1 = false;
     private bool checkEventOnce2 = false;
-    // not finished yet :D
+
     AudioSource audioSource;
     public AudioClip emergentStart;
-    public AudioClip emergentSolution;
-
-    // needs something that says "puzzle is completed: ture or false" so it doesn't repeat after being finished
-    // if (MyPuzzleData.MyPuzzle != emergent){} then the sound should no longer play?
+    //public AudioClip emergentSolution;
 
     void Start(){
         audioSource = GetComponent<AudioSource>();
@@ -124,7 +121,6 @@ public class PuzzleTimer : MonoBehaviour
         }
     }
 
-    // used to be stay
     private void OnTriggerStay(Collider other){
         if (MyPuzzle && other.tag == "Player"){
             isInside = true;

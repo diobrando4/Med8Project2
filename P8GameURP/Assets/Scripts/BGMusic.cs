@@ -7,6 +7,7 @@ public class BGMusic : MonoBehaviour
     public AudioClip MainTheme;
     public AudioClip PuzzleCompleted;
     public AudioClip GameFinnish;
+    public AudioClip SolutionDonut, SolutionPark, SolutionFactory;
     private AudioSource audio;
 
     public GameObject MainPuzzleControllerObject;
@@ -50,6 +51,7 @@ public class BGMusic : MonoBehaviour
             audio.Stop();
             audio.volume = 0.5f;
             audio.PlayOneShot(PuzzleCompleted);
+            Invoke ("p1_finished", 2);
             P1Once = true;
         }else if(mpc.basketCollection>1 && !P2Once || mpc.WaterPumpIsPumping && !P2Once)
         {
@@ -57,6 +59,7 @@ public class BGMusic : MonoBehaviour
             audio.Stop();
             audio.volume = 0.5f;
             audio.PlayOneShot(PuzzleCompleted);
+            Invoke ("p2_finished", 2);
             P2Once = true;
         }else if(mpc.p3com && !P3Once )
         {
@@ -64,6 +67,7 @@ public class BGMusic : MonoBehaviour
             audio.Stop();
             audio.volume = 0.5f;
             audio.PlayOneShot(PuzzleCompleted);
+            Invoke ("p3_finished", 2);
             P3Once = true;
         }else{
 
@@ -80,5 +84,23 @@ public class BGMusic : MonoBehaviour
             P3Start = p3.MyPuzzle;
             once = true;
         }
+    }
+    // Donut
+    void p1_finished()
+    {
+        audio.volume = 0.5f;
+        audio.PlayOneShot(SolutionDonut);
+    }
+    // Park
+    void p2_finished()
+    {
+        audio.volume = 0.5f;
+        audio.PlayOneShot(SolutionPark);
+    }
+    // Factory
+    void p3_finished()
+    {
+        audio.volume = 0.5f;
+        audio.PlayOneShot(SolutionFactory);
     }
 }
