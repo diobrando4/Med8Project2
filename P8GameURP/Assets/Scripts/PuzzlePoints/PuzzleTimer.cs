@@ -19,9 +19,9 @@ public class PuzzleTimer : MonoBehaviour
     public int PlayerTimeCounter = 0;
     private int fixedCounter = 0;
     public int selfID;
-    PuzzleTimer myTimer;
+   // PuzzleTimer myTimer;
     public string MyName;
-    private string selfIDString = string.Empty;
+    private string selfIDString = "";
 
     public bool MyPuzzle = false;
     public bool NextPuzzle = false;
@@ -51,7 +51,7 @@ public class PuzzleTimer : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         eventCap1 = eventCapsule1.GetComponent<rotateObject>();
         eventCap2 = eventCapsule2.GetComponent<rotateObject>();
-        myTimer = new PuzzleTimer();
+       // myTimer = new PuzzleTimer();
         writeJason = writeJsonObj.GetComponent<WriteJson>();
         playerPositionList = new List<Vector3>();
         mpc = MainPuzlleControllerObject.GetComponent<MainPuzzleController>();
@@ -101,7 +101,12 @@ public class PuzzleTimer : MonoBehaviour
             MyPuzzle = GetPuzzleActiveInfo(MyPuzzleInfo, MyPuzzle);
             // Debug.LogError("p1 is true? :"+MyPuzzle + " next id: " + nextID + " nextIDBool " + NextPuzzle);
         }
-        Debug.Log("mypuzzle " + MyPuzzle + " emergent " +isEmergent + " id " + selfID);
+        if(selfID==3){
+            Debug.LogError("MyPuzzle: " + MyPuzzle);
+            Debug.LogError("NextPuzzle: " + NextPuzzle);
+           
+        }
+    //    Debug.Log("mypuzzle " + MyPuzzle + " emergent " +isEmergent + " id " + selfID);
         if (!MyPuzzle && !writeOnce && playerPositionList.Count > 0){
           
             if (selfID == 1){
@@ -111,16 +116,14 @@ public class PuzzleTimer : MonoBehaviour
                 writeJason.writeJason2 = true;
             }
             else if (selfID == 3){
+                Debug.LogError("Write json 3 id: " + selfID);
                 writeJason.writeJason3 = true;
             }
-            Debug.LogError("Write json id: " + selfID);
+           
             writeOnce = true;
         }
-        if (MyPuzzle && isInside)
-        {
-            
-            fixedCounter++;
-            
+        if (MyPuzzle && isInside){            
+            fixedCounter++;          
         }
     }
 
@@ -129,21 +132,18 @@ public class PuzzleTimer : MonoBehaviour
             isInside = true;
             playerPosition = new Vector3(other.transform.position.x, other.transform.position.y, other.transform.position.z);
             PlayerTimer();
-            
+           
             if (!audioSource.isPlaying && !hasPlayed){
                 audioSource.PlayOneShot(emergentStart);
                 hasPlayed = true;
-            }
-            
+            }          
         }
-
     }
     private void OnTriggerExit(Collider other)
     {
         if (other.tag == "Player"){
             isInside = false;
             hasPlayed = false;
-            //Debug.Log("Player has left OnTriggerStay");
         }
     }
     private void PlayerTimer(){

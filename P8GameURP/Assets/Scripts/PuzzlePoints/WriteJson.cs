@@ -67,12 +67,12 @@ public class WriteJson : MonoBehaviour
     List<string> p2pos;
     List<string> p3pos;
 
-    public static PuzzleData P1Data = null;
-    public static PuzzleData P2Data = null;
-    public static PuzzleData P3Data = null;
-    public static PuzzleData P1Data_2 = null;
+    public  PuzzleData P1Data = null;
+    public  PuzzleData P2Data = null;
+    public  PuzzleData P3Data = null;
+    /*public static PuzzleData P1Data_2 = null;
     public static PuzzleData P2Data_2 = null;
-    public static PuzzleData P3Data_2 = null;
+    public static PuzzleData P3Data_2 = null;*/
 
     static bool staticOnce = false;
     static bool staticWriteOnce = false;
@@ -120,15 +120,7 @@ public class WriteJson : MonoBehaviour
             csd = new CollectSavedData();
             staticOnce = true;
         }
-        else
-        {
-            Debug.LogError(" staticOnce is true  getCount : " + csd.CollectionList.Count + " static : " + staticOnce);
-        }
-        if (!JustOnce)
-        {
-
-            JustOnce = true;
-        }
+       
 
         // WritePuzzleDataBool(0);
         MyEmergent = getGameType();
@@ -136,7 +128,7 @@ public class WriteJson : MonoBehaviour
 
         if (!p1once && writeJason1)
         {
-            if (P1Data == null && !p1once && Emergent)
+            if (P1Data == null && !p1once )
             {
                 P1Data = new PuzzleData(MyUniqueID, p1timer.MyName + p1timer.selfID, p1timer.PlayerTimeCounter, MyEmergent, (p1timer.ECC_1 + p1timer.ECC_2));
                 for (int i = 0; i < p1timer.playerPositionList.Count; i++)
@@ -147,9 +139,9 @@ public class WriteJson : MonoBehaviour
                 indexCounter++;
                 p1once = true;
             }
-            else if (!p1once && P1Data_2 == null && !Emergent)
+            /* if (!p1once && P1Data_2 == null && !Emergent)
             {
-                P1Data = new PuzzleData(MyUniqueID, p1timer.MyName + p1timer.selfID, p1timer.PlayerTimeCounter, MyEmergent, (p1timer.ECC_1 + p1timer.ECC_2));
+                P1Data_2 = new PuzzleData(MyUniqueID, p1timer.MyName + p1timer.selfID, p1timer.PlayerTimeCounter, MyEmergent, (p1timer.ECC_1 + p1timer.ECC_2));
                 for (int i = 0; i < p1timer.playerPositionList.Count; i++)
                 {
                     P1Data.Player_Positions.Insert(0, p1timer.playerPositionList[i].ToString());
@@ -157,12 +149,12 @@ public class WriteJson : MonoBehaviour
                 csd.CollectionList.Insert(indexCounter, P1Data);
                 indexCounter++;
                 p1once = true;
-            }
-            Debug.Log("counter = " + p1timer.playerPositionList.Count);
+            }*/
+           // Debug.Log("counter = " + p1timer.playerPositionList.Count);
         }
         if (!p2once && writeJason2)
         {
-            if (P2Data == null && !p2once && Emergent)
+            if (P2Data == null && !p2once )
             {
                 P2Data = new PuzzleData(MyUniqueID, p2timer.MyName + p2timer.selfID, p2timer.PlayerTimeCounter, MyEmergent, (p2timer.ECC_1 + p2timer.ECC_2));
                 for (int i = 0; i < p2timer.playerPositionList.Count; i++)
@@ -173,22 +165,22 @@ public class WriteJson : MonoBehaviour
                 indexCounter++;
                 p2once = true;
             }
-            else if (!p2once && P2Data_2 == null && !Emergent)
+             /*if (!p2once && P2Data_2 == null && !Emergent)
             {
-                P2Data = new PuzzleData(MyUniqueID, p2timer.MyName + p2timer.selfID, p2timer.PlayerTimeCounter, MyEmergent, (p2timer.ECC_1 + p2timer.ECC_2));
+                P2Data_2 = new PuzzleData(MyUniqueID, p2timer.MyName + p2timer.selfID, p2timer.PlayerTimeCounter, MyEmergent, (p2timer.ECC_1 + p2timer.ECC_2));
                 for (int i = 0; i < p2timer.playerPositionList.Count; i++)
                 {
-                    P2Data.Player_Positions.Insert(0, p2timer.playerPositionList[i].ToString());
+                    P2Data_2.Player_Positions.Insert(0, p2timer.playerPositionList[i].ToString());
                 }
                 csd.CollectionList.Insert(indexCounter, P2Data);
                 indexCounter++;
                 p2once = true;
-            }
-            Debug.Log("counter = " + p2timer.playerPositionList.Count);
+            }*/
+         //   Debug.Log("counter = " + p2timer.playerPositionList.Count);
         }
         if (!p3once && writeJason3)
         {
-            if (P3Data == null && !p3once && Emergent)
+            if (P3Data == null && !p3once )
             {
                 P3Data = new PuzzleData(MyUniqueID, p3timer.MyName + p3timer.selfID, p3timer.PlayerTimeCounter, MyEmergent, (p3timer.ECC_1 + p3timer.ECC_2));
                 for (int i = 0; i < p3timer.playerPositionList.Count; i++)
@@ -199,7 +191,7 @@ public class WriteJson : MonoBehaviour
                 indexCounter++;
                 p3once = true;
             }
-            else if (P3Data_2 == null && !p3once && !Emergent)
+           /* if (P3Data_2 == null && !p3once && !Emergent)
             {
                 P3Data_2 = new PuzzleData(MyUniqueID, p3timer.MyName + p3timer.selfID, p3timer.PlayerTimeCounter, MyEmergent, (p3timer.ECC_1 + p3timer.ECC_2));
                 for (int i = 0; i < p3timer.playerPositionList.Count; i++)
@@ -209,17 +201,24 @@ public class WriteJson : MonoBehaviour
                 csd.CollectionList.Insert(indexCounter, P3Data_2);
                 indexCounter++;
                 p3once = true;
-            }
-            Debug.Log("counter = " + P3Data_2.Player_Positions.Count);
+            }*/
+          //  Debug.Log("counter = " + P3Data_2.Player_Positions.Count);
         }
-
-        Debug.LogError("insertIndex " + indexCounter + " current count: " + csd.CollectionList.Count);
+        Debug.Log("p1once " + p1once + " p2once " + p2once + " p3once " + p3once);
+       // Debug.LogError("insertIndex " + indexCounter + " current count: " + csd.CollectionList.Count);
         Debug.LogError("csd.CollectionList: " + csd.CollectionList.Count + " game is emergent " + MyEmergent + " has written= " + staticWriteOnce);
         /* if(csd.CollectionList.Count == 3 && !oneTime)
          {
              oneTime = true;
            //  SceneManager.LoadSceneAsync(0);
          }*/
+         if(csd.CollectionList.Count == 3 )
+        {
+            canExit = true;
+         }if(csd.CollectionList.Count >3 && csd.CollectionList.Count <=5)
+        {
+            canExit = false;
+         }
         if (csd.CollectionList.Count == 6 && !staticWriteOnce)
         {
             writeJson(csd);
@@ -266,8 +265,10 @@ public class WriteJson : MonoBehaviour
     {
         csd = data;
     }*/
-
-
+    public bool Exit(){
+        return canExit;
+    }
+    public static bool canExit = false;
     static void writeJson(CollectSavedData ClassData)
     {
         Debug.LogError("Writing Jason");
@@ -278,8 +279,11 @@ public class WriteJson : MonoBehaviour
         string data = newData.ToString();
 
         File.WriteAllText(Application.dataPath + path, data);
+
         Debug.LogError(" Json is done ");
-        SceneManager.LoadSceneAsync(0);
+        //SceneManager.LoadSceneAsync(0);
+        canExit = true;
+
     }
 }
 

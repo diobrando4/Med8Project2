@@ -10,6 +10,8 @@ public class MainPuzzleController : MonoBehaviour
     public GameObject Puzzle2Controller;
     public GameObject Puzzle3Controller;
 
+    public GameObject WriteJson;
+    WriteJson json;
     private GameObject GUIObject;
     private MenuGUI GUI;
 
@@ -56,6 +58,7 @@ public class MainPuzzleController : MonoBehaviour
    
     void Start()
     {
+        json = WriteJson.GetComponent<WriteJson>();
         stop = true;
         setStatesOnce = false;
         p1c = Puzzle1Controller.GetComponent<Puzzle1Controller>();
@@ -98,19 +101,23 @@ public class MainPuzzleController : MonoBehaviour
             startP3 = true;
             fixedCounter = 0;
 
-            if (!once){
+            if (startP1 && startP2 && startP3)
+            {
+                gameFinish = true;
                 canContinue = true;
                 once = true;
-            }
-            if (canContinue){
-                fixedCounter2 = 0;
-                canContinue = false;
                 stop = false;
                 test = 0;
             }
-            if (Delay2(3.0f) && !canContinue){
+            /*if (canContinue){
                 fixedCounter2 = 0;
-                gameFinish = true;
+                canContinue = false;
+               
+                
+            }*/
+            if ( json.Exit()){
+                fixedCounter2 = 0;
+               
                 Debug.LogError("gameFinish" + gameFinish);
                 SceneManager.LoadSceneAsync(0);
             }
@@ -175,17 +182,19 @@ public class MainPuzzleController : MonoBehaviour
             startP3 = false;
             p3Once = true;
         }
-        if(startP1==false && startP2 == false && startP3 == false){            
+        if(startP1==false && startP2 == false && startP3 == false){
+            Debug.Log("Everything is false");
             gameFinish = true;
         }      
         if (gameFinish && !canContinue){
             canContinue = true;
             test = 0;
             stop = false;
+            
         }
-        if (Delay2(3.0f) && gameFinish){
+        if (Delay2(3.0f) && gameFinish && json.Exit()){
             fixedCounter2 = 0;
-            gameFinish = true;
+           
             SceneManager.LoadSceneAsync(0);
         }
     }
@@ -197,7 +206,7 @@ public class MainPuzzleController : MonoBehaviour
         Dcounter = p1c.collection;
         WaterPumpIsPumping = p2c.isPumping;
         basketCollection = p2c.basketCounter;
-
+        Debug.Log("can exit " + json.Exit()) ;
         if (!getGUIOnce){
             GUIObject = GameObject.FindGameObjectWithTag("GUI");
             GUI = GUIObject.GetComponent<MenuGUI>();
@@ -210,11 +219,11 @@ public class MainPuzzleController : MonoBehaviour
         Debug.LogError(" is isPumping: " + WaterPumpIsPumping);
 
         if (isEmergent){
-            Debug.LogError("isEmergent####________####");
+           // Debug.LogError("isEmergent####________####");
             EmergentGame();
         }
         else{
-            Debug.LogError("Linear %%%%%______%%%%%%");
+          //  Debug.LogError("Linear %%%%%______%%%%%%");
             LinaerGame();
         }
         
