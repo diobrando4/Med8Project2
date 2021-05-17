@@ -146,6 +146,7 @@ public class MainPuzzleController : MonoBehaviour
         }
     }
     void EmergentGame(){
+        p3com = p3c.Puzzle3Complete();
         if (!setStatesOnce){
             startP1 = true;
             startP2 = true;
