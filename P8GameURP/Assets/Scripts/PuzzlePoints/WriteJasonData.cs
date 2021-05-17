@@ -191,7 +191,7 @@ public class WriteJasonData : MonoBehaviour
 
             Debug.LogError("setpuzzle!!! ");
             for (int i = 0; i < MyPuzzleData.playerPositionList.Count; i++){
-                MyList.Insert(MyList.Count, MyPuzzleData.playerPositionList[i].ToString());
+                MyList.Insert(indexCounter, MyPuzzleData.playerPositionList[i].ToString());
             }
             SetMyPuzzleData = new PuzzleData(MyUniqueID, MyPuzzleData.MyName + MyPuzzleData.selfID, MyPuzzleData.PlayerTimeCounter, MyEmergent, (MyPuzzleData.ECC_1+ MyPuzzleData.ECC_2));
             SetMyPuzzleData.Player_Positions = MyList;
