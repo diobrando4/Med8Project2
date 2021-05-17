@@ -31,12 +31,9 @@ public class BGMusic : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
         p1 = p1Timer.GetComponent<PuzzleTimer>();
         p2 = p2Timer.GetComponent<PuzzleTimer>();
         p3 = p3Timer.GetComponent<PuzzleTimer>();
-
-        
 
         mpc = MainPuzzleControllerObject.GetComponent<MainPuzzleController>();
         audio = GetComponent<AudioSource>();
@@ -45,7 +42,6 @@ public class BGMusic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
         if(mpc.Dcounter>4&& !P1Once ){
             audio.Stop();
             audio.volume = 0.5f;
@@ -86,19 +82,19 @@ public class BGMusic : MonoBehaviour
     // Donut
     void p1_finished()
     {
-        audio.volume = 0.5f;
+        audio.volume = 1f;
         audio.PlayOneShot(SolutionDonut);
     }
     // Park
     void p2_finished()
     {
-        audio.volume = 0.5f;
+        audio.volume = 1f;
         audio.PlayOneShot(SolutionPark);
     }
     // Factory
     void p3_finished()
     {
-        audio.volume = 0.5f;
+        audio.volume = 1f;
         audio.PlayOneShot(SolutionFactory);
     }
 }
