@@ -47,7 +47,6 @@ public class BGMusic : MonoBehaviour
     {
         
         if(mpc.Dcounter>4&& !P1Once ){
-            Debug.Log("p1 solve startValue = " + P1Start + " current value " + p1.MyPuzzle);
             audio.Stop();
             audio.volume = 0.5f;
             audio.PlayOneShot(PuzzleCompleted);
@@ -55,7 +54,7 @@ public class BGMusic : MonoBehaviour
             P1Once = true;
         }else if(mpc.basketCollection>1 && !P2Once || mpc.WaterPumpIsPumping && !P2Once)
         {
-            Debug.Log("p2 solve startValue = " + P2Start + " current value " + p2.MyPuzzle);
+           
             audio.Stop();
             audio.volume = 0.5f;
             audio.PlayOneShot(PuzzleCompleted);
@@ -63,7 +62,6 @@ public class BGMusic : MonoBehaviour
             P2Once = true;
         }else if(mpc.p3com && !P3Once )
         {
-            Debug.Log("p3 solve startValue = " + P3Start + " current value " + p3.MyPuzzle);
             audio.Stop();
             audio.volume = 0.5f;
             audio.PlayOneShot(PuzzleCompleted);
@@ -77,13 +75,13 @@ public class BGMusic : MonoBehaviour
             }
             //audio.Play();
         }
-        if (!once)
+       /* if (!once)
         {
             P1Start = p1.MyPuzzle;
             P2Start = p2.MyPuzzle;
             P3Start = p3.MyPuzzle;
             once = true;
-        }
+        }*/
     }
     // Donut
     void p1_finished()

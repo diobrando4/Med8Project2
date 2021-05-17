@@ -12,7 +12,7 @@ public class PuzzleTimer : MonoBehaviour
     private MainPuzzleController mpc;
 
     public GameObject writeJsonObj;
-    private WriteJasonData writeJason;
+    private WriteJson writeJason;
 
     public int basketCounter = 0;
     public bool WaterPumpBool = false;
@@ -52,7 +52,7 @@ public class PuzzleTimer : MonoBehaviour
         eventCap1 = eventCapsule1.GetComponent<rotateObject>();
         eventCap2 = eventCapsule2.GetComponent<rotateObject>();
         myTimer = new PuzzleTimer();
-        writeJason = writeJsonObj.GetComponent<WriteJasonData>();
+        writeJason = writeJsonObj.GetComponent<WriteJson>();
         playerPositionList = new List<Vector3>();
         mpc = MainPuzlleControllerObject.GetComponent<MainPuzzleController>();
         for (int i = 0; i < this.gameObject.name.Length; i++){
@@ -101,8 +101,9 @@ public class PuzzleTimer : MonoBehaviour
             MyPuzzle = GetPuzzleActiveInfo(MyPuzzleInfo, MyPuzzle);
             // Debug.LogError("p1 is true? :"+MyPuzzle + " next id: " + nextID + " nextIDBool " + NextPuzzle);
         }
-        //Debug.LogError("mypuzzle " + MyPuzzle);
+        Debug.Log("mypuzzle " + MyPuzzle + " emergent " +isEmergent + " id " + selfID);
         if (!MyPuzzle && !writeOnce && playerPositionList.Count > 0){
+          
             if (selfID == 1){
                 writeJason.writeJason1 = true;
             }
@@ -117,7 +118,9 @@ public class PuzzleTimer : MonoBehaviour
         }
         if (MyPuzzle && isInside)
         {
+            
             fixedCounter++;
+            
         }
     }
 
@@ -125,11 +128,13 @@ public class PuzzleTimer : MonoBehaviour
         if (MyPuzzle && other.tag == "Player"){
             isInside = true;
             playerPosition = new Vector3(other.transform.position.x, other.transform.position.y, other.transform.position.z);
+            PlayerTimer();
+            
             if (!audioSource.isPlaying && !hasPlayed){
                 audioSource.PlayOneShot(emergentStart);
                 hasPlayed = true;
             }
-            PlayerTimer();
+            
         }
 
     }

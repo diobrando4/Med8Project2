@@ -28,7 +28,7 @@ public class MenuGUI : MonoBehaviour
     static int GameCompletionCounter = 0;
     GameObject MainPuzzleControllerObject;
     static GameObject SaveData;
-    static WriteJasonData WJD;
+    static WriteJson WJD;
     MainPuzzleController mpc;
     bool runOnce=false;
     static bool StaticRunOnce = false;
