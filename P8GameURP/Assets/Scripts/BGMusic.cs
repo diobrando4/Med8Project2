@@ -138,7 +138,7 @@ public class BGMusic : MonoBehaviour
             image.enabled = true;
            // StartCoroutine(playVideo_Donut());
 
-            if (ICanPlay) {
+            if (ICanPlay && mpc.isEmergentBool()) {
                 Invoke("p1_finished", 3);
                 HasPlayedP1 = true;
                 theme = false;
@@ -157,7 +157,7 @@ public class BGMusic : MonoBehaviour
            // StartCoroutine(playVideo_Park());
 
 
-            if (ICanPlay) {
+            if (ICanPlay && mpc.isEmergentBool()) {
                 Invoke("p2_finished", 3);
                 HasPlayedP2 = true;
             }
@@ -170,7 +170,7 @@ public class BGMusic : MonoBehaviour
             audio.loop = false;
             audio.PlayOneShot(PuzzleCompleted);
 
-            if (ICanPlay) {      
+            if (ICanPlay && mpc.isEmergentBool()) {      
                 Invoke("p3_finished", 3);
                 HasPlayedP3 = true;
                 theme = false;
@@ -255,71 +255,6 @@ public class BGMusic : MonoBehaviour
         }
       
     }
-
-    IEnumerator playVideo_Donut()
-    {
-        //Add VideoPlayer to the GameObject
-        videoPlayer = gameObject.AddComponent<VideoPlayer>();
-
-        //Add AudioSource
-        audioSource = gameObject.AddComponent<AudioSource>();
-
-        //Disable Play on Awake for both Video and Audio
-        videoPlayer.playOnAwake = false;
-        audioSource.playOnAwake = false;
-
-        //We want to play from video clip not from url
-        //  videoPlayer.source = videoSource.VideoClip;
-
-        videoPlayer.Prepare();
-
-        //Set Audio Output to AudioSource
-        videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
-        
-        //Assign the Audio from Video to AudioSource to be played
-        videoPlayer.EnableAudioTrack(0, true);
-        videoPlayer.SetTargetAudioSource(0, audioSource);
-
-        
-
-        //Set video To Play then prepare Audio to prevent Buffering
-  
-
-       
-        //videoPlayer.clip = videoToPlay_Donut;
-        
-        videoPlayer.Prepare();
-
-        //Wait until video is prepared
-       
-
-        //Debug.Log("Done Preparing Video");
-
-        //Assign the Texture from Video to RawImage to be displayed
-        image.texture = videoPlayer.texture;
-      
-            //Play Video
-            videoPlayer.Play();
-
-            //Play Sound
-            audioSource.Play();
-            videoIsplaying = true;
-            //Debug.Log("Playing Video");
-            while (videoPlayer.isPlaying)
-            {
-                videoIsplaying = true;
-                Debug.LogWarning("Video Time: " + Mathf.FloorToInt((float)videoPlayer.time));
-                yield return null;
-            }
-
-            //Debug.Log("Done Playing Video");
-            //videoObj.SetActive(false);
-        
-        image.enabled = false;
-    }
-
-    
-
     public bool IamPlayingTheThemeSong(){
         return audio.loop;
 
