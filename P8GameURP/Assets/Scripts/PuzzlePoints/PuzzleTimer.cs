@@ -14,6 +14,15 @@ public class PuzzleTimer : MonoBehaviour
     public GameObject writeJsonObj;
     private WriteJson writeJason;
 
+    public GameObject NeighboorPuzzle_1;
+    public GameObject NeighboorPuzzle_2;
+
+    private PuzzleTimer NP_1;
+    private PuzzleTimer NP_2;
+
+    public GameObject bgmusic;
+    private BGMusic bg;
+
     public int basketCounter = 0;
     public bool WaterPumpBool = false;
     public int PlayerTimeCounter = 0;
@@ -28,8 +37,12 @@ public class PuzzleTimer : MonoBehaviour
     private bool isInside = false;
     private bool isEmergent = false;
     private bool writeOnce = false;
+
     private MethodInfo MyPuzzleInfo;
     private MethodInfo NextPuzzleInfo;
+
+    private MethodInfo IsAPuzzlePlaying_1;
+    private MethodInfo IsAPuzzlePlaying_2;
 
     public int ECC_1 = 0;
     public int ECC_2 = 0;
@@ -42,16 +55,20 @@ public class PuzzleTimer : MonoBehaviour
     private int nextID;
     private bool checkEventOnce1 = false;
     private bool checkEventOnce2 = false;
-
+    public bool CanIPlayMusic = false;
     AudioSource audioSource;
     public AudioClip emergentStart;
+    private int before = 0;
+    private int after = 0;
     //public AudioClip emergentSolution;
 
     void Start(){
         audioSource = GetComponent<AudioSource>();
         eventCap1 = eventCapsule1.GetComponent<rotateObject>();
         eventCap2 = eventCapsule2.GetComponent<rotateObject>();
-       // myTimer = new PuzzleTimer();
+        NP_1 = NeighboorPuzzle_1.GetComponent<PuzzleTimer>();
+        NP_2 = NeighboorPuzzle_2.GetComponent<PuzzleTimer>();
+        bg = bgmusic.GetComponent<BGMusic>();
         writeJason = writeJsonObj.GetComponent<WriteJson>();
         playerPositionList = new List<Vector3>();
         mpc = MainPuzlleControllerObject.GetComponent<MainPuzzleController>();
@@ -62,6 +79,8 @@ public class PuzzleTimer : MonoBehaviour
                 selfID = int.Parse(selfIDString);
             }
         }
+        before = selfID > 1 ? selfID - 1 : 3;
+        after = selfID < 3 ? selfID + 1 : 1;
         nextID = selfID + 1;
 
         MyPuzzleInfo = mpc.GetType().GetMethod(MyName + selfID + "_Boolean");
@@ -72,11 +91,17 @@ public class PuzzleTimer : MonoBehaviour
         PuzzleBool = Convert.ToBoolean(getMyPuzzleBool);
         return PuzzleBool;
     }
+    private bool DoesMyNeighboorPlayMusic(MethodInfo Method,PuzzleTimer Neighboor,bool PuzzleBool){
+        var getMyPuzzleBool = Method.Invoke(Neighboor, null);
+        PuzzleBool = Convert.ToBoolean(getMyPuzzleBool);
+        return PuzzleBool;
+    }
     // Update is called once per frame
     private void FixedUpdate() {
         isEmergent = mpc.isEmergentBool();
         WaterPumpBool = mpc.WaterPumpIsPumping;
         basketCounter = mpc.basketCollection;
+        
         if(eventCap1.IamTriggered() && !checkEventOnce1){
             ECC_1 = eventCap1.ECC;
         }
@@ -91,6 +116,8 @@ public class PuzzleTimer : MonoBehaviour
 
             MyPuzzleInfo = mpc.GetType().GetMethod(MyName + selfID + "_Boolean");
             NextPuzzleInfo = mpc.GetType().GetMethod(MyName + nextID + "_Boolean");
+            IsAPuzzlePlaying_1 = NP_1.GetType().GetMethod(MyName + before + "_isPlaying");
+            IsAPuzzlePlaying_2 = NP_2.GetType().GetMethod(MyName + after + "_isPlaying");
             GetValuesOnce = true;
         }
         if (!isEmergent){
@@ -101,11 +128,10 @@ public class PuzzleTimer : MonoBehaviour
             MyPuzzle = GetPuzzleActiveInfo(MyPuzzleInfo, MyPuzzle);
             // Debug.LogError("p1 is true? :"+MyPuzzle + " next id: " + nextID + " nextIDBool " + NextPuzzle);
         }
-        if(selfID==3){
-            Debug.LogError("MyPuzzle: " + MyPuzzle);
-            Debug.LogError("NextPuzzle: " + NextPuzzle);
-           
-        }
+      
+        CanIPlayMusic = !DoesMyNeighboorPlayMusic(IsAPuzzlePlaying_1, NP_1, CanIPlayMusic) && !DoesMyNeighboorPlayMusic(IsAPuzzlePlaying_2, NP_2, CanIPlayMusic);
+        eventCap1.canPlay = CanIPlayMusic && !audioSource.isPlaying && bg.IamPlayingTheThemeSong();
+        eventCap2.canPlay = CanIPlayMusic && !audioSource.isPlaying && bg.IamPlayingTheThemeSong();
     //    Debug.Log("mypuzzle " + MyPuzzle + " emergent " +isEmergent + " id " + selfID);
         if (!MyPuzzle && !writeOnce && playerPositionList.Count > 0){
           
@@ -116,7 +142,7 @@ public class PuzzleTimer : MonoBehaviour
                 writeJason.writeJason2 = true;
             }
             else if (selfID == 3){
-                Debug.LogError("Write json 3 id: " + selfID);
+             //   Debug.LogError("Write json 3 id: " + selfID);
                 writeJason.writeJason3 = true;
             }
            
@@ -125,6 +151,7 @@ public class PuzzleTimer : MonoBehaviour
         if (MyPuzzle && isInside){            
             fixedCounter++;          
         }
+        Debug.Log("themesongplaying: " + bg.IamPlayingTheThemeSong() );
     }
 
     private void OnTriggerStay(Collider other){
@@ -133,7 +160,8 @@ public class PuzzleTimer : MonoBehaviour
             playerPosition = new Vector3(other.transform.position.x, other.transform.position.y, other.transform.position.z);
             PlayerTimer();
            
-            if (!audioSource.isPlaying && !hasPlayed){
+            if (!audioSource.isPlaying && !hasPlayed && CanIPlayMusic && bg.IamPlayingTheThemeSong() && isEmergent)
+            {
                 audioSource.PlayOneShot(emergentStart);
                 hasPlayed = true;
             }          
@@ -152,4 +180,17 @@ public class PuzzleTimer : MonoBehaviour
             playerPositionList.Insert(0, playerPosition);
         }
     }
+
+    public bool startP1_isPlaying(){
+        return audioSource.isPlaying;
+    }
+    public bool startP2_isPlaying()
+    {
+        return audioSource.isPlaying;
+    }
+    public bool startP3_isPlaying()
+    {
+        return audioSource.isPlaying;
+    }
+
 }
