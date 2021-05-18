@@ -304,15 +304,17 @@ public class Patrol : MonoBehaviour
         agent.SetDestination(lastPlayerLocation.position);
     }
 
+    /*
     public float restartDelay = 0.5f;
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.tag == "Player")
         {
             agent.speed = 0;
-            Invoke("Restart", restartDelay);
+            Invoke("Restart", restartDelay); // resets the game when player is hit
+            
             // We don't need to use invoke, 
-            // it was just to have a small delay before resetting,
+            // it was just to have a small delay before resetting, 
             // but we should probably get do something nicer
         }
     }
@@ -324,6 +326,7 @@ public class Patrol : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         //SceneManager.LoadScene("StartMenu");
     }
+    */
 
     bool agentIsMoving = false;
     AudioSource audioSource;
