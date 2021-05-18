@@ -85,11 +85,15 @@ public class BGMusic : MonoBehaviour
 
         if(introplayer.clip == IntroVideo && !introplayer.isPlaying && introIsplaying && introplayer.time>2 || Input.GetKey("return"))
         {
-            introIsplaying = false;
-          //  introplayer.enabled = false;
-            panel.SetActive(false);
+
+           
+                introIsplaying = false;
+                //  introplayer.enabled = false;
+                panel.SetActive(false);
+            
         }
-        //factory
+        Debug.Log("should factory be played ? " +( !introIsplaying && mpc.isEmergentBool() && !EmergentFactoryIntroBool && !introplayer.isPlaying));
+        //factory start
         if ( !introIsplaying  && mpc.isEmergentBool() && !EmergentFactoryIntroBool && !introplayer.isPlaying)
         {
 
@@ -98,16 +102,11 @@ public class BGMusic : MonoBehaviour
             //  introplayer.enabled = true;
             introplayer.clip = EmergentFactoryIntro;
             Debug.Log("playing park!!____ ");
+            introplayer.time = 0;
 
         }
-        // factory
-        if (introplayer.clip == EmergentFactoryIntro && !introplayer.isPlaying && EmergentFactoryIntroBool  && introplayer.time > 2 && EmergentFactoryIntroBool && mpc.isEmergentBool() || Input.GetKey("return") && mpc.isEmergentBool() && EmergentFactoryIntroBool)
-        {
-            EmergentParkIntroBool = true;
-            //  introplayer.enabled = false;
-            panel.SetActive(false);
-        }
-        //park
+       
+        //park start
 
         if (!introplayer.isPlaying && mpc.isEmergentBool() && EmergentParkIntroBool)
         {
@@ -119,12 +118,7 @@ public class BGMusic : MonoBehaviour
             Debug.Log("playing park!!____ ");
 
         }
-        if (introplayer.clip == EmergentParkIntro && !introplayer.isPlaying && EmergentParkIntro && introplayer.time > 2 && mpc.isEmergentBool() || Input.GetKey("return") && mpc.isEmergentBool() && EmergentParkIntro)
-        {
-            EmergentParkIntroBool = false;
-            //  introplayer.enabled = false;
-            panel.SetActive(false);
-        }
+        
 
         // these 2 booleans cover p1 p2 p3 !isPlaying and this class function IamPlayingTheThemeSong==true
         ICanPlay = p1.CanIPlayMusic && p2.CanIPlayMusic && IamPlayingTheThemeSong() && !introplayer.isPlaying;
@@ -192,7 +186,21 @@ public class BGMusic : MonoBehaviour
                 theme = true;
             }
         }
-      //  Debug.Log("P1Once " + P1Once + " dougnatDone " + dougnatDone);
+        // park off
+        if (introplayer.clip == EmergentParkIntro && !introplayer.isPlaying && EmergentParkIntro && introplayer.time > 2 && mpc.isEmergentBool() || Input.GetKey("return") && mpc.isEmergentBool() && EmergentParkIntro)
+        {
+            EmergentParkIntroBool = false;
+            //  introplayer.enabled = false;
+            panel.SetActive(false);
+        }
+        // factory off
+        if (introplayer.clip == EmergentFactoryIntro && !introplayer.isPlaying && EmergentFactoryIntroBool && introplayer.time > 2 && EmergentFactoryIntroBool && mpc.isEmergentBool() || Input.GetKey("return") && mpc.isEmergentBool() && EmergentFactoryIntroBool)
+        {
+            EmergentParkIntroBool = true;
+            //  introplayer.enabled = false;
+            panel.SetActive(false);
+        }
+        //  Debug.Log("P1Once " + P1Once + " dougnatDone " + dougnatDone);
         if (P1Once  && !dougnatDone && !mpc.isEmergentBool())
         {
 
