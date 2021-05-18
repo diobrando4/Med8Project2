@@ -61,7 +61,7 @@ public class BGMusic : MonoBehaviour
             audio.loop = false;
             audio.PlayOneShot(PuzzleCompleted);
 
-            if (ICanPlay && mpc.isEmergentBool()) {
+            if (ICanPlay) {
                 Invoke("p1_finished", 3);
                 HasPlayedP1 = true;
                 theme = false;
@@ -75,7 +75,7 @@ public class BGMusic : MonoBehaviour
             audio.loop = false;
             audio.PlayOneShot(PuzzleCompleted);
 
-            if (ICanPlay && mpc.isEmergentBool()) {
+            if (ICanPlay) {
                 Invoke("p2_finished", 3);
                 HasPlayedP2 = true;
             }
@@ -88,7 +88,7 @@ public class BGMusic : MonoBehaviour
             audio.loop = false;
             audio.PlayOneShot(PuzzleCompleted);
 
-            if (ICanPlay && mpc.isEmergentBool()) {      
+            if (ICanPlay) {      
                 Invoke("p3_finished", 3);
                 HasPlayedP3 = true;
                 theme = false;
@@ -104,25 +104,22 @@ public class BGMusic : MonoBehaviour
                 theme = true;
             }
         }
-
-        if (mpc.isEmergentBool()) {
-            if (P1Once && !HasPlayedP1 && ICanPlay)
-            {
-                Invoke("p1_finished", 3);
-                HasPlayedP1 = true;
-            }
-            if (P2Once && !HasPlayedP2 && ICanPlay)
-            {
-                Invoke("p2_finished", 3);
-                HasPlayedP2 = true;
-            }
-            if (P3Once && !HasPlayedP3 && ICanPlay)
-            {
-                Invoke("p3_finished", 3);
-                HasPlayedP3 = true;
-            }
+       
+        if (P1Once && !HasPlayedP1 &&  ICanPlay)
+        {
+            Invoke("p1_finished", 3);
+            HasPlayedP1 = true;
         }
-
+        if (P2Once && !HasPlayedP2 &&  ICanPlay)
+        {
+            Invoke("p2_finished", 3);
+            HasPlayedP2 = true;
+        }
+        if (P3Once && !HasPlayedP3 && ICanPlay)
+        {
+            Invoke("p3_finished", 3);
+            HasPlayedP3 = true;
+        }
       
     }
     

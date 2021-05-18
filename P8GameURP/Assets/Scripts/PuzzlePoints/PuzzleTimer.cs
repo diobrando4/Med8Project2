@@ -175,8 +175,7 @@ public class PuzzleTimer : MonoBehaviour
             IsPlayerInside_2 = NP_2.GetType().GetMethod(MyName + after + "_isInside");
             GetNeighboorID_2 = NP_2.GetType().GetMethod(MyName + after + "_MyID");
 
-            Debug.Log("myname after" +MyName+after);
-            Debug.Log("myname before "+MyName+before);
+
             GetValuesOnce = true;
         }
         if (!isEmergent){
@@ -191,13 +190,11 @@ public class PuzzleTimer : MonoBehaviour
 
             NeighboorBeforeID = GetMyNeighboorID(GetNeighboorID_1,NP_1,NeighboorBeforeID);
             NeighboorAfterID = GetMyNeighboorID(GetNeighboorID_2,NP_2,NeighboorAfterID);
-            // Debug.LogError("p1 is true? :"+MyPuzzle + " next id: " + nextID + " nextIDBool " + NextPuzzle);
         }
       
         CanIPlayMusic = !DoesMyNeighboorPlayMusic(IsAPuzzlePlaying_1, NP_1, CanIPlayMusic) && !DoesMyNeighboorPlayMusic(IsAPuzzlePlaying_2, NP_2, CanIPlayMusic);
         eventCap1.canPlay = CanIPlayMusic && !audioSource.isPlaying && bg.IamPlayingTheThemeSong();
         eventCap2.canPlay = CanIPlayMusic && !audioSource.isPlaying && bg.IamPlayingTheThemeSong();
-    //    Debug.Log("mypuzzle " + MyPuzzle + " emergent " +isEmergent + " id " + selfID);
         if (!MyPuzzle && !writeOnce && playerPositionList.Count > 0){
           
             if (selfID == 1){
@@ -207,7 +204,6 @@ public class PuzzleTimer : MonoBehaviour
                 writeJason.writeJason2 = true;
             }
             else if (selfID == 3){
-             //   Debug.LogError("Write json 3 id: " + selfID);
                 writeJason.writeJason3 = true;
             }
            
@@ -216,21 +212,13 @@ public class PuzzleTimer : MonoBehaviour
         if (MyPuzzle && isInside){            
             fixedCounter++;          
         }
-        Debug.Log("PlayerInsideBefore: " + PlayerInsideBefore + " my ID: " + selfID);
-        if (selfID == 1)
-        {
-            Debug.Log(" this.PlayerInsideBefore: " + PlayerInsideBefore + " before id " + before);
-            Debug.Log(" this.PlayerInsideAfter " + PlayerInsideAfter + " after id " + after);
-        }
         if (!MyPuzzle && !isInside && isEmergent){
-            Debug.Log("reposition eventCapsules");
             
             if (PlayerInsideBefore)
             {
-                Debug.Log("reposition eventCapsules BEFORE SelfID: " + selfID);
                 if (NeighboorBeforeID == 1)
                 { // before 2 = 1 
-                    
+                    Debug.Log("before " + gameObject.name + " Line 221");
                     // this is event cap 2 this works
                     if (!eventCap1.IamTriggered())
                     {
@@ -243,28 +231,26 @@ public class PuzzleTimer : MonoBehaviour
                 }
                 if (NeighboorBeforeID == 2)
                 { // before 3 = 2 
-                    Debug.Log("MY NAME:  " + this.gameObject.name + " L246 ");
-                    // this is event cap 3
+                  // this is event cap 3
+                    Debug.Log("before " + gameObject.name + " Line235");
                     if (!eventCap1.IamTriggered())
-                        eventCapsule1.transform.position = Park_EC_SpacePositions[selfID + 1].position;
+                        eventCapsule1.transform.position = selfID==1? Park_EC_SpacePositions[selfID - 1].position: Park_EC_SpacePositions[selfID - 2].position;
 
                     if (!eventCap2.IamTriggered())
-                        eventCapsule2.transform.position = Park_EC_SpacePositions[selfID].position;
+                        eventCapsule2.transform.position = selfID == 1 ? Park_EC_SpacePositions[selfID + 1].position : Park_EC_SpacePositions[selfID ].position;
                 }
                 if (NeighboorBeforeID == 3)//this works
-                { // before 3 = 1 
-     
+                { // before 3 = 1     
+                    Debug.Log("before " + gameObject.name + " Line 244");
                     if (!eventCap1.IamTriggered())
                         eventCapsule1.transform.position = Factory_EC_SpacePositions[selfID - 1].position;
 
                     if (!eventCap2.IamTriggered())
                         eventCapsule2.transform.position = Factory_EC_SpacePositions[selfID + 1].position;
-
                 }
             }
             if (PlayerInsideAfter)
-            {// After 1 = 2 After 2 = 3 After 3 = 1
-                Debug.Log("reposition eventCapsules AFTER SelfID: " + selfID);
+            {             
                 if (NeighboorAfterID == 1)// this works
                 {
                     // event cap 3
@@ -278,14 +264,8 @@ public class PuzzleTimer : MonoBehaviour
                     }
                 }
                 if (NeighboorAfterID == 2)
-                {
-                    if (selfID == 1)
-                    {
-                        Debug.Log(" before 2: event 1: " + Park_EC_SpacePositions[selfID - 1].position);
-                        Debug.Log(" before 2: event 2: " + Park_EC_SpacePositions[selfID + 1].position);
-                    }
-                    // Event cap 1
-                    Debug.Log("MY NAME:  "+this.gameObject.name + " Line 288");
+                {              
+                    // Event cap 1                  
                     if (!eventCap1.IamTriggered())
                         eventCapsule1.transform.position = Park_EC_SpacePositions[0].position;
 
@@ -293,7 +273,7 @@ public class PuzzleTimer : MonoBehaviour
                         eventCapsule2.transform.position = Park_EC_SpacePositions[2].position;
                 }
                 if (NeighboorAfterID == 3)
-                { // before 3 = 2 after 3 = 1
+                { 
                     // Event cap 2 this works
                     if (!eventCap1.IamTriggered())
                         eventCapsule1.transform.position = Factory_EC_SpacePositions[selfID - 1].position;
@@ -302,53 +282,7 @@ public class PuzzleTimer : MonoBehaviour
                         eventCapsule2.transform.position = Factory_EC_SpacePositions[selfID + 1].position;
 
                 }
-            }
-
-            /*if (PlayerInsideAfter){
-
-                if (NeighboorAfterID == 1){ // after 1 =3
-
-                }
-                if (NeighboorAfterID == 2){ // after 2 = 3
-
-                }
-                if (NeighboorAfterID == 3){ // after 3 = 1
-
-                }
-
-            }
-
-
-            if (PlayerInsideBefore && NeighboorBeforeID==1)
-            {
-                if (!eventCap1.IamTriggered()){
-                    eventCapsule1.transform.position = Doughnuts_EC_SpacePositions[selfID - 2].position;
-                }
-                if (!eventCap2.IamTriggered()) {
-                    eventCapsule2.transform.position = Doughnuts_EC_SpacePositions[selfID].position;
-                }
-            }
-            if (PlayerInsideBefore && NeighboorBeforeID == 2){
-
-                if (!eventCap1.IamTriggered())
-                    eventCapsule1.transform.position = selfID == 1  ? Park_EC_SpacePositions[selfID - 1].position : Doughnuts_EC_SpacePositions[selfID - 2].position;
-               
-                if (!eventCap2.IamTriggered())
-                    eventCapsule2.transform.position = selfID == 1  ? Park_EC_SpacePositions[selfID + 1].position : Doughnuts_EC_SpacePositions[selfID].position;                                             
-            }
-            if (PlayerInsideBefore && NeighboorBeforeID == 3){
-
-                if (!eventCap1.IamTriggered())
-                    eventCapsule1.transform.position = selfID == 1  ? Park_EC_SpacePositions[selfID - 1].position : Doughnuts_EC_SpacePositions[selfID - 2].position;
-                
-                if (!eventCap2.IamTriggered())
-                    eventCapsule2.transform.position = selfID == 1  ? Park_EC_SpacePositions[selfID + 1].position : Doughnuts_EC_SpacePositions[selfID].position;
-
-            }
-            if (!eventCap1.IamTriggered() && PlayerInsideBefore){ // counts for position index 0,1,2
-                              
-            }*/
-
+            }          
         }
     }
 
