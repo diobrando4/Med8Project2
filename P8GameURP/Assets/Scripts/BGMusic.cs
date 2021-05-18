@@ -44,7 +44,11 @@ public class BGMusic : MonoBehaviour
     public VideoClip Donut_finnished;
     public VideoClip Park_finnish;
     public VideoClip videoToPlay_Factory;
+    public VideoClip EmergentParkIntro;
+    public VideoClip EmergentFactoryIntro;
 
+    bool EmergentFactoryIntroBool = false;
+    bool EmergentParkIntroBool = false;
     private VideoPlayer videoPlayer;
     private VideoSource videoSource;
 
@@ -85,7 +89,43 @@ public class BGMusic : MonoBehaviour
           //  introplayer.enabled = false;
             panel.SetActive(false);
         }
-        
+        //factory
+        if ( !introIsplaying  && mpc.isEmergentBool() && !EmergentFactoryIntroBool && !introplayer.isPlaying)
+        {
+
+            panel.SetActive(true);
+            EmergentFactoryIntroBool = true;
+            //  introplayer.enabled = true;
+            introplayer.clip = EmergentFactoryIntro;
+            Debug.Log("playing park!!____ ");
+
+        }
+        // factory
+        if (introplayer.clip == EmergentFactoryIntro && !introplayer.isPlaying && EmergentFactoryIntroBool  && introplayer.time > 2 && EmergentFactoryIntroBool && mpc.isEmergentBool() || Input.GetKey("return") && mpc.isEmergentBool() && EmergentFactoryIntroBool)
+        {
+            EmergentParkIntroBool = true;
+            //  introplayer.enabled = false;
+            panel.SetActive(false);
+        }
+        //park
+
+        if (!introplayer.isPlaying && mpc.isEmergentBool() && EmergentParkIntroBool)
+        {
+
+            panel.SetActive(true);
+            EmergentParkIntroBool = true;
+            //  introplayer.enabled = true;
+            introplayer.clip = EmergentParkIntro;
+            Debug.Log("playing park!!____ ");
+
+        }
+        if (introplayer.clip == EmergentParkIntro && !introplayer.isPlaying && EmergentParkIntro && introplayer.time > 2 && mpc.isEmergentBool() || Input.GetKey("return") && mpc.isEmergentBool() && EmergentParkIntro)
+        {
+            EmergentParkIntroBool = false;
+            //  introplayer.enabled = false;
+            panel.SetActive(false);
+        }
+
         // these 2 booleans cover p1 p2 p3 !isPlaying and this class function IamPlayingTheThemeSong==true
         ICanPlay = p1.CanIPlayMusic && p2.CanIPlayMusic && IamPlayingTheThemeSong() && !introplayer.isPlaying;
 
