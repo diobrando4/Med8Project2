@@ -38,7 +38,7 @@ public class Cutscenes : MonoBehaviour
             //Debug.Log("1 was pressed");
             //videoObj.SetActive(true);
             image.enabled = true;
-            StartCoroutine(playVideo_Donut());
+            StartCoroutine(playVideo_Donut(videoToPlay_Donut));
         }
         if(Input.GetKeyDown(KeyCode.Alpha2))
         {
@@ -56,7 +56,7 @@ public class Cutscenes : MonoBehaviour
         }
     }
 
-    IEnumerator playVideo_Donut()
+    IEnumerator playVideo_Donut(VideoClip clip)
     {
         //Add VideoPlayer to the GameObject
         videoPlayer = gameObject.AddComponent<VideoPlayer>();
@@ -79,7 +79,7 @@ public class Cutscenes : MonoBehaviour
         videoPlayer.SetTargetAudioSource(0, audioSource);
 
         //Set video To Play then prepare Audio to prevent Buffering
-        videoPlayer.clip = videoToPlay_Donut;
+        videoPlayer.clip = clip;
         videoPlayer.Prepare();
 
         //Wait until video is prepared

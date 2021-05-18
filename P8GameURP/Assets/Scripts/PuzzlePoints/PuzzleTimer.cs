@@ -76,9 +76,9 @@ public class PuzzleTimer : MonoBehaviour
     public Transform Dgroub;
     public Transform Pgroub;
     public Transform Fgroub;
-     List<Transform> Doughnuts_EC_SpacePositions;
-     List<Transform> Park_EC_SpacePositions;
-     List<Transform> Factory_EC_SpacePositions;
+    List<Transform> Doughnuts_EC_SpacePositions;
+    List<Transform> Park_EC_SpacePositions;
+    List<Transform> Factory_EC_SpacePositions;
     //public AudioClip emergentSolution;
 
     void Start(){

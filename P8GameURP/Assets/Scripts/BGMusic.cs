@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
+using UnityEngine.Video;
 public class BGMusic : MonoBehaviour
 {
     public AudioClip MainTheme;
@@ -32,6 +33,26 @@ public class BGMusic : MonoBehaviour
     bool once = false;
     bool ICanPlay;
     bool theme = false;
+    bool videoIsplaying;
+    public GameObject videoObj;
+    bool dougnatDone =false;
+    bool ParkDone =false;
+    //Raw Image to Show Video Images [Assign from the Editor]
+    public RawImage image;
+    //Video To Play [Assign from the Editor]
+    public VideoClip IntroVideo;
+    public VideoClip Donut_finnished;
+    public VideoClip Park_finnish;
+    public VideoClip videoToPlay_Factory;
+
+    private VideoPlayer videoPlayer;
+    private VideoSource videoSource;
+
+    public VideoPlayer introplayer;
+    bool introIsplaying = true;
+    //Audio
+    private AudioSource audioSource;
+    public GameObject panel;
     // Start is called before the first frame update
     void Start()
     {
@@ -39,20 +60,38 @@ public class BGMusic : MonoBehaviour
         p2 = p2Timer.GetComponent<PuzzleTimer>();
         p3 = p3Timer.GetComponent<PuzzleTimer>();
 
+        Application.runInBackground = true;
+        //videoObj.SetActive(false);
+        image.enabled = false;
+
         mpc = MainPuzzleControllerObject.GetComponent<MainPuzzleController>();
         audio = GetComponent<AudioSource>();
         audio.volume = 0.15f;
         audio.loop = true;
         audio.PlayOneShot(MainTheme);
+        introplayer.clip = IntroVideo;
+        introIsplaying = true;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        // these 2 booleans cover p1 p2 p3 !isPlaying and this class function IamPlayingTheThemeSong==true
-        ICanPlay = p1.CanIPlayMusic && p2.CanIPlayMusic && IamPlayingTheThemeSong();
+        Debug.Log("Intro is playing " + introplayer.time);
 
+        if(introplayer.clip == IntroVideo && !introplayer.isPlaying && introIsplaying && introplayer.time>2 || Input.GetKey("return"))
+        {
+            introIsplaying = false;
+          //  introplayer.enabled = false;
+            panel.SetActive(false);
+        }
         
+        // these 2 booleans cover p1 p2 p3 !isPlaying and this class function IamPlayingTheThemeSong==true
+        ICanPlay = p1.CanIPlayMusic && p2.CanIPlayMusic && IamPlayingTheThemeSong() && !introplayer.isPlaying;
+
+      /*  if(!videoIsplaying){
+            StartCoroutine(playVideo_Donut());
+        }*/
         if (mpc.Dcounter>4&& !P1Once ){
 
             audio.Stop();
@@ -60,6 +99,10 @@ public class BGMusic : MonoBehaviour
             audio.volume = 0.5f;
             audio.loop = false;
             audio.PlayOneShot(PuzzleCompleted);
+
+            // Dougnat cutscne
+            image.enabled = true;
+           // StartCoroutine(playVideo_Donut());
 
             if (ICanPlay) {
                 Invoke("p1_finished", 3);
@@ -74,6 +117,11 @@ public class BGMusic : MonoBehaviour
             audio.volume = 0.5f;
             audio.loop = false;
             audio.PlayOneShot(PuzzleCompleted);
+
+            // park cutscene
+            image.enabled = true;
+           // StartCoroutine(playVideo_Park());
+
 
             if (ICanPlay) {
                 Invoke("p2_finished", 3);
@@ -104,7 +152,44 @@ public class BGMusic : MonoBehaviour
                 theme = true;
             }
         }
-       
+      //  Debug.Log("P1Once " + P1Once + " dougnatDone " + dougnatDone);
+        if (P1Once  && !dougnatDone && !mpc.isEmergentBool())
+        {
+
+            panel.SetActive(true);
+          //  introplayer.enabled = true;
+            introplayer.clip = Donut_finnished;
+            Debug.Log("playing donut!!____ ");
+
+        }
+
+        if (P2Once && !ParkDone && !mpc.isEmergentBool())
+        {
+
+            panel.SetActive(true);
+            //  introplayer.enabled = true;
+            introplayer.clip = Park_finnish;
+            Debug.Log("playing park!!____ ");
+
+        }
+
+        if (introplayer.clip == Donut_finnished && !introplayer.isPlaying && introplayer.time > 2 && !dougnatDone && P1Once && !mpc.isEmergentBool() || Input.GetKey("return") && P1Once && !mpc.isEmergentBool())
+        {
+            Debug.Log("stop playing donuts");
+            dougnatDone = true;
+          //  introplayer.enabled = false;
+            panel.SetActive(false);
+        }
+
+        if (introplayer.clip == Park_finnish && !introplayer.isPlaying && introplayer.time > 2 && !ParkDone && P2Once && !mpc.isEmergentBool()  || Input.GetKey("return") && P2Once && !mpc.isEmergentBool())
+        {
+            Debug.Log("stop playing park");
+            ParkDone = true;
+            //  introplayer.enabled = false;
+            panel.SetActive(false);
+        }
+
+
         if (P1Once && !HasPlayedP1 &&  ICanPlay)
         {
             Invoke("p1_finished", 3);
@@ -122,7 +207,71 @@ public class BGMusic : MonoBehaviour
         }
       
     }
+
+    IEnumerator playVideo_Donut()
+    {
+        //Add VideoPlayer to the GameObject
+        videoPlayer = gameObject.AddComponent<VideoPlayer>();
+
+        //Add AudioSource
+        audioSource = gameObject.AddComponent<AudioSource>();
+
+        //Disable Play on Awake for both Video and Audio
+        videoPlayer.playOnAwake = false;
+        audioSource.playOnAwake = false;
+
+        //We want to play from video clip not from url
+        //  videoPlayer.source = videoSource.VideoClip;
+
+        videoPlayer.Prepare();
+
+        //Set Audio Output to AudioSource
+        videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
+        
+        //Assign the Audio from Video to AudioSource to be played
+        videoPlayer.EnableAudioTrack(0, true);
+        videoPlayer.SetTargetAudioSource(0, audioSource);
+
+        
+
+        //Set video To Play then prepare Audio to prevent Buffering
+  
+
+       
+        //videoPlayer.clip = videoToPlay_Donut;
+        
+        videoPlayer.Prepare();
+
+        //Wait until video is prepared
+       
+
+        //Debug.Log("Done Preparing Video");
+
+        //Assign the Texture from Video to RawImage to be displayed
+        image.texture = videoPlayer.texture;
+      
+            //Play Video
+            videoPlayer.Play();
+
+            //Play Sound
+            audioSource.Play();
+            videoIsplaying = true;
+            //Debug.Log("Playing Video");
+            while (videoPlayer.isPlaying)
+            {
+                videoIsplaying = true;
+                Debug.LogWarning("Video Time: " + Mathf.FloorToInt((float)videoPlayer.time));
+                yield return null;
+            }
+
+            //Debug.Log("Done Playing Video");
+            //videoObj.SetActive(false);
+        
+        image.enabled = false;
+    }
+
     
+
     public bool IamPlayingTheThemeSong(){
         return audio.loop;
 
