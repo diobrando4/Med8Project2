@@ -43,7 +43,7 @@ public class CollectSavedData
 
 public class WriteJson : MonoBehaviour
 {
-    private static string path = "/Json/PuzzleStates_.json";
+    private static string path = "Savefile.json";
 
     public GameObject GUIMenu;
     private MenuGUI MGUI;
