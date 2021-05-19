@@ -76,6 +76,7 @@ public class basicmovement : MonoBehaviour
     private bool jumpCountTest;
     private bool jumpIsMaxed;
     private bool movement;
+    private int grabCounter = 0;
 
     private int increments = 0;
     private int counter;
@@ -286,7 +287,17 @@ public class basicmovement : MonoBehaviour
             InteractCanvas.SetActive(false);
         }
 
-        if ( Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.4f) && Input.GetKey(KeyCode.E) && hit.collider.attachedRigidbody && grabbedObject==null &&!prevent && onSurface()){
+        if (Input.GetKey(KeyCode.E))
+        {
+            if ((counter) % Mathf.Round(0.1f / Time.fixedDeltaTime) == 0)
+            {
+                grabCounter += 1;
+            }
+        }
+       
+        bool toggleGrab = grabCounter%2==1;
+
+        if ( Physics.Raycast(raypos, Camera.main.transform.forward, out hit, 0.4f) && toggleGrab && hit.collider.attachedRigidbody && grabbedObject==null &&!prevent && onSurface()){
 
             grabbedObject = hit.collider.gameObject.GetComponent<Rigidbody>();
             if (grabbedObject.mass < rb.mass + 110f)
@@ -327,13 +338,14 @@ public class basicmovement : MonoBehaviour
             grabbedObject.transform.position = GrabPos.transform.position;
         }
 
-        if (grabbedObject != null && !Input.GetKey(KeyCode.E)){
+        if (grabbedObject != null && !toggleGrab){
             grabbedObject.useGravity = true;
             grabbedObject.freezeRotation = false;
             grabbing = false;
             grabbedObject = null;
             rb.mass = startWeight;
         }
+        Debug.Log("grabCounter is "+grabCounter);
     }  
     float horiMax;
     public bool prevent = false;
