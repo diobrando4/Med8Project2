@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.Video;
 public class MenuGUI : MonoBehaviour
 {
 
@@ -15,10 +14,9 @@ public class MenuGUI : MonoBehaviour
     public GameObject QuistionarEndGame;
     public GameObject EmergentGUI;
     public GameObject LinierGUI;
-    public AudioSource click;
-    public GameObject StartVideo;
-    public VideoPlayer vp;
 
+    public AudioSource click;
+    
 
     public bool PauseBool = false;
     private bool MenuBool = false;
@@ -184,19 +182,10 @@ public class MenuGUI : MonoBehaviour
         QuistionarScreen.SetActive(true);
         Debug.LogError(" GameCompletionCounter: " + GameCompletionCounter);
         if (GameCompletionCounter % 2==1){
-            StartVideo.SetActive(true);
-            if(!vp.isPlaying){
-                StartVideo.SetActive(false);
-            }
             QuistionarContinue.SetActive(true);
             QuistionarEndGame.SetActive(false);
         
         }else{
-            StartVideo.SetActive(true);
-            if (!vp.isPlaying)
-            {
-                StartVideo.SetActive(false);
-            }
             QuistionarContinue.SetActive(false);
             QuistionarEndGame.SetActive(true);
         }

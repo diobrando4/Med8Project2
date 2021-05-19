@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
+using UnityEngine.SceneManagement;
 public class BGMusic : MonoBehaviour
 {
     public AudioClip MainTheme;
@@ -46,7 +47,7 @@ public class BGMusic : MonoBehaviour
     public VideoClip videoToPlay_Factory;
     public VideoClip EmergentParkIntro;
     public VideoClip EmergentFactoryIntro;
-
+    public VideoClip ExitVideo;
     bool EmergentFactoryIntroBool = false;
     bool EmergentParkIntroBool = false;
     private VideoPlayer videoPlayer;
@@ -77,7 +78,7 @@ public class BGMusic : MonoBehaviour
         introIsplaying = true;
 
     }
-
+    bool playingExit = false;
     // Update is called once per frame
     void Update()
     {
@@ -238,22 +239,35 @@ public class BGMusic : MonoBehaviour
         }
 
 
-        if (P1Once && !HasPlayedP1 &&  ICanPlay)
+        if (P1Once && !HasPlayedP1 &&  ICanPlay && mpc.isEmergentBool())
         {
             Invoke("p1_finished", 3);
             HasPlayedP1 = true;
         }
-        if (P2Once && !HasPlayedP2 &&  ICanPlay)
+        if (P2Once && !HasPlayedP2 &&  ICanPlay && mpc.isEmergentBool())
         {
             Invoke("p2_finished", 3);
             HasPlayedP2 = true;
         }
-        if (P3Once && !HasPlayedP3 && ICanPlay)
+        if (P3Once && !HasPlayedP3 && ICanPlay && mpc.isEmergentBool())
         {
             Invoke("p3_finished", 3);
             HasPlayedP3 = true;
         }
-      
+     
+        if(mpc.canEXIT()){
+
+            panel.SetActive(true) ;
+            introplayer.clip = ExitVideo;
+            
+        }
+        if(introplayer.clip == ExitVideo){
+            playingExit = true;
+        }
+        if(playingExit && !introplayer.isPlaying && introplayer.time > 2){
+            SceneManager.LoadSceneAsync(0);
+        }
+
     }
     public bool IamPlayingTheThemeSong(){
         return audio.loop;

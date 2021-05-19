@@ -16,6 +16,7 @@ TagManager:
   - Timer3
   - GUI
   - WriteData
+  - video
   layers:
   - Default
   - TransparentFX
