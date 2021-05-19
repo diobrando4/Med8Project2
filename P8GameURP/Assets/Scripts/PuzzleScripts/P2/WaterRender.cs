@@ -18,7 +18,7 @@ public class WaterRender : MonoBehaviour
     Outline TR;
     AudioSource AS;
     WaterPump wp;
-    public bool isPumping;
+    private bool Pumping;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,11 +35,13 @@ public class WaterRender : MonoBehaviour
        // p2c = puzzle2Controller.GetComponent<Puzzle2Controller>();
         
     }
-
+    public bool isPumping(){
+        return wp.isPumping();
+    }
     // Update is called once per frame
     void Update()
     {
-        isPumping = wp.ispumping;
+        Pumping = isPumping();
         if (waterCounter > 0)
         {
             bottomRender.enabled = true;
@@ -97,7 +99,7 @@ public class WaterRender : MonoBehaviour
     {
         if (p2c.skipLvl) { waterCounter = 2; }
         if (waterCounter > 1) { return true; }
-        if (isPumping) { return true; }
+        if (isPumping()) { return true; }
         return false;       
     }
 }

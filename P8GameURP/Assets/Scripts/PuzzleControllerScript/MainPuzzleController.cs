@@ -48,7 +48,7 @@ public class MainPuzzleController : MonoBehaviour
 
     private int fixedCounter=0;
     private int fixedCounter2=0;
-
+    
     private bool canContinue = false;
     private bool once=false;
     private bool getGUIOnce = false;
@@ -206,8 +206,12 @@ public class MainPuzzleController : MonoBehaviour
     public bool isEmergentBool(){
         return isEmergent;
     }
+    public bool skip(){
+        return json.CanSkipCutScenes();
+    }
     void Update()
     {
+        
         Dcounter = p1c.collection;
         WaterPumpIsPumping = p2c.isPumping;
         basketCollection = p2c.basketCounter;

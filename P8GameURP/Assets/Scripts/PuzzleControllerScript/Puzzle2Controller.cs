@@ -41,7 +41,8 @@ public class Puzzle2Controller : MonoBehaviour
     void Update()
     {
         basketCounter = wr.waterCounter;
-        isPumping = wr.isPumping;
+        isPumping = wr.isPumping();
+        Debug.Log(isPumping);
     }
 
     public void startPuzzle2(bool start){
@@ -90,7 +91,7 @@ public class Puzzle2Controller : MonoBehaviour
                 }
             }
             runOnce = true;
-            wr.isPumping = false;
+            //wr.isPumping() = false;
             isPumping = false;
 
             if (hasRuned)// are used in startPuzzle2

@@ -16,6 +16,7 @@ TagManager:
   - Timer3
   - GUI
   - WriteData
+  - EventCapsules
   layers:
   - Default
   - TransparentFX

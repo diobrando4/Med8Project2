@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Reflection;
+using System.Linq;
 public class PuzzleTimer : MonoBehaviour
 {
     public List<Vector3> playerPositionList;
@@ -79,9 +80,15 @@ public class PuzzleTimer : MonoBehaviour
     List<Transform> Doughnuts_EC_SpacePositions;
     List<Transform> Park_EC_SpacePositions;
     List<Transform> Factory_EC_SpacePositions;
+
+
+    
     //public AudioClip emergentSolution;
 
     void Start(){
+        points = new List<int>();
+        names = new List<string>();
+        childscripts = new List<rotateObject>();
         Doughnuts_EC_SpacePositions = new List<Transform>();
         Park_EC_SpacePositions = new List<Transform>();
         Factory_EC_SpacePositions = new List<Transform>();
@@ -151,13 +158,10 @@ public class PuzzleTimer : MonoBehaviour
         WaterPumpBool = mpc.WaterPumpIsPumping;
         basketCounter = mpc.basketCollection;
      
-        if(eventCap1.IamTriggered() && !checkEventOnce1){
-            ECC_1 = eventCap1.ECC;
-        }
-        if (eventCap2.IamTriggered() && !checkEventOnce2)
-        {
-            ECC_2 = eventCap2.ECC;
-        }
+       /* if(eventCap1.IamTriggered() && !checkEventOnce1){
+           // ECC_1 = eventCap1.ECC;
+        }*/
+        
         if (!GetValuesOnce){
             if (isEmergent){
                 nextID = 4;
@@ -191,7 +195,8 @@ public class PuzzleTimer : MonoBehaviour
             NeighboorBeforeID = GetMyNeighboorID(GetNeighboorID_1,NP_1,NeighboorBeforeID);
             NeighboorAfterID = GetMyNeighboorID(GetNeighboorID_2,NP_2,NeighboorAfterID);
         }
-      
+        ECC_2 = points.Sum();
+        Debug.Log("ECC_2 sum: " + ECC_2);
         CanIPlayMusic = !DoesMyNeighboorPlayMusic(IsAPuzzlePlaying_1, NP_1, CanIPlayMusic) && !DoesMyNeighboorPlayMusic(IsAPuzzlePlaying_2, NP_2, CanIPlayMusic);
         eventCap1.canPlay = CanIPlayMusic && !audioSource.isPlaying && bg.IamPlayingTheThemeSong();
         eventCap2.canPlay = CanIPlayMusic && !audioSource.isPlaying && bg.IamPlayingTheThemeSong();
@@ -215,7 +220,7 @@ public class PuzzleTimer : MonoBehaviour
         if (!MyPuzzle && !isInside && isEmergent){
             
             if (PlayerInsideBefore)
-            {
+            {               
                 if (NeighboorBeforeID == 1)
                 { // before 2 = 1 
                     Debug.Log("before " + gameObject.name + " Line 221");
@@ -286,7 +291,14 @@ public class PuzzleTimer : MonoBehaviour
         }
     }
 
+
+    bool newEventCapsules;
     private void OnTriggerStay(Collider other){
+       /*if (MyPuzzle && other.tag == transform.GetChild(0).tag && other.)
+        {
+            Debug.Log("NEW CHILD !! " + other.name);
+            other.transform.SetParent(this.transform);
+        }*/
         if (MyPuzzle && other.tag == "Player"){
             isInside = true;
             playerPosition = new Vector3(other.transform.position.x, other.transform.position.y, other.transform.position.z);
@@ -296,14 +308,52 @@ public class PuzzleTimer : MonoBehaviour
             {
                 audioSource.PlayOneShot(emergentStart);
                 hasPlayed = true;
-            }          
+            }
+
+            if (isEmergent) {
+
+                if (transform.childCount != names.Count) {
+                    for (int i = 0; i < transform.childCount; i++) {
+
+                        if (!names.Contains(transform.GetChild(i).name)) {
+                            names.Insert(0, transform.GetChild(i).name);
+                            childscripts.Insert(0, transform.GetChild(i).GetComponent<rotateObject>());
+                            points.Insert(0, transform.GetChild(i).gameObject.GetComponent<rotateObject>().ECC);
+                        }
+                    }
+
+                }
+                for (int i = 0; i < childscripts.Count; i++) {                    
+                    if(childscripts[i].IamTriggered())
+                    {
+                        points[i] = 1;
+                    }                                            
+                }                              
+            }
         }
+        /*if(isEmergent && other.tag=="Player"){
+            for(int i =0; i<points.Count; i++){
+                ECC_2 += points[i];
+            }
+            if(ECC_2> points.Count){
+                ECC_2 = 0;
+            }
+        }*/
     }
+    bool once=false;
+    bool onceScript=false;
+    List<GameObject> eventList;
+    List<int> points;
+    List<string> names;
+    List<rotateObject> childscripts;
+    
     private void OnTriggerExit(Collider other)
     {
         if (other.tag == "Player"){
             isInside = false;
             hasPlayed = false;
+            once = false;
+            newEventCapsules = false;
         }
     }
     private void PlayerTimer(){

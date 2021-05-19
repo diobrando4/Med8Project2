@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WaterPump : MonoBehaviour
 {
-    public bool ispumping;
+    private bool pumping;
     private Outline ol;
     float y;
     float starty;
@@ -22,19 +22,22 @@ public class WaterPump : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.Rotate(Vector3.up * 20 * Time.deltaTime, Space.Self);
+        transform.Rotate(Vector3.up * 30 * Time.deltaTime, Space.Self);
     }
     private void OnCollisionStay(Collision collision)
     {
         if (collision.collider.tag == "pump")
         {
-            ispumping = true;
+            pumping = true;
             GetComponent<MeshRenderer>().enabled = false;
             QuestPump.SetActive(false);
             MyPump.SetActive(true);
             
         }
        
+    }
+    public bool isPumping(){
+        return pumping;
     }
    /* private void OnCollisionExit(Collision collision)
     {

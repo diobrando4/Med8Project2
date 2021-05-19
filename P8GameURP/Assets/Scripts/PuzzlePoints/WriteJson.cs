@@ -109,6 +109,13 @@ public class WriteJson : MonoBehaviour
     {
         return mGUI.getUniqeID();
     }
+
+    public bool CanSkipCutScenes()
+    {
+        return csd.CollectionList.Count == 3;
+
+    }
+
     private void Update()
     {
 
@@ -138,7 +145,9 @@ public class WriteJson : MonoBehaviour
                 csd.CollectionList.Insert(indexCounter, P1Data);
                 indexCounter++;
                 p1once = true;
+                Debug.Log("event capsule score: " + (p1timer.ECC_1 + p1timer.ECC_2));
             }
+            
             /* if (!p1once && P1Data_2 == null && !Emergent)
             {
                 P1Data_2 = new PuzzleData(MyUniqueID, p1timer.MyName + p1timer.selfID, p1timer.PlayerTimeCounter, MyEmergent, (p1timer.ECC_1 + p1timer.ECC_2));
@@ -161,9 +170,12 @@ public class WriteJson : MonoBehaviour
                 {
                     P2Data.Player_Positions.Insert(0, p2timer.playerPositionList[i].ToString());
                 }
+                P2Data.BasketCounter = p2timer.basketCounter;
+                P2Data.WaterIsPumping = p2timer.WaterPumpBool;
                 csd.CollectionList.Insert(indexCounter, P2Data);
                 indexCounter++;
                 p2once = true;
+                Debug.Log("event capsule score: " + (p2timer.ECC_1 + p2timer.ECC_2));
             }
              /*if (!p2once && P2Data_2 == null && !Emergent)
             {
@@ -190,6 +202,7 @@ public class WriteJson : MonoBehaviour
                 csd.CollectionList.Insert(indexCounter, P3Data);
                 indexCounter++;
                 p3once = true;
+               // Debug.Log("event capsule score: " + (p3timer.ECC_1 + p3timer.ECC_2));
             }
            /* if (P3Data_2 == null && !p3once && !Emergent)
             {
