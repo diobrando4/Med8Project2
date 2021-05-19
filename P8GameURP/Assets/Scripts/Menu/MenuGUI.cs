@@ -181,8 +181,7 @@ public class MenuGUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         QuistionarScreen.SetActive(true);
         Debug.LogError(" GameCompletionCounter: " + GameCompletionCounter);
-        Debug.Log(" GameCompletionCounter: " + GameCompletionCounter);
-        if (GameCompletionCounter==1){
+        if (GameCompletionCounter % 2==1){
             QuistionarContinue.SetActive(true);
             QuistionarEndGame.SetActive(false);
         
@@ -216,7 +215,7 @@ public class MenuGUI : MonoBehaviour
     }
     void GameIsCompleted(){
         GameCompletionCounter++;
-      //  Debug.LogError(" load game gameIsCompleted " + gameIsCompleted);
+        Debug.LogError(" load game gameIsCompleted " + gameIsCompleted);
        // SceneManager.LoadSceneAsync(0);
     }
     public void resumeBtn(){
@@ -243,10 +242,10 @@ public class MenuGUI : MonoBehaviour
         SettingsScreenGUI.SetActive(false);
         PauseScreenGUI.SetActive(false);
         QuistionarScreen.SetActive(false);
-      //  Debug.LogError("###### EMERGENT :" + EmergentGame);
+        Debug.LogError("###### EMERGENT :" + EmergentGame);
         if (EmergentGame)
         {
-           // Debug.LogError("I AM EMERGENT!!!!");
+            Debug.LogError("I AM EMERGENT!!!!");
             EmergentGUI.SetActive(true);
             LinierGUI.SetActive(false);
         }else if (!EmergentGame){
