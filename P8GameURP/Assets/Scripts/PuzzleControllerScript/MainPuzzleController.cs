@@ -55,10 +55,9 @@ public class MainPuzzleController : MonoBehaviour
     private bool isEmergent = false;
     private bool setStatesOnce = false;
     int test=0;
-    public bool EXIT;
+   
     void Start()
     {
-        EXIT = false;
         json = WriteJson.GetComponent<WriteJson>();
         stop = true;
         setStatesOnce = false;
@@ -93,9 +92,6 @@ public class MainPuzzleController : MonoBehaviour
     public bool startP4_Boolean(){
         return gameFinish;
     }
-    public bool canEXIT(){
-        return EXIT;
-    }
     private void LinaerGame(){
         p3com = p3c.Puzzle3Complete();
         startP1 = true;
@@ -123,8 +119,7 @@ public class MainPuzzleController : MonoBehaviour
                 fixedCounter2 = 0;
                
                 Debug.LogError("gameFinish" + gameFinish);
-                //SceneManager.LoadSceneAsync(0);
-                EXIT = true;
+                SceneManager.LoadSceneAsync(0);
             }
         }
 
@@ -199,8 +194,8 @@ public class MainPuzzleController : MonoBehaviour
         }
         if (Delay2(3.0f) && gameFinish && json.Exit()){
             fixedCounter2 = 0;
-            EXIT = true;
-           // SceneManager.LoadSceneAsync(0);
+           
+            SceneManager.LoadSceneAsync(0);
         }
     }
     public bool isEmergentBool(){
