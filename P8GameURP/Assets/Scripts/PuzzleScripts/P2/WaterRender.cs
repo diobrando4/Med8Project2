@@ -83,7 +83,7 @@ public class WaterRender : MonoBehaviour
         if (other.tag == "basket")
         {
             if (other.gameObject.GetComponent<BascketScript>().IHaveWater()) {
-                waterCounter++;
+                waterCounter +=2;
             }
         }
     }
