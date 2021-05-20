@@ -73,17 +73,17 @@ public class basicFPSCameraScript : MonoBehaviour
 		targetRotationCamra.z = 0;
 		//locks the camra rotation's  x coordinat between -90 and 90 degrees 
 		// look at the 3D camera degress
-		if (xAxisClamp > 30)
+		if (xAxisClamp > 45)
 		{
-			xAxisClamp = 30;
-			targetRotationCamra.x = 30;
+			xAxisClamp = 45;
+			targetRotationCamra.x = 45;
 
 		}
-		else if (xAxisClamp < 18)
+		else if (xAxisClamp < -30)
 		{
 
-			xAxisClamp = 18;
-			targetRotationCamra.x = 18;
+			xAxisClamp = -30;
+			targetRotationCamra.x = -30;
 		}
 		//Debug.Log(xAxisClamp);
 		transform.rotation = Quaternion.Euler(targetRotationCamra);
