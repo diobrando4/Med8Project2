@@ -217,9 +217,9 @@ public class WriteJson : MonoBehaviour
             }*/
           //  Debug.Log("counter = " + P3Data_2.Player_Positions.Count);
         }
-        Debug.Log("p1once " + p1once + " p2once " + p2once + " p3once " + p3once);
+      //  Debug.Log("p1once " + p1once + " p2once " + p2once + " p3once " + p3once);
        // Debug.LogError("insertIndex " + indexCounter + " current count: " + csd.CollectionList.Count);
-        Debug.LogError("csd.CollectionList: " + csd.CollectionList.Count + " game is emergent " + MyEmergent + " has written= " + staticWriteOnce);
+      //  Debug.LogError("csd.CollectionList: " + csd.CollectionList.Count + " game is emergent " + MyEmergent + " has written= " + staticWriteOnce);
         /* if(csd.CollectionList.Count == 3 && !oneTime)
          {
              oneTime = true;

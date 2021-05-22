@@ -215,7 +215,7 @@ public class MainPuzzleController : MonoBehaviour
         Dcounter = p1c.collection;
         WaterPumpIsPumping = p2c.isPumping;
         basketCollection = p2c.basketCounter;
-        Debug.Log("can exit " + json.Exit()) ;
+     //   Debug.Log("can exit " + json.Exit()) ;
         if (!getGUIOnce){
             GUIObject = GameObject.FindGameObjectWithTag("GUI");
             GUI = GUIObject.GetComponent<MenuGUI>();

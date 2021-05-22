@@ -54,7 +54,7 @@ public class rotateObject : MonoBehaviour
             if (!isTrigged) {
                 Appear();
                 transform.Rotate(Vector3.up * 60 * Time.deltaTime, Space.Self);
-                Debug.Log("I am at start pos? " +(startPos == transform.position) + " name " + this.name);
+               // Debug.Log("I am at start pos? " +(startPos == transform.position) + " name " + this.name);
                 if(startPos != transform.position){
                     for (int i = 0; i < motherCalculator.Count; i++)
                     {

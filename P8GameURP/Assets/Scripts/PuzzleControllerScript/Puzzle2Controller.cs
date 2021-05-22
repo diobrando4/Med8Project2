@@ -42,7 +42,7 @@ public class Puzzle2Controller : MonoBehaviour
     {
         basketCounter = wr.waterCounter;
         isPumping = wr.isPumping();
-        Debug.Log(isPumping);
+        //Debug.Log(isPumping);
     }
 
     public void startPuzzle2(bool start){

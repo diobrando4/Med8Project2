@@ -196,7 +196,7 @@ public class PuzzleTimer : MonoBehaviour
             NeighboorAfterID = GetMyNeighboorID(GetNeighboorID_2,NP_2,NeighboorAfterID);
         }
         ECC_2 = points.Sum();
-        Debug.Log("ECC_2 sum: " + ECC_2);
+       // Debug.Log("ECC_2 sum: " + ECC_2);
         CanIPlayMusic = !DoesMyNeighboorPlayMusic(IsAPuzzlePlaying_1, NP_1, CanIPlayMusic) && !DoesMyNeighboorPlayMusic(IsAPuzzlePlaying_2, NP_2, CanIPlayMusic);
         eventCap1.canPlay = CanIPlayMusic && !audioSource.isPlaying && bg.IamPlayingTheThemeSong();
         eventCap2.canPlay = CanIPlayMusic && !audioSource.isPlaying && bg.IamPlayingTheThemeSong();

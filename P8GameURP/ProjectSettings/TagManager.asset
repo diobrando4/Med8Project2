@@ -17,6 +17,7 @@ TagManager:
   - GUI
   - WriteData
   - EventCapsules
+  - Positions
   layers:
   - Default
   - TransparentFX

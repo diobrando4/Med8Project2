@@ -345,7 +345,7 @@ public class basicmovement : MonoBehaviour
             grabbedObject = null;
             rb.mass = startWeight;
         }
-        Debug.Log("grabCounter is "+grabCounter);
+       // Debug.Log("grabCounter is "+grabCounter);
     }  
     float horiMax;
     public bool prevent = false;
