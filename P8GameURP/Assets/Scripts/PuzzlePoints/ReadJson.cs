@@ -27,9 +27,9 @@ public class ReadJson : MonoBehaviour
         positions = new List<Vector3>();
         jsonString = File.ReadAllText(Application.dataPath + path);
         itemData = JsonMapper.ToObject(jsonString);
-        Debug.LogError("itemData[0].Count: " + itemData[0].Count.ToString());
+        Debug.LogError("itemData[0].Count: " + itemData[0][0][0].Count);
         for (int k =0;  k< itemData[0].Count; k++) {
-            for (int i = 0; i < itemData[0].Count; i++) {
+            for (int i = 0; i < itemData[0][0][0].Count; i++) {
                 GetPlayerPositionsFromPuzzle(k, i);
             }
         }
