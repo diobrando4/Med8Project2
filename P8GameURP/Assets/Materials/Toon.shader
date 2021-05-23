@@ -70,37 +70,21 @@
 			float4 frag (v2f i) : SV_Target
 			{
 				float3 viewDir = normalize(i.viewDir);
-
 				float4 sample = tex2D(_MainTex, i.uv);
-
 				float3 normal = normalize(i.worldNormal);
-
 				float3 halfVector = normalize(_WorldSpaceLightPos0 + viewDir);
-
-				float NdotH = dot(normal, halfVector);
-
-				float NdotL = dot(_WorldSpaceLightPos0, normal);
-
-				float shadow = SHADOW_ATTENUATION(i);
-
-				float lightIntensity = smoothstep(0, 0.01, NdotL * shadow);
-
-				float4 light = lightIntensity * _LightColor0;
-
+				float NdotH = dot(normal, halfVector); //Dot product normals
+				float NdotL = dot(_WorldSpaceLightPos0, normal); //Dot product of light direction based on world space
+				float shadow = SHADOW_ATTENUATION(i); //macro that returns a value between 0 and 1, where 0 is no shadow and 1 is fully shadow
+				float lightIntensity = smoothstep(0, 0.01, NdotL * shadow); //multiply with dot protuct light direction in world space
+				float4 light = lightIntensity * _LightColor0; //then multiplied by the final output
 				float specularIntensity = pow(NdotH * lightIntensity, _Glossiness * _Glossiness);
-
-				float specularIntensitySmooth = smoothstep(0.005, 0.01, specularIntensity);
-
-				float4 specular = specularIntensitySmooth * _SpecularColor;
-
+				float specularIntensitySmooth = smoothstep(0.005, 0.01, specularIntensity);//using smoothstep to "toonify" the reflection
+				float4 specular = specularIntensitySmooth * _SpecularColor;//and then multiplied by the final output
 				float4 rimDot = 1 - dot(viewDir, normal);
-
-				float rimIntensity = rimDot * pow(NdotL, _RimThreshold);
-
+				float rimIntensity = rimDot * pow(NdotL, _RimThreshold); //Controls how far the rim of the surfaces will go out, and using pow function to scale the rim
 				rimIntensity = smoothstep(_RimAmount - 0.01, _RimAmount + 0.01, rimIntensity);
-
-				float4 rim = rimIntensity * _RimColor;
-
+				float4 rim = rimIntensity * _RimColor;//then multiply by the final output
 				return _Color * sample * (_AmbientColor + light + specular + rimDot + rim);
 			}
 			ENDCG
