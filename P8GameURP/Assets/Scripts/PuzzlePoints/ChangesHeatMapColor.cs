@@ -15,12 +15,13 @@ public class ChangesHeatMapColor : MonoBehaviour
     public List<string> neihboors;
     bool JustOnce = false;
     int neighboor;
+    int Fixedcounter = 0;
     // Start is called before the first frame update
     void Start()
     {
         //neihboors = new List<string>();
         mat = GetComponent<Renderer>().material;
-        mat.SetColor("_BaseColor", new Color32(0, 100, 0, 0));
+        mat.SetColor("_BaseColor", new Color32(0, 100, 0, 75));
         // neihboors.Insert(0, gameObject.name);
     }
     private void OnTriggerEnter(Collider other)
@@ -33,32 +34,33 @@ public class ChangesHeatMapColor : MonoBehaviour
     {
 
     }
-    private void Update()
+    private void FixedUpdate()
     {
-        if (!JustOnce) {
-            test();
+        Fixedcounter++;
+        if (!JustOnce && Fixedcounter % Mathf.Round(1f / Time.fixedDeltaTime) ==0) {
+            ChangeColor();
            // ColorChange();
             JustOnce = true;
         }
     }
 
-    void test(){
+    void ChangeColor(){
         counter = neighboor;
         // start green
-        if (counter <10){
-            mat.SetColor("_Color", new Color32(0, 150, 0, 100));
+        if( counter <10){
+            mat.SetColor("_Color", new Color32(0, 150, 0, 75));
         }else
-        if(counter <20 && counter >= 10)
+        if(counter >= 10 && counter < 20)
         {
-            mat.SetColor("_Color", new Color32(0, 200, 0, 100));
+            mat.SetColor("_Color", new Color32(0, 200, 0, 75));
         }
         else
         if (counter >= 20 && counter < 30)
         {
-            mat.SetColor("_Color", new Color32(0, 255, 0, 100));
+            mat.SetColor("_Color", new Color32(0, 255, 0, 75));
         }
         // start blue
-        else if(counter >= 30 && counter < 40)
+        else if( counter >= 30 && counter < 40)
         {
             mat.SetColor("_Color", new Color32(0, 0, 150, 150));
         }
@@ -71,15 +73,15 @@ public class ChangesHeatMapColor : MonoBehaviour
             mat.SetColor("_Color", new Color32(0, 0, 255, 150));
 
         // start red
-        }else if(counter >= 80 && counter < 90)
+        }else if(counter >= 70 && counter < 80)
         {
             mat.SetColor("_Color", new Color32(150, 0, 0, 185));
         }
-        else if (counter >= 100 && counter < 110)
+        else if (counter >= 80 && counter < 90)
         {
             mat.SetColor("_Color", new Color32(200, 0, 0, 200));
         }
-        else if (counter >= 110 && counter < 120)
+        else if (counter >= 90 )
         {
             mat.SetColor("_Color", new Color32(255, 0, 0, 255));
         }else{
@@ -87,7 +89,7 @@ public class ChangesHeatMapColor : MonoBehaviour
         }
     }
 
-    void ColorChange(){
+   /*void ColorChange(){
 
         counter = (byte)neighboor;
             Debug.Log("HEAT MAP counter = " + counter);
@@ -129,7 +131,7 @@ public class ChangesHeatMapColor : MonoBehaviour
                 mat.SetColor("_BaseColor", new Color32(255, 255, 255, 0));
             }
         
-    }
+    }*/
 
     // Update is called once per frame
 

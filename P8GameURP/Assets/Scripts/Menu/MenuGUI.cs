@@ -38,7 +38,7 @@ public class MenuGUI : MonoBehaviour
     bool p2Active;
     bool p3Active;
     bool gameIsCompleted;
-    public static double UniqueID = 0f;
+    public static double UniqueID = 0;
     public MenuGUI My_instance;
     bool startSceneOnce = false;
     // Start is called before the first frame update

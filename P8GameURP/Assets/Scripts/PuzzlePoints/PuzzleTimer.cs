@@ -117,14 +117,14 @@ public class PuzzleTimer : MonoBehaviour
                 selfID = int.Parse(selfIDString);
             }
         }
-        before = selfID - 1>= 1 ? selfID - 1 : 3;
-        after = selfID + 1 <= 3 ? selfID + 1 : 1;
+
         nextID = selfID + 1;
 
         MyPuzzleInfo = mpc.GetType().GetMethod(MyName + selfID + "_Boolean");
         NextPuzzleInfo = mpc.GetType().GetMethod(MyName + nextID + "_Boolean");
 
-  
+        before = selfID - 1 >= 1 ? selfID - 1 : 3;
+        after = selfID + 1 <= 3 ? selfID + 1 : 1;
 
     }
     private bool GetPuzzleActiveInfo(MethodInfo Method, bool PuzzleBool){
